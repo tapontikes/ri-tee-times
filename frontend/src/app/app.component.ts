@@ -11,8 +11,14 @@ import * as moment from 'moment';
 })
 export class AppComponent implements OnInit {
 
-  public holeFilterValue: number = 0;
-  public selectedCourse: Course = <Course>{};
+  public selectedCourse: Course = {
+    name: "",
+    requestData: "",
+    type: CourseType.FOREUP,
+    teeTimes: []
+  };
+
+  public holeFilterValue: number = 1;
   public selectedDate: Date = new Date();
   public courses: Course[] = [];
   public loading = true;
@@ -33,9 +39,8 @@ export class AppComponent implements OnInit {
   }
 
   async getTeeTimes() {
-    this.courses.map(async course => {
+    const teeTimeMapPromises = this.courses.map(async course => {
       let teeTimeData: TeeTime[] = [];
-
       switch (course.type) {
         case CourseType.FOREUP:
           teeTimeData = await this.getForeUpTeeTimeData(course)
@@ -44,9 +49,11 @@ export class AppComponent implements OnInit {
           teeTimeData = await this.getTeeSnapTeeTimeData(course);
           break;
       }
-      course.teetimes = teeTimeData;
+      course.teeTimes = teeTimeData;
       return course;
     });
+    await Promise.all(teeTimeMapPromises)
+    this.loading = false;
   }
 
   async getForeUpTeeTimeData(course: Course) {
@@ -69,15 +76,16 @@ export class AppComponent implements OnInit {
     return await firstValueFrom(this.teeTimeService.getTeeTimesTeeSnap(requestData))
   }
 
-  updateDateAndTeeTimes(event: Date) {
+  async updateDateAndTeeTimes(event: Date) {
     this.loading = true;
     this.selectedDate = event;
-    this.courses.map(course => {
-      course.teetimes = [];
-      return course;
-    })
-    this.getTeeTimes();
-    this.loading = false;
+    this.courses.map(course => course.teeTimes = []);
+    await this.getTeeTimes();
+  }
+
+  async refreshTeeTimes() {
+    this.loading = true;
+    await this.getTeeTimes();
   }
 
   changeCourse(event: any) {

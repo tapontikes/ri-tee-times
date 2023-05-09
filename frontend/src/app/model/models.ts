@@ -3,7 +3,7 @@ export interface Course {
   name: string;
   requestData: string
   type: CourseType;
-  teetimes: TeeTime[]
+  teeTimes: TeeTime[]
 }
 
 export enum CourseType {

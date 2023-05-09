@@ -1,7 +1,8 @@
-.app-container{
+.app-container {
   margin: 0.5em;
 }
-.course{
+
+.course {
   display: flex;
   flex-direction: column;
 }
@@ -12,14 +13,14 @@
   flex-wrap: wrap;
 }
 
-.form-field{
-display: flex;
-align-items: center;
-margin:1em;
+.form-field {
+  display: flex;
+  align-items: center;
+  margin: 1em;
 }
 
-.toolbar{
-min-height: 3em;
+.toolbar {
+  min-height: 3em;
 }
 
 .teetime-card {
@@ -27,23 +28,31 @@ min-height: 3em;
   min-width: 12em;
 }
 
-.teetime-card-container{
+.teetime-card-container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   margin: 2em 0 2em 0;
-  }
+}
 
-.notice{
+.notice {
   color: red;
   font-size: 12px;
 }
 
-mat-card{
+mat-card {
   cursor: pointer;
 }
 
 
 .mat-mdc-radio-button ~ .mat-mdc-radio-button {
   margin-left: 16px;
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40vh;
+  font-size: 1.5em;
 }

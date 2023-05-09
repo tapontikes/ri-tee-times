@@ -20,32 +20,42 @@
       </mat-form-field>
     </div>
     <div class="form-field">
-      <mat-radio-group [(ngModel)]="holeFilterValue" aria-label="Select an option">
-        <mat-radio-button [value]="9">9 Holes</mat-radio-button>
-        <mat-radio-button [value]="18">18 Holes</mat-radio-button>
-        <mat-radio-button [value]="0" selected>Both</mat-radio-button>
-      </mat-radio-group>
+      <mat-chip-listbox [(ngModel)]="holeFilterValue" [multiple]="false" aria-label="Select Number Of Holes">
+        <mat-chip-option [value]="9">9 Holes</mat-chip-option>
+        <mat-chip-option [value]="18">18 Holes</mat-chip-option>
+        <mat-chip-option [value]="1">Both</mat-chip-option>
+      </mat-chip-listbox>
     </div>
     <div class="form-field">
-      <button (click)="updateDateAndTeeTimes(this.selectedDate)" color="primary" mat-raised-button>Refresh</button>
+      <button (click)="refreshTeeTimes()" color="primary" mat-raised-button>Refresh</button>
     </div>
   </div>
-  <div *ngIf="loading" class="loading-spinner">
-    <mat-spinner></mat-spinner>
-  </div>
-  <div *ngIf="!this.loading">
-    <div *ngIf="selectedCourse" class="teetime-container">
-      <mat-toolbar class="toolbar">
-        <span class="course">{{selectedCourse.name}} </span>
-      </mat-toolbar>
-      <div class="teetime-card-container">
+  <div *ngIf="selectedCourse" class="teetime-container">
+    <mat-toolbar class="toolbar">
+      <span class="course">{{selectedCourse.name}} </span>
+    </mat-toolbar>
+    <div *ngIf="loading" class="loading-spinner alert">
+      <mat-spinner></mat-spinner>
+    </div>
+    <div *ngIf="!loading">
+      <div *ngIf="holeFilterValue === undefined">
+        <div class="alert">
+          <span>Select Number of Holes</span>
+        </div>
+      </div>
+      <div *ngIf="(selectedCourse.teeTimes | holeFilter: holeFilterValue).length === 0">
+        <div class="alert">
+          <span>No Tee Times Available</span>
+        </div>
+      </div>
+      <div *ngIf="selectedCourse.teeTimes && holeFilterValue" class="teetime-card-container">
         <mat-card (click)="bookTeeTime('TODO')"
-                  *ngFor="let details of selectedCourse.teetimes | holeFilter: holeFilterValue" class="teetime-card">
+                  *ngFor="let details of selectedCourse.teeTimes | holeFilter: holeFilterValue" class="teetime-card">
           <mat-card-header>
             <mat-card-title>{{details.time}}</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <p>Holes: {{holeFilterValue === 0 ? details.holes : holeFilterValue}}</p>
+            <p>Holes: {{holeFilterValue === 1 ? details.holes : holeFilterValue}}</p>
             <p>Spots Available: <b>{{details.spots}}</b></p>
           </mat-card-content>
         </mat-card>
