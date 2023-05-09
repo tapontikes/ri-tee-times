@@ -1,0 +1,7 @@
+services:
+  app:
+    build:
+      dockerfile: ./Dockerfile
+      context: $PWD
+    ports:
+      - 3000:3000

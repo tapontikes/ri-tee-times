@@ -1,0 +1,49 @@
+.app-container{
+  margin: 0.5em;
+}
+.course{
+  display: flex;
+  flex-direction: column;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.form-field{
+display: flex;
+align-items: center;
+margin:1em;
+}
+
+.toolbar{
+min-height: 3em;
+}
+
+.teetime-card {
+  margin: 1em;
+  min-width: 12em;
+}
+
+.teetime-card-container{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 2em 0 2em 0;
+  }
+
+.notice{
+  color: red;
+  font-size: 12px;
+}
+
+mat-card{
+  cursor: pointer;
+}
+
+
+.mat-mdc-radio-button ~ .mat-mdc-radio-button {
+  margin-left: 16px;
+}
