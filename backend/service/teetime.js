@@ -73,7 +73,7 @@ courses = [
 
 // the URL of the JSON API endpoint
 const forupBaseUrl = "https://app.foreupsoftware.com/index.php/api/booking/times"
-const teesnapEndpoint = "/customer-api/teetimes.tar-day";
+const teesnapEndpoint = "/customer-api/teetimes-day";
 
 async function getForeUpTeeTimes(params) {
     return await axios.get(forupBaseUrl, {
@@ -89,14 +89,14 @@ async function getForeUpTeeTimes(params) {
                 data.map((teeTimes) => {
                     formattedTimes.push({
                         "time": moment(teeTimes.time).format('h:mm A'),
-                        "holes": typeof teeTimes.holes == "string" ? teeTimes.holes.toString().split('/').map(Number): [teeTimes.holes],
+                        "holes": typeof teeTimes.holes == "string" ? teeTimes.holes.toString().split('/').map(Number) : [teeTimes.holes],
                         "start": teeTimes.teesheet_side_name,
                         "spots": teeTimes.available_spots
                     })
                 })
                 return formattedTimes;
             }
-        }).catch(err =>{
+        }).catch(err => {
             console.log(err);
         });
 
@@ -125,22 +125,22 @@ async function getTeesnapTeeTimes(url, params) {
                     if (typeof bookingCheck.bookings === 'undefined' && bookingCheck.isHeld === false) {
                         teeTimeObj.time = moment(time.teeTime).format('h:mm A');
                         teeTimeObj.spots = 4;
-                    }else if (bookingCheck.bookings.length > 0){
+                    } else if (bookingCheck.bookings.length > 0) {
                         let bookingCounter = 0;
                         let totalBookings = [];
                         bookingCheck.bookings.forEach((booking => {
                             bookingsArr.forEach(allBookings => {
-                                if(allBookings.bookingId === booking){
+                                if (allBookings.bookingId === booking) {
                                     totalBookings.push(allBookings);
                                 }
                             })
                         }))
 
-                        totalBookings.forEach(booking =>{
+                        totalBookings.forEach(booking => {
                             bookingCounter += booking.golfers.length;
                         })
 
-                        if(bookingCounter === 4) return;
+                        if (bookingCounter === 4) return;
 
                         teeTimeObj.time = moment(time.teeTime).format('h:mm A');
                         teeTimeObj.spots = 4 - bookingCounter;
@@ -161,9 +161,9 @@ async function getTeesnapTeeTimes(url, params) {
                 })
             }
             return formattedTimes;
-        }).catch(err =>{
-        console.log(err);
-    });
+        }).catch(err => {
+            console.log(err);
+        });
 
 }
 
