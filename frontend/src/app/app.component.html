@@ -2,8 +2,8 @@
   <div class="form-container">
     <div class="form-field">
       <mat-form-field>
-        <mat-label>Select a Course</mat-label>
-        <mat-select (ngModelChange)="changeCourse($event)" [(value)]="selectedCourse">
+        <mat-label>Select a Models</mat-label>
+        <mat-select (change)="changeCourse($event)" [(value)]="selectedCourse">
           <mat-option *ngFor="let course of courses" [value]="course">
             {{ course.name }}
           </mat-option>
@@ -33,7 +33,7 @@
   <div *ngIf="loading" class="loading-spinner">
     <mat-spinner></mat-spinner>
   </div>
-  <div *ngIf="this.loading === false">
+  <div *ngIf="!this.loading">
     <div *ngIf="selectedCourse" class="teetime-container">
       <mat-toolbar class="toolbar">
         <span class="course">{{selectedCourse.name}} </span>

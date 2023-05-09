@@ -1,9 +1,8 @@
 import {Injectable, isDevMode} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {TeeTime} from "../model/teeTime";
-import { environment } from '../../environments/environment';
-import {Course, ForeupRequestData, TeesnapRequestData} from "../model/course";
+import {environment} from '../../environments/environment';
+import {Course, ForeupRequestData, TeesnapRequestData, TeeTime} from "../model/models";
 
 
 @Injectable({
@@ -26,7 +25,7 @@ export class TeeTimeService {
 
   }
 
-  getCourses(): Observable<Course[]>{
+  getCourses(): Observable<Course[]> {
     return this.http.get<Course[]>(this.baseURL + this.courseRoute)
   }
 
@@ -34,7 +33,7 @@ export class TeeTimeService {
     return this.http.post<TeeTime[]>(this.baseURL + this.foreupRoute, data);
   }
 
-  getTeeTimesTeesnap(data: TeesnapRequestData): Observable<TeeTime[]>{
+  getTeeTimesTeesnap(data: TeesnapRequestData): Observable<TeeTime[]> {
     return this.http.post<TeeTime[]>(this.baseURL + this.teesnapRoute, data);
   }
 

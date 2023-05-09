@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {TeeTimeService} from "./service/teetime.service";
-import {Course, CourseType, ForeupRequestData, TeesnapRequestData} from "./model/course";
+import {CourseType, ForeupRequestData, Models, TeesnapRequestData, TeeTime} from "./model/models";
 import {firstValueFrom} from "rxjs";
 import * as moment from 'moment';
-import {TeeTime} from "./model/teeTime";
 
 @Component({
   selector: 'app-root',
@@ -13,9 +12,9 @@ import {TeeTime} from "./model/teeTime";
 export class AppComponent implements OnInit {
 
   public holeFilterValue: number = 0;
-  public selectedCourse: Course = {} as Course;
+  public selectedCourse: Models = <Models>{};
   public selectedDate: Date = new Date();
-  public courses: Course[] = [];
+  public courses: Models[] = [];
   public loading = true;
 
   constructor(private teeTimeService: TeeTimeService) {
@@ -34,23 +33,23 @@ export class AppComponent implements OnInit {
   }
 
   async getTeeTimes() {
-   this.courses.map(async course => {
-     let teeTimeData: TeeTime[] = [];
+    this.courses.map(async course => {
+      let teeTimeData: TeeTime[] = [];
 
-     switch (course.type) {
-       case CourseType.FOREUP:
-         teeTimeData = await this.getForeupTeetimeData(course)
-         break;
-       case CourseType.TEESNAP:
-         teeTimeData = await this.getTeesnapTeetimeData(course);
-         break;
-     }
-     course.teetimes = teeTimeData;
-     return course;
-   });
+      switch (course.type) {
+        case CourseType.FOREUP:
+          teeTimeData = await this.getForeupTeetimeData(course)
+          break;
+        case CourseType.TEESNAP:
+          teeTimeData = await this.getTeesnapTeetimeData(course);
+          break;
+      }
+      course.teetimes = teeTimeData;
+      return course;
+    });
   }
 
-  async getForeupTeetimeData(course: Course) {
+  async getForeupTeetimeData(course: Models) {
     let requestData = {} as ForeupRequestData;
 
     Object.assign(requestData, course.requestData)
@@ -59,7 +58,7 @@ export class AppComponent implements OnInit {
     return await firstValueFrom(this.teeTimeService.getTeeTimesForeup(requestData));
   }
 
-  async getTeesnapTeetimeData(course: Course) {
+  async getTeesnapTeetimeData(course: Models) {
     let requestData = {} as TeesnapRequestData
 
     Object.assign(requestData, course.requestData);
@@ -81,9 +80,9 @@ export class AppComponent implements OnInit {
     this.loading = false;
   }
 
-  changeCourse(event: any){
+  changeCourse(event: any) {
     const selectedCourse = this.courses.find((course) => course.name === event);
-    if(selectedCourse) {
+    if (selectedCourse) {
       this.selectedCourse = selectedCourse;
     }
   }
