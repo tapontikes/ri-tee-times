@@ -10,13 +10,13 @@ import {Course, ForeupRequestData, TeesnapRequestData, TeeTime} from "../model/m
 })
 export class TeeTimeService {
 
-  private baseURL = window.location.protocol + '//' + window.location.host;
+  private readonly baseURL = window.location.protocol + '//' + window.location.host;
 
-  private foreupRoute = "/foreup";
+  private foreUpRoute = "/foreup";
 
-  private teesnapRoute = '/teesnap'
+  private teeSnapRoute = '/teesnap';
 
-  private courseRoute = "/courses"
+  private courseRoute = "/courses";
 
   constructor(private http: HttpClient) {
     if (isDevMode()) {
@@ -26,15 +26,15 @@ export class TeeTimeService {
   }
 
   getCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>(this.baseURL + this.courseRoute)
+    return this.http.get<Course[]>(this.baseURL + this.courseRoute);
   }
 
-  getTeeTimesForeup(data: ForeupRequestData): Observable<TeeTime[]> {
-    return this.http.post<TeeTime[]>(this.baseURL + this.foreupRoute, data);
+  getTeeTimesForeUp(data: ForeupRequestData): Observable<TeeTime[]> {
+    return this.http.post<TeeTime[]>(this.baseURL + this.foreUpRoute, data);
   }
 
-  getTeeTimesTeesnap(data: TeesnapRequestData): Observable<TeeTime[]> {
-    return this.http.post<TeeTime[]>(this.baseURL + this.teesnapRoute, data);
+  getTeeTimesTeeSnap(data: TeesnapRequestData): Observable<TeeTime[]> {
+    return this.http.post<TeeTime[]>(this.baseURL + this.teeSnapRoute, data);
   }
 
 }

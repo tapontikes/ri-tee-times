@@ -1,5 +1,5 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import {TeeTime} from "../model/teeTime";
+import {Pipe, PipeTransform} from '@angular/core';
+import {TeeTime} from "../model/models";
 
 @Pipe({
   name: 'holeFilter'
@@ -9,8 +9,7 @@ export class HoleFilter implements PipeTransform {
     if (!items || !selectedNumber) {
       return items;
     }
-
-    if(selectedNumber === 0) return items;
+    if (selectedNumber === 0) return items;
 
     return items.filter(item => item.holes.includes(selectedNumber));
   }

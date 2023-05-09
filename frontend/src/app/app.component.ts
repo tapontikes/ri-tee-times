@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TeeTimeService} from "./service/teetime.service";
-import {CourseType, ForeupRequestData, Models, TeesnapRequestData, TeeTime} from "./model/models";
+import {Course, CourseType, ForeupRequestData, TeesnapRequestData, TeeTime} from "./model/models";
 import {firstValueFrom} from "rxjs";
 import * as moment from 'moment';
 
@@ -12,9 +12,9 @@ import * as moment from 'moment';
 export class AppComponent implements OnInit {
 
   public holeFilterValue: number = 0;
-  public selectedCourse: Models = <Models>{};
+  public selectedCourse: Course = <Course>{};
   public selectedDate: Date = new Date();
-  public courses: Models[] = [];
+  public courses: Course[] = [];
   public loading = true;
 
   constructor(private teeTimeService: TeeTimeService) {
@@ -38,10 +38,10 @@ export class AppComponent implements OnInit {
 
       switch (course.type) {
         case CourseType.FOREUP:
-          teeTimeData = await this.getForeupTeetimeData(course)
+          teeTimeData = await this.getForeUpTeeTimeData(course)
           break;
         case CourseType.TEESNAP:
-          teeTimeData = await this.getTeesnapTeetimeData(course);
+          teeTimeData = await this.getTeeSnapTeeTimeData(course);
           break;
       }
       course.teetimes = teeTimeData;
@@ -49,24 +49,24 @@ export class AppComponent implements OnInit {
     });
   }
 
-  async getForeupTeetimeData(course: Models) {
+  async getForeUpTeeTimeData(course: Course) {
     let requestData = {} as ForeupRequestData;
 
     Object.assign(requestData, course.requestData)
-    requestData.date = this.formatDateForeup();
+    requestData.date = this.formatDateForeUp();
 
-    return await firstValueFrom(this.teeTimeService.getTeeTimesForeup(requestData));
+    return await firstValueFrom(this.teeTimeService.getTeeTimesForeUp(requestData));
   }
 
-  async getTeesnapTeetimeData(course: Models) {
+  async getTeeSnapTeeTimeData(course: Course) {
     let requestData = {} as TeesnapRequestData
 
     Object.assign(requestData, course.requestData);
-    requestData.date = this.formatDateTeesnap();
+    requestData.date = this.formatDateTeeSnap();
     requestData.players = "4";
     requestData.holes = "18";
 
-    return await firstValueFrom(this.teeTimeService.getTeeTimesTeesnap(requestData))
+    return await firstValueFrom(this.teeTimeService.getTeeTimesTeeSnap(requestData))
   }
 
   updateDateAndTeeTimes(event: Date) {
@@ -91,11 +91,11 @@ export class AppComponent implements OnInit {
     console.log(url);
   }
 
-  formatDateForeup() {
+  formatDateForeUp() {
     return moment(this.selectedDate).format('MM-DD-YYYY');
   }
 
-  formatDateTeesnap() {
+  formatDateTeeSnap() {
     return moment(this.selectedDate).format("YYYY-MM-DD");
   }
 }

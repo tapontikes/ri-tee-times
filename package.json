@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A sample app with a Node.js backend and Angular 16 frontend",
   "scripts": {
-    "start": "cd backend && nodemon -L --watch ./backend ./bin/www & cd frontend && ng serve",
+    "start": "cd backend && nodemon -L --watch ./backend ./bin/www & cd frontend && ng serve --poll 1000",
     "start:backend": "cd backend && node ./bin/www",
     "start:frontend": "cd frontend && ng serve",
     "build": "cd frontend && ng build",
