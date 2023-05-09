@@ -9,7 +9,7 @@ export class HoleFilter implements PipeTransform {
     if (!items || !selectedNumber) {
       return items;
     }
-    if (selectedNumber === 0) return items;
+    if (selectedNumber === 1) return items;
 
     return items.filter(item => item.holes.includes(selectedNumber));
   }

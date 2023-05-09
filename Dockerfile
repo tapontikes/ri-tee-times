@@ -3,27 +3,27 @@ FROM node:lts as ng-builder
 
 WORKDIR /app
 
-COPY ./frontend/package*.json ./
+COPY ./package*.json ./
 
 RUN npm install
 
-COPY ./frontend .
+COPY ./frontend ./frontend
 
-RUN npm run ng build --prod --output-path=./dist
+RUN npm run build --omit=dev --output-path=./dist
 
 # Stage 2: Build Node.js app
 FROM node:lts as server
 
 WORKDIR /app
 
-COPY ./backend/package*.json ./
+COPY ./package*.json ./
 
 RUN npm install
 
-COPY --from=ng-builder /app/dist/client /app/public
+COPY --from=ng-builder /app/frontend/dist/client /app/public
 
 COPY ./backend .
 
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD [ "node", "./bin/www" ]
