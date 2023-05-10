@@ -11,13 +11,7 @@ import * as moment from 'moment';
 })
 export class AppComponent implements OnInit {
 
-  public selectedCourse: Course = {
-    name: "",
-    requestData: "",
-    type: CourseType.FOREUP,
-    teeTimes: []
-  };
-
+  public selectedCourse: Course = <Course>{};
   public dateRangeStart: number = 5;
   public dateRangeEnd: number = 19;
   public showAllCourses: boolean = false;
@@ -73,8 +67,6 @@ export class AppComponent implements OnInit {
 
     Object.assign(requestData, course.requestData);
     requestData.date = this.formatDateTeeSnap();
-    requestData.players = "4";
-    requestData.holes = "18";
 
     return await firstValueFrom(this.teeTimeService.getTeeTimesTeeSnap(requestData))
   }
@@ -102,8 +94,8 @@ export class AppComponent implements OnInit {
     return moment().hour(value).minute(0).format("h:mma").toString();
   }
 
-  bookTeeTime(url: String) {
-    console.log(url);
+  bookTeeTime(url: string) {
+    window.open(url, "_blank");
   }
 
 

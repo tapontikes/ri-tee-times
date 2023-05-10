@@ -10,6 +10,7 @@ courses = [
             "id": 10153,
             "booking_class": 13646,
         },
+        "bookingUrl": "https://foreupsoftware.com/index.php/booking/22225/10153#teetimes",
         "type": "foreup"
     },
     {
@@ -18,6 +19,7 @@ courses = [
             "id": 6496,
             "booking_class": 7851,
         },
+        "bookingUrl": "https://foreupsoftware.com/index.php/booking/21021/6496#teetimes",
         "type": "foreup"
     },
     {
@@ -26,6 +28,7 @@ courses = [
             "id": 1457,
             "booking_class": 1029,
         },
+        "bookingUrl": "https://app.foreupsoftware.com/index.php/booking/19339/1457#teetimes",
         "type": "foreup"
     },
     {
@@ -34,6 +37,7 @@ courses = [
             "id": 10204,
             "booking_class": 13839,
         },
+        "bookingUrl": "https://foreupsoftware.com/index.php/booking/22236/10204#/teetimes",
         "type": "foreup"
     },
     {
@@ -42,6 +46,7 @@ courses = [
             "baseUrl": "https://crystallakegc.teesnap.net",
             "course": 1323
         },
+        "bookingUrl": "https://crystallakegc.teesnap.net",
         "type": "teesnap"
     },
     {
@@ -50,6 +55,7 @@ courses = [
             "baseUrl": "https://countryviewgolf.teesnap.net",
             "course": 413
         },
+        "bookingUrl": "https://countryviewgolf.teesnap.net",
         "type": "teesnap"
     },
     {
@@ -58,6 +64,7 @@ courses = [
             "baseUrl": "https://laurellanecountryclub.teesnap.net",
             "course": 446
         },
+        "bookingUrl": "https://laurellanecountryclub.teesnap.net",
         "type": "teesnap"
     },
     {
@@ -66,6 +73,7 @@ courses = [
             "baseUrl": " https://fennerhill.teesnap.net",
             "course": 1103
         },
+        "bookingUrl": " https://fennerhill.teesnap.net",
         "type": "teesnap"
     },
 

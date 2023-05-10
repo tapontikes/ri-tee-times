@@ -3,6 +3,7 @@
 }
 
 .course {
+  cursor: pointer;
   display: flex;
   flex-direction: column;
 }
@@ -68,13 +69,10 @@
 
 }
 
+
 .notice {
   color: red;
   font-size: 12px;
-}
-
-mat-card {
-  cursor: pointer;
 }
 
 

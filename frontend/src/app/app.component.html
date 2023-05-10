@@ -47,7 +47,7 @@
     <div
       *ngIf="(course.teeTimes | holeFilter: holeFilterValue | dateFilter: dateRangeStart: dateRangeEnd: this.selectedDate).length > 0">
       <mat-toolbar class="toolbar">
-        <span class="course">{{course.name}} </span>
+        <span (click)="bookTeeTime(course.bookingUrl)" class="course">{{course.name}} </span>
       </mat-toolbar>
       <div *ngIf="loading" class="loading-spinner alert">
         <mat-spinner></mat-spinner>
@@ -59,9 +59,9 @@
           </div>
         </div>
         <div *ngIf="course.teeTimes && holeFilterValue" class="teetime-card-container-all">
-          <mat-card (click)="bookTeeTime('TODO')"
-                    *ngFor="let details of course.teeTimes | holeFilter: holeFilterValue | dateFilter: dateRangeStart: dateRangeEnd: this.selectedDate"
-                    class="teetime-card">
+          <mat-card
+            *ngFor="let details of course.teeTimes | holeFilter: holeFilterValue | dateFilter: dateRangeStart: dateRangeEnd: this.selectedDate"
+            class="teetime-card">
             <mat-card-header>
               <mat-card-title>{{details.time}}</mat-card-title>
             </mat-card-header>
@@ -79,7 +79,7 @@
 <div *ngIf="!showAllCourses" class="app-container">
   <div *ngIf="selectedCourse" class="teetime-container">
     <mat-toolbar class="toolbar">
-      <span class="course">{{selectedCourse.name}} </span>
+      <span (click)="bookTeeTime(selectedCourse.bookingUrl)" class="course">{{selectedCourse.name}} </span>
     </mat-toolbar>
     <div *ngIf="loading" class="loading-spinner alert">
       <mat-spinner></mat-spinner>

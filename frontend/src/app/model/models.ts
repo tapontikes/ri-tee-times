@@ -1,9 +1,10 @@
 // Models and Tee Time Models
 export interface Course {
   name: string;
-  requestData: string
+  requestData: string;
   type: CourseType;
-  teeTimes: TeeTime[]
+  teeTimes: TeeTime[];
+  bookingUrl: string;
 }
 
 export enum CourseType {
@@ -23,13 +24,11 @@ export interface TeeTime {
 export interface ForeupRequestData {
   id: string;
   booking_class: string;
-  date: string
+  date: string;
 }
 
 export interface TeesnapRequestData {
   baseUrl: string;
   date: string;
-  holes: string;
-  players: string;
   course: string;
 }
