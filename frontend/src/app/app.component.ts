@@ -106,6 +106,11 @@ export class AppComponent implements OnInit {
     console.log(url);
   }
 
+
+  formatDateSlider(time: number) {
+    return moment(this.selectedDate).hour(time).minute(0).format("h:mma");
+  }
+
   formatDateForeUp() {
     return moment(this.selectedDate).format('MM-DD-YYYY');
   }

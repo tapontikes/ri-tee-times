@@ -19,12 +19,16 @@
     </mat-form-field>
   </div>
   <div *ngIf="showAllCourses" class="form-field">
-    <span>{{dateRangeStart}}</span>
-    <mat-slider [displayWith]="formatSliderLabel" discrete max="18" min="5">
+    <div class="mat-slider-text">
+      Tee Off Time Range:
+    </div>
+    <mat-slider [displayWith]="formatSliderLabel" max="18" min="5">
       <input [(ngModel)]="dateRangeStart" matSliderStartThumb>
       <input [(ngModel)]="dateRangeEnd" matSliderEndThumb>
     </mat-slider>
-    <span>{{dateRangeEnd}}</span>
+    <div class="mat-slider-text">
+      <b>{{formatDateSlider(dateRangeStart) + " - " + formatDateSlider(dateRangeEnd)}}</b>
+    </div>
   </div>
   <div class="form-field">
     <mat-chip-listbox [(ngModel)]="holeFilterValue" [multiple]="false" aria-label="Select Number Of Holes">
@@ -33,52 +37,44 @@
       <mat-chip-option [value]="1">Both</mat-chip-option>
     </mat-chip-listbox>
   </div>
-  <!--    <div class="form-field">-->
-  <!--      <button (click)="refreshTeeTimes()" color="primary" mat-raised-button>Refresh</button>-->
-  <!--    </div>-->
   <div class="form-field">
     <button (click)="showAllCourses = !showAllCourses" color="primary" mat-raised-button>Compare All</button>
   </div>
 </div>
 
 <div *ngIf="showAllCourses" class="app-container">
-  <div *ngFor="let course of courses" class="teetime-card-container-all">
-    <mat-toolbar class="toolbar">
-      <span class="course">{{course.name}} </span>
-    </mat-toolbar>
-    <div *ngIf="loading" class="loading-spinner alert">
-      <mat-spinner></mat-spinner>
-    </div>
-
-    <div *ngIf="!loading">
-      <div *ngIf="holeFilterValue === undefined">
-        <div class="alert">
-          <span>Select Number of Holes</span>
-        </div>
+  <div *ngFor="let course of courses" class="teetime-container">
+    <div
+      *ngIf="(course.teeTimes | holeFilter: holeFilterValue | dateFilter: dateRangeStart: dateRangeEnd: this.selectedDate).length > 0">
+      <mat-toolbar class="toolbar">
+        <span class="course">{{course.name}} </span>
+      </mat-toolbar>
+      <div *ngIf="loading" class="loading-spinner alert">
+        <mat-spinner></mat-spinner>
       </div>
-      <div
-        *ngIf="(selectedCourse.teeTimes | holeFilter: holeFilterValue).length === 0">
-        <div class="alert">
-          <span>No Tee Times Available</span>
+      <div *ngIf="!loading">
+        <div *ngIf="holeFilterValue === undefined">
+          <div class="alert">
+            <span>Select Number of Holes</span>
+          </div>
         </div>
-      </div>
-      <div *ngIf="selectedCourse.teeTimes && holeFilterValue" class="teetime-card-container">
-        <mat-card (click)="bookTeeTime('TODO')"
-                  *ngFor="let details of selectedCourse.teeTimes | holeFilter: holeFilterValue | dateFilter: dateRangeStart: dateRangeEnd: this.selectedDate"
-                  class="teetime-card">
-          <mat-card-header>
-            <mat-card-title>{{details.time}}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <p>Holes: {{holeFilterValue === 1 ? details.holes : holeFilterValue}}</p>
-            <p>Spots Available: <b>{{details.spots}}</b></p>
-          </mat-card-content>
-        </mat-card>
+        <div *ngIf="course.teeTimes && holeFilterValue" class="teetime-card-container-all">
+          <mat-card (click)="bookTeeTime('TODO')"
+                    *ngFor="let details of course.teeTimes | holeFilter: holeFilterValue | dateFilter: dateRangeStart: dateRangeEnd: this.selectedDate"
+                    class="teetime-card">
+            <mat-card-header>
+              <mat-card-title>{{details.time}}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p>Holes: {{holeFilterValue === 1 ? details.holes : holeFilterValue}}</p>
+              <p>Spots Available: <b>{{details.spots}}</b></p>
+            </mat-card-content>
+          </mat-card>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
 
 <div *ngIf="!showAllCourses" class="app-container">
   <div *ngIf="selectedCourse" class="teetime-container">
