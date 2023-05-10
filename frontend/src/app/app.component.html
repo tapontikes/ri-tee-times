@@ -102,8 +102,7 @@
         </div>
       </div>
       <div *ngIf="selectedCourse.teeTimes && holeFilterValue" class="teetime-card-container">
-        <mat-card (click)="bookTeeTime('TODO')"
-                  *ngFor="let details of selectedCourse.teeTimes | holeFilter: holeFilterValue" class="teetime-card">
+        <mat-card *ngFor="let details of selectedCourse.teeTimes | holeFilter: holeFilterValue" class="teetime-card">
           <mat-card-header>
             <mat-card-title>{{details.time}}</mat-card-title>
           </mat-card-header>

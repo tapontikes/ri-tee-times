@@ -14,6 +14,24 @@ courses = [
         "type": "foreup"
     },
     {
+        "name": "Louisquisset Golf Club",
+        "requestData": {
+            "alias": "louisquisset-golf-club",
+            "facilityIds": 11490,
+        },
+        "bookingUrl": "https://louisquisset-golf-club.book.teeitup.com/",
+        "type": "teeitup"
+    },
+    {
+        "name": "Green Valley Country Club",
+        "requestData": {
+            "alias": "green-valley-country-club1",
+            "facilityIds": 12910,
+        },
+        "bookingUrl": "https://green-valley-country-club1.book.teeitup.golf",
+        "type": "teeitup"
+    },
+    {
         "name": "Foster Country Club",
         "requestData": {
             "id": 6496,
@@ -81,6 +99,7 @@ courses = [
 
 // the URL of the JSON API endpoint
 const forupBaseUrl = "https://app.foreupsoftware.com/index.php/api/booking/times"
+const teeItUpBaseUrl = "https://phx-api-be-east-1b.kenna.io/v2/tee-times";
 const teesnapEndpoint = "/customer-api/teetimes-day";
 
 async function getForeUpTeeTimes(params) {
@@ -104,6 +123,33 @@ async function getForeUpTeeTimes(params) {
                 })
                 return formattedTimes;
             }
+        }).catch(err => {
+            console.log(err);
+        });
+
+}
+
+async function getTeeItUpTeeTimes(params, alias) {
+    return axios.get(teeItUpBaseUrl, {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+            'x-be-alias': alias
+        },
+        params: params
+    })
+        .then((response) => {
+            const formattedTimes = []
+            let data = response.data
+            if (data) {
+                data[0].teetimes.forEach((time => {
+                    formattedTimes.push({
+                        "time": moment(time.teetime).format('h:mm A'),
+                        "holes": [18, 9].filter(holes => time.rates.find(rate => rate.holes === holes)),
+                        "spots": 4 - time.bookedPlayers
+                    })
+                }))
+            }
+            return formattedTimes;
         }).catch(err => {
             console.log(err);
         });
@@ -179,5 +225,6 @@ async function getTeesnapTeeTimes(url, params) {
 module.exports = {
     getForeUpTeeTimes,
     getTeesnapTeeTimes,
+    getTeeItUpTeeTimes,
     "courses": courses
 }

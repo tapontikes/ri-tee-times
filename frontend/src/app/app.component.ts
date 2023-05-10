@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TeeTimeService} from "./service/teetime.service";
-import {Course, CourseType, ForeupRequestData, TeesnapRequestData, TeeTime} from "./model/models";
+import {Course, CourseType, ForeUpRequestData, TeeItUpRequestData, TeeSnapRequestData, TeeTime} from "./model/models";
 import {firstValueFrom} from "rxjs";
 import * as moment from 'moment';
 
@@ -45,6 +45,8 @@ export class AppComponent implements OnInit {
         case CourseType.TEESNAP:
           teeTimeData = await this.getTeeSnapTeeTimeData(course);
           break;
+        case CourseType.TEEITUP:
+          teeTimeData = await this.getTeeItUpTeeTimeData(course);
       }
       course.teeTimes = teeTimeData;
       return course;
@@ -54,7 +56,7 @@ export class AppComponent implements OnInit {
   }
 
   async getForeUpTeeTimeData(course: Course) {
-    let requestData = {} as ForeupRequestData;
+    let requestData = {} as ForeUpRequestData;
 
     Object.assign(requestData, course.requestData)
     requestData.date = this.formatDateForeUp();
@@ -63,12 +65,21 @@ export class AppComponent implements OnInit {
   }
 
   async getTeeSnapTeeTimeData(course: Course) {
-    let requestData = {} as TeesnapRequestData
+    let requestData = {} as TeeSnapRequestData
 
     Object.assign(requestData, course.requestData);
-    requestData.date = this.formatDateTeeSnap();
+    requestData.date = this.formatDateTeeSnapAndTeeItUp();
 
     return await firstValueFrom(this.teeTimeService.getTeeTimesTeeSnap(requestData))
+  }
+
+  async getTeeItUpTeeTimeData(course: Course) {
+    let requestData = {} as TeeItUpRequestData
+
+    Object.assign(requestData, course.requestData)
+    requestData.date = this.formatDateTeeSnapAndTeeItUp();
+
+    return await firstValueFrom(this.teeTimeService.getTeeTimesForTeeItUp(requestData));
   }
 
   async updateDateAndTeeTimes(event: Date) {
@@ -107,7 +118,7 @@ export class AppComponent implements OnInit {
     return moment(this.selectedDate).format('MM-DD-YYYY');
   }
 
-  formatDateTeeSnap() {
+  formatDateTeeSnapAndTeeItUp() {
     return moment(this.selectedDate).format("YYYY-MM-DD");
   }
 }

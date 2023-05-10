@@ -9,7 +9,8 @@ export interface Course {
 
 export enum CourseType {
   FOREUP = "foreup",
-  TEESNAP = "teesnap"
+  TEESNAP = "teesnap",
+  TEEITUP = "teeitup"
 }
 
 export interface TeeTime {
@@ -21,14 +22,20 @@ export interface TeeTime {
 }
 
 // Http Request Data Models
-export interface ForeupRequestData {
+export interface ForeUpRequestData {
   id: string;
   booking_class: string;
   date: string;
 }
 
-export interface TeesnapRequestData {
+export interface TeeSnapRequestData {
   baseUrl: string;
   date: string;
   course: string;
+}
+
+export interface TeeItUpRequestData {
+  date: string;
+  facilityIds: string;
+  alias: string;
 }

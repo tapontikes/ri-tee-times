@@ -34,6 +34,16 @@ router.post('/teesnap', async (req, res) => {
     res.json(times);
 });
 
+router.post('/teeitup', async (req, res) => {
+
+    const data = {
+        "date": req.body.date,
+        "course": req.body.course,
+    }
+    const times = await teeTimes.getTeeItUpTeeTimes(data, req.body.alias)
+    res.json(times);
+});
+
 module.exports = router;
 
 
