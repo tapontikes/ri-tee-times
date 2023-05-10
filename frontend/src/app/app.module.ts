@@ -19,11 +19,14 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatButtonModule} from "@angular/material/button";
 import {MatChipsModule} from "@angular/material/chips";
+import {MatSliderModule} from "@angular/material/slider";
+import {Datefilter} from "./filter/datefilter";
 
 @NgModule({
   declarations: [
     AppComponent,
-    HoleFilter
+    HoleFilter,
+    Datefilter
   ],
   imports: [
     BrowserModule,
@@ -42,7 +45,8 @@ import {MatChipsModule} from "@angular/material/chips";
     MatSelectModule,
     MatProgressSpinnerModule,
     MatButtonModule,
-    MatChipsModule
+    MatChipsModule,
+    MatSliderModule
   ],
   providers: [],
   bootstrap: [AppComponent]

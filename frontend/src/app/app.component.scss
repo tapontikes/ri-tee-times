@@ -35,6 +35,12 @@
   margin: 2em 0 2em 0;
 }
 
+.teetime-card-container-all {
+  overflow-x: auto;
+  margin: 2em 0 2em 0;
+
+}
+
 .notice {
   color: red;
   font-size: 12px;
@@ -42,6 +48,10 @@
 
 mat-card {
   cursor: pointer;
+}
+
+mat-slider {
+  width: 25vw;
 }
 
 

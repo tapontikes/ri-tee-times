@@ -18,6 +18,9 @@ export class AppComponent implements OnInit {
     teeTimes: []
   };
 
+  public dateRangeStart: number = 5;
+  public dateRangeEnd: number = 19;
+  public showAllCourses: boolean = false;
   public holeFilterValue: number = 1;
   public selectedDate: Date = moment().hour() >= 17 ? moment().add(1, 'day').toDate() : moment().toDate();
   public courses: Course[] = [];
@@ -93,6 +96,10 @@ export class AppComponent implements OnInit {
     if (selectedCourse) {
       this.selectedCourse = selectedCourse;
     }
+  }
+
+  formatSliderLabel(value: number): string {
+    return moment().hour(value).minute(0).format("h:mma").toString();
   }
 
   bookTeeTime(url: String) {
