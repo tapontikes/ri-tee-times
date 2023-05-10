@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   };
 
   public holeFilterValue: number = 1;
-  public selectedDate: Date = new Date();
+  public selectedDate: Date = moment().hour() >= 17 ? moment().add(1, 'day').toDate() : moment().toDate();
   public courses: Course[] = [];
   public loading = true;
 
