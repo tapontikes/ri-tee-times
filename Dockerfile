@@ -13,6 +13,8 @@ RUN npm run build --omit=dev --output-path=./dist
 
 # Stage 2: Build Node.js app
 FROM node:lts as server
+ENV TZ="America/New_York"
+
 
 WORKDIR /app
 

@@ -142,6 +142,7 @@ async function getTeeItUpTeeTimes(params, alias) {
             let data = response.data
             if (data) {
                 data[0].teetimes.forEach((time => {
+                    if (!time.rates.find(rate => rate.hasOwnProperty("dueOnlineRiding"))) return;
                     formattedTimes.push({
                         "time": moment(time.teetime).format('h:mm A'),
                         "holes": [18, 9].filter(holes => time.rates.find(rate => rate.holes === holes)),
