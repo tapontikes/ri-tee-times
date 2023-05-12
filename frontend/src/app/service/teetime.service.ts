@@ -20,8 +20,6 @@ export class TeeTimeService {
 
   private teeWireRoute = '/teewire';
 
-  private courseRoute = "/courses";
-
   constructor(private http: HttpClient) {
     if (isDevMode()) {
       this.baseURL = environment.api;

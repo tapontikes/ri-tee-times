@@ -35,13 +35,12 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.getCourses();
+    this.selectedCourse = this.courses[Math.floor(Math.random() * this.courses.length)];
     await this.getTeeTimes();
     this.loading = false;
   }
 
-  async getCourses() {
-    this.selectedCourse = this.courses[Math.floor(Math.random() * this.courses.length)];
+  getCourses() {
   }
 
   async getTeeTimes() {
@@ -72,6 +71,7 @@ export class AppComponent implements OnInit {
     let requestData = {} as ForeUpRequestData;
 
     Object.assign(requestData, course.requestData)
+    requestData.courseName = this.formatCacheString(course.name);
     requestData.date = this.formatDateForeUp();
 
     return await firstValueFrom(this.teeTimeService.getTeeTimesForeUp(requestData));
@@ -81,6 +81,7 @@ export class AppComponent implements OnInit {
     let requestData = {} as TeeSnapRequestData
 
     Object.assign(requestData, course.requestData);
+    requestData.courseName = this.formatCacheString(course.name);
     requestData.date = this.formatDateTeeSnapAndTeeItUp();
 
     return await firstValueFrom(this.teeTimeService.getTeeTimesTeeSnap(requestData))
@@ -90,6 +91,7 @@ export class AppComponent implements OnInit {
     let requestData = {} as TeeItUpRequestData
 
     Object.assign(requestData, course.requestData)
+    requestData.courseName = this.formatCacheString(course.name);
     requestData.date = this.formatDateTeeSnapAndTeeItUp();
 
     return await firstValueFrom(this.teeTimeService.getTeeTimesForTeeItUp(requestData));
@@ -99,6 +101,7 @@ export class AppComponent implements OnInit {
     let requestData = {} as TeeWireRequestData
 
     Object.assign(requestData, course.requestData)
+    requestData.courseName = this.formatCacheString(course.name);
     requestData.date = this.formatDateTeeWire();
 
     return await firstValueFrom(this.teeTimeService.getTeeTimesForTeeWire(requestData));
@@ -116,15 +119,6 @@ export class AppComponent implements OnInit {
     await this.getTeeTimes();
   }
 
-  changeCourse(event: any) {
-    const selectedCourse = this.courses.find((course) => course.name === event);
-    console.log(selectedCourse);
-    if (selectedCourse) {
-      console.log(selectedCourse);
-      this.selectedCourse = selectedCourse;
-    }
-  }
-
   formatSliderLabel(value: number): string {
     return moment().hour(value).minute(0).format("h:mma").toString();
   }
@@ -132,7 +126,6 @@ export class AppComponent implements OnInit {
   bookTeeTime(url: string) {
     window.open(url, "_blank");
   }
-
 
   formatDateSlider(time: number) {
     return moment(this.selectedDate).hour(time).minute(0).format("h:mma");
@@ -149,4 +142,9 @@ export class AppComponent implements OnInit {
   formatDateTeeSnapAndTeeItUp() {
     return moment(this.selectedDate).format("YYYY-MM-DD");
   }
+
+  formatCacheString(str: string) {
+    return str.replace(/ /g, "_");
+  }
+
 }

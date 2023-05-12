@@ -25,24 +25,28 @@ export interface TeeTime {
 
 // Http Request Data Models
 export interface ForeUpRequestData {
+  courseName: string;
   id: string;
   booking_class: string;
   date: string;
 }
 
 export interface TeeSnapRequestData {
+  courseName: string;
   baseUrl: string;
   date: string;
   course: string;
 }
 
 export interface TeeItUpRequestData {
+  courseName: string;
   date: string;
   facilityIds: string;
   alias: string;
 }
 
 export interface TeeWireRequestData {
+  courseName: string;
   date: string;
   controller: string;
   action: string;
