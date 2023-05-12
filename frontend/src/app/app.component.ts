@@ -61,7 +61,7 @@ export class AppComponent implements OnInit {
           teeTimeData = await this.getTeeWireTeeTimeData(course);
           break;
       }
-      course.teeTimes = teeTimeData;
+      course.teeTimes = teeTimeData ? teeTimeData : [];
       return course;
     });
     await Promise.all(teeTimeMapPromises)
@@ -118,7 +118,9 @@ export class AppComponent implements OnInit {
 
   changeCourse(event: any) {
     const selectedCourse = this.courses.find((course) => course.name === event);
+    console.log(selectedCourse);
     if (selectedCourse) {
+      console.log(selectedCourse);
       this.selectedCourse = selectedCourse;
     }
   }

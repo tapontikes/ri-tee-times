@@ -63,7 +63,7 @@ async function getTeeItUpTeeTimes(params, alias) {
 
 }
 
-async function getTeesnapTeeTimes(url, params) {
+async function getTeeSnapTeeTimes(url, params) {
     return axios.get(url + teesnapEndpoint, {
         headers: {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
@@ -133,6 +133,7 @@ async function getTeeWireTeeTime(params, data, path) {
         maxBodyLength: Infinity,
         url: teeWireBaseUrl + path,
         params: params,
+        timeout: 5000,
         headers: {
             'Accept': '*/*',
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -180,7 +181,7 @@ async function getTeeWireTeeTime(params, data, path) {
 
 module.exports = {
     getForeUpTeeTimes,
-    getTeesnapTeeTimes,
+    getTeeSnapTeeTimes,
     getTeeItUpTeeTimes,
     getTeeWireTeeTime
 }

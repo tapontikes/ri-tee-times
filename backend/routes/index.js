@@ -44,7 +44,7 @@ router.post('/teesnap', cache(300), async (req, res) => {
         "course": req.body.course,
         "addons": "off",
     }
-    const times = await teeTimes.getTeesnapTeeTimes(req.body.baseUrl, data)
+    const times = await teeTimes.getTeeSnapTeeTimes(req.body.baseUrl, data)
     res.json(times);
 });
 
