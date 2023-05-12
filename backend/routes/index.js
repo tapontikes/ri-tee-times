@@ -5,7 +5,7 @@ const teeTimes = require('../service/teetime')
 
 const cache = (duration) => {
     return (req, res, next) => {
-        let key = '__express__' + req.body.date
+        let key = req.body.courseName + '__' + req.body.date;
         let cachedBody = mcache.get(key)
         if (cachedBody) {
             res.send(cachedBody)

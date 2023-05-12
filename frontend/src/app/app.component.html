@@ -11,7 +11,7 @@
   <div *ngIf="!showAllCourses" class="form-field">
     <mat-form-field>
       <mat-label>Select a Course</mat-label>
-      <mat-select (change)="changeCourse($event)" [(value)]="selectedCourse">
+      <mat-select [(value)]="selectedCourse">
         <mat-option *ngFor="let course of courses" [value]="course">
           {{ course.name }}
         </mat-option>

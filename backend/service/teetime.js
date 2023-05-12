@@ -133,7 +133,7 @@ async function getTeeWireTeeTime(params, data, path) {
         maxBodyLength: Infinity,
         url: teeWireBaseUrl + path,
         params: params,
-        timeout: 5000,
+        timeout: 2500,
         headers: {
             'Accept': '*/*',
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
