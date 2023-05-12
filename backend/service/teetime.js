@@ -1,105 +1,11 @@
 const axios = require('axios');
 const moment = require('moment');
-
-teeTimesMappedArr = [];
-
-courses = [
-    {
-        "name": "Cranston Country Club",
-        "requestData": {
-            "id": 10153,
-            "booking_class": 13646,
-        },
-        "bookingUrl": "https://foreupsoftware.com/index.php/booking/22225/10153#teetimes",
-        "type": "foreup"
-    },
-    {
-        "name": "Louisquisset Golf Club",
-        "requestData": {
-            "alias": "louisquisset-golf-club",
-            "facilityIds": 11490,
-        },
-        "bookingUrl": "https://louisquisset-golf-club.book.teeitup.com/",
-        "type": "teeitup"
-    },
-    {
-        "name": "Green Valley Country Club",
-        "requestData": {
-            "alias": "green-valley-country-club1",
-            "facilityIds": 12910,
-        },
-        "bookingUrl": "https://green-valley-country-club1.book.teeitup.golf",
-        "type": "teeitup"
-    },
-    {
-        "name": "Foster Country Club",
-        "requestData": {
-            "id": 6496,
-            "booking_class": 7851,
-        },
-        "bookingUrl": "https://foreupsoftware.com/index.php/booking/21021/6496#teetimes",
-        "type": "foreup"
-    },
-    {
-        "name": "Triggs",
-        "requestData": {
-            "id": 1457,
-            "booking_class": 1029,
-        },
-        "bookingUrl": "https://app.foreupsoftware.com/index.php/booking/19339/1457#teetimes",
-        "type": "foreup"
-    },
-    {
-        "name": "North Kingstown Golf Course",
-        "requestData": {
-            "id": 10204,
-            "booking_class": 13839,
-        },
-        "bookingUrl": "https://foreupsoftware.com/index.php/booking/22236/10204#/teetimes",
-        "type": "foreup"
-    },
-    {
-        "name": "Crystal Lake",
-        "requestData": {
-            "baseUrl": "https://crystallakegc.teesnap.net",
-            "course": 1323
-        },
-        "bookingUrl": "https://crystallakegc.teesnap.net",
-        "type": "teesnap"
-    },
-    {
-        "name": "Country View",
-        "requestData": {
-            "baseUrl": "https://countryviewgolf.teesnap.net",
-            "course": 413
-        },
-        "bookingUrl": "https://countryviewgolf.teesnap.net",
-        "type": "teesnap"
-    },
-    {
-        "name": "Laurel Lane",
-        "requestData": {
-            "baseUrl": "https://laurellanecountryclub.teesnap.net",
-            "course": 446
-        },
-        "bookingUrl": "https://laurellanecountryclub.teesnap.net",
-        "type": "teesnap"
-    },
-    {
-        "name": "Fenner Hill",
-        "requestData": {
-            "baseUrl": " https://fennerhill.teesnap.net",
-            "course": 1103
-        },
-        "bookingUrl": " https://fennerhill.teesnap.net",
-        "type": "teesnap"
-    },
-
-]
+const cheerio = require('cheerio');
 
 // the URL of the JSON API endpoint
 const forupBaseUrl = "https://app.foreupsoftware.com/index.php/api/booking/times"
 const teeItUpBaseUrl = "https://phx-api-be-east-1b.kenna.io/v2/tee-times";
+const teeWireBaseUrl = "https://teewire.net";
 const teesnapEndpoint = "/customer-api/teetimes-day";
 
 async function getForeUpTeeTimes(params) {
@@ -219,13 +125,62 @@ async function getTeesnapTeeTimes(url, params) {
         }).catch(err => {
             console.log(err);
         });
-
 }
 
+async function getTeeWireTeeTime(params, data, path) {
+    let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: teeWireBaseUrl + path,
+        params: params,
+        headers: {
+            'Accept': '*/*',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'Sec-GPC': '1',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
+            'X-Requested-With': 'XMLHttpRequest',
+            'sec-ch-ua': '"Brave";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+        },
+        data: data
+    };
+
+    return axios.request(config)
+        .then((response) => {
+
+            const formattedTimes = [];
+            const html = response.data;
+            const $ = cheerio.load(html);
+
+            $('body > div').each((i, el) => {
+                try {
+                    const time = $(el).find('.panel-title').first().text().trim();
+                    const spots = $(el).find('.panel-body').text().trim().match(/Up to (\d+) golfers/)[1];
+                    let holes = $(el).find('.panel-footer').text().trim();
+                    holes = holes.match(/(9|18)/)[0];
+                    formattedTimes.push({
+                        "time": moment(time, 'h:mm A').format('h:mm A'),
+                        "holes": holes,
+                        "spots": spots
+                    })
+                } catch (ex) {
+                    return [];
+                }
+            });
+            return formattedTimes;
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
 
 module.exports = {
     getForeUpTeeTimes,
     getTeesnapTeeTimes,
     getTeeItUpTeeTimes,
-    "courses": courses
+    getTeeWireTeeTime
 }

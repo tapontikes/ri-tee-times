@@ -1,8 +1,18 @@
 import {Component, OnInit} from '@angular/core';
 import {TeeTimeService} from "./service/teetime.service";
-import {Course, CourseType, ForeUpRequestData, TeeItUpRequestData, TeeSnapRequestData, TeeTime} from "./model/models";
+import {
+  Course,
+  CourseType,
+  ForeUpRequestData,
+  TeeItUpRequestData,
+  TeeSnapRequestData,
+  TeeTime,
+  TeeWireRequestData
+} from "./model/models";
 import {firstValueFrom} from "rxjs";
 import * as moment from 'moment';
+import * as coursesJSON from './model/courses.json';
+
 
 @Component({
   selector: 'app-root',
@@ -21,6 +31,7 @@ export class AppComponent implements OnInit {
   public loading = true;
 
   constructor(private teeTimeService: TeeTimeService) {
+    Object.assign(this.courses, coursesJSON);
   }
 
   async ngOnInit() {
@@ -30,8 +41,6 @@ export class AppComponent implements OnInit {
   }
 
   async getCourses() {
-    this.courses = [];
-    this.courses = await firstValueFrom(this.teeTimeService.getCourses());
     this.selectedCourse = this.courses[Math.floor(Math.random() * this.courses.length)];
   }
 
@@ -47,6 +56,10 @@ export class AppComponent implements OnInit {
           break;
         case CourseType.TEEITUP:
           teeTimeData = await this.getTeeItUpTeeTimeData(course);
+          break;
+        case CourseType.TEEWIRE:
+          teeTimeData = await this.getTeeWireTeeTimeData(course);
+          break;
       }
       course.teeTimes = teeTimeData;
       return course;
@@ -80,6 +93,15 @@ export class AppComponent implements OnInit {
     requestData.date = this.formatDateTeeSnapAndTeeItUp();
 
     return await firstValueFrom(this.teeTimeService.getTeeTimesForTeeItUp(requestData));
+  }
+
+  async getTeeWireTeeTimeData(course: Course) {
+    let requestData = {} as TeeWireRequestData
+
+    Object.assign(requestData, course.requestData)
+    requestData.date = this.formatDateTeeWire();
+
+    return await firstValueFrom(this.teeTimeService.getTeeTimesForTeeWire(requestData));
   }
 
   async updateDateAndTeeTimes(event: Date) {
@@ -116,6 +138,10 @@ export class AppComponent implements OnInit {
 
   formatDateForeUp() {
     return moment(this.selectedDate).format('MM-DD-YYYY');
+  }
+
+  formatDateTeeWire() {
+    return moment(this.selectedDate).format('MM/DD/YYYY');
   }
 
   formatDateTeeSnapAndTeeItUp() {

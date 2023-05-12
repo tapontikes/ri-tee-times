@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Cranston Country Club",
+    "requestData": {
+      "id": 10153,
+      "booking_class": 13646
+    },
+    "bookingUrl": "https://foreupsoftware.com/index.php/booking/22225/10153#teetimes",
+    "type": "foreup",
+    "teeTimes": []
+  },
+  {
+    "name": "Louisquisset Golf Club",
+    "requestData": {
+      "alias": "louisquisset-golf-club",
+      "facilityIds": 11490
+    },
+    "bookingUrl": "https://louisquisset-golf-club.book.teeitup.com/",
+    "type": "teeitup",
+    "teeTimes": []
+  },
+  {
+    "name": "Green Valley Country Club",
+    "requestData": {
+      "alias": "green-valley-country-club1",
+      "facilityIds": 12910
+    },
+    "bookingUrl": "https://green-valley-country-club1.book.teeitup.golf",
+    "type": "teeitup",
+    "teeTimes": []
+  },
+  {
+    "name": "Foster Country Club",
+    "requestData": {
+      "id": 6496,
+      "booking_class": 7851
+    },
+    "bookingUrl": "https://foreupsoftware.com/index.php/booking/21021/6496#teetimes",
+    "type": "foreup",
+    "teeTimes": []
+  },
+  {
+    "name": "Triggs",
+    "requestData": {
+      "id": 1457,
+      "booking_class": 1029
+    },
+    "bookingUrl": "https://app.foreupsoftware.com/index.php/booking/19339/1457#teetimes",
+    "type": "foreup",
+    "teeTimes": []
+  },
+  {
+    "name": "North Kingstown Golf Course",
+    "requestData": {
+      "id": 10204,
+      "booking_class": 13839
+    },
+    "bookingUrl": "https://foreupsoftware.com/index.php/booking/22236/10204#/teetimes",
+    "type": "foreup",
+    "teeTimes": []
+  },
+  {
+    "name": "Crystal Lake",
+    "requestData": {
+      "baseUrl": "https://crystallakegc.teesnap.net",
+      "course": 1323
+    },
+    "bookingUrl": "https://crystallakegc.teesnap.net",
+    "type": "teesnap",
+    "teeTimes": []
+  },
+  {
+    "name": "Country View",
+    "requestData": {
+      "baseUrl": "https://countryviewgolf.teesnap.net",
+      "course": 413
+    },
+    "bookingUrl": "https://countryviewgolf.teesnap.net",
+    "type": "teesnap",
+    "teeTimes": []
+  },
+  {
+    "name": "Laurel Lane",
+    "requestData": {
+      "baseUrl": "https://laurellanecountryclub.teesnap.net",
+      "course": 446
+    },
+    "bookingUrl": "https://laurellanecountryclub.teesnap.net",
+    "type": "teesnap",
+    "teeTimes": []
+  },
+  {
+    "name": "Fenner Hill",
+    "requestData": {
+      "baseUrl": " https://fennerhill.teesnap.net",
+      "course": 1103
+    },
+    "bookingUrl": " https://fennerhill.teesnap.net",
+    "type": "teesnap",
+    "teeTimes": []
+  },
+  {
+    "name": "Midville Country Club",
+    "requestData": {
+      "controller": "GzFront",
+      "action": "getTimeSlot",
+      "cid": "1",
+      "cal_id": "1",
+      "path": "/midville/teetimes/load.php"
+    },
+    "type": "teewire",
+    "teeTimes": []
+  }
+]

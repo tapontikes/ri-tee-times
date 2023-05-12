@@ -1,12 +1,26 @@
 const express = require('express');
+const mcache = require('memory-cache');
 const router = express.Router();
 const teeTimes = require('../service/teetime')
 
-router.get('/courses', async (req, res) => {
-    res.json(teeTimes.courses)
-})
+const cache = (duration) => {
+    return (req, res, next) => {
+        let key = '__express__' + req.body.date
+        let cachedBody = mcache.get(key)
+        if (cachedBody) {
+            res.send(cachedBody)
+        } else {
+            res.sendResponse = res.send
+            res.send = (body) => {
+                mcache.put(key, body, duration * 1000);
+                res.sendResponse(body)
+            }
+            next()
+        }
+    }
+}
 
-router.post('/foreup', async (req, res) => {
+router.post('/foreup', cache(300), async (req, res) => {
 
     const data = {
         "time": "all",
@@ -21,7 +35,7 @@ router.post('/foreup', async (req, res) => {
     res.json(times);
 });
 
-router.post('/teesnap', async (req, res) => {
+router.post('/teesnap', cache(300), async (req, res) => {
 
     const data = {
         "date": req.body.date,
@@ -34,13 +48,29 @@ router.post('/teesnap', async (req, res) => {
     res.json(times);
 });
 
-router.post('/teeitup', async (req, res) => {
+router.post('/teeitup', cache(300), async (req, res) => {
 
     const data = {
         "date": req.body.date,
         "course": req.body.course,
     }
     const times = await teeTimes.getTeeItUpTeeTimes(data, req.body.alias)
+    res.json(times);
+});
+
+router.post('/teewire', cache(300), async (req, res) => {
+
+    const data = {
+        "formated": req.body.date,
+        "cal_id": req.body.cal_id,
+    }
+    const params = {
+        "controller": req.body.controller,
+        "action": req.body.action,
+        "cid": req.body.cid
+    }
+
+    const times = await teeTimes.getTeeWireTeeTime(params, data, req.body.path)
     res.json(times);
 });
 

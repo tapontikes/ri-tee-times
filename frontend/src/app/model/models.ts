@@ -1,4 +1,5 @@
 // Models and Tee Time Models
+
 export interface Course {
   name: string;
   requestData: string;
@@ -10,7 +11,8 @@ export interface Course {
 export enum CourseType {
   FOREUP = "foreup",
   TEESNAP = "teesnap",
-  TEEITUP = "teeitup"
+  TEEITUP = "teeitup",
+  TEEWIRE = "teewire"
 }
 
 export interface TeeTime {
@@ -38,4 +40,13 @@ export interface TeeItUpRequestData {
   date: string;
   facilityIds: string;
   alias: string;
+}
+
+export interface TeeWireRequestData {
+  date: string;
+  controller: string;
+  action: string;
+  cid: string;
+  cal_id: string;
+  path: string;
 }
