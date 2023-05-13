@@ -16,10 +16,9 @@
 
 .form-field {
   flex: 1 0 auto;
-  margin-top: 2em;
 }
 
-@media (max-width: 880px) {
+@media (max-width: 878px) {
   .form-container {
     margin-left: 1.5em;
     flex-direction: column;
@@ -53,19 +52,14 @@
     margin-right: 0;
     margin-bottom: 10px;
   }
-  .form-field mat-slider {
-    width: 80vw;
-  }
+
   .teetime-card {
     min-width: 6em;
     margin: 1em 1em 1em 0.3em;
   }
 }
 
-@media (min-width: 880px) {
-  .form-field mat-slider {
-    width: 30vw;
-  }
+@media (min-width: 877px) {
 
   .teetime-card {
     margin: 1em;
@@ -95,6 +89,14 @@
   overflow-x: auto;
   margin: 2em 0 2em 0;
 
+}
+
+.time-picker-fields {
+  margin-top: .5em;
+}
+
+.time-picker-fields input {
+  width: 5em;
 }
 
 .notice {
