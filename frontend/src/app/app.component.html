@@ -20,14 +20,20 @@
   </div>
   <div *ngIf="showAllCourses" class="form-field">
     <div class="mat-slider-text">
-      Tee Off Time Range:
+      Find tee times between
     </div>
-    <mat-slider [displayWith]="formatSliderLabel" max="18" min="5">
-      <input [(ngModel)]="dateRangeStart" matSliderStartThumb>
-      <input [(ngModel)]="dateRangeEnd" matSliderEndThumb>
-    </mat-slider>
-    <div class="mat-slider-text">
-      <b>{{formatDateSlider(dateRangeStart) + " - " + formatDateSlider(dateRangeEnd)}}</b>
+    <div class="form-field">
+      <div class="time-picker-fields">
+        <input [(ngModel)]="timeFilterStart" [owlDateTimeTrigger]="dtStart" [owlDateTime]="dtStart">
+        <owl-date-time #dtStart [hour12Timer]="true" [pickerType]="'timer'"
+                       [startAt]="timeFilterStart"
+                       [stepMinute]="30"></owl-date-time>
+        <span> and </span>
+        <input [(ngModel)]="timeFilterEnd" [owlDateTimeTrigger]="dtEnd" [owlDateTime]="dtEnd">
+        <owl-date-time #dtEnd [hour12Timer]="true" [pickerType]="'timer'"
+                       [startAt]="timeFilterEnd"
+                       [stepMinute]="30"></owl-date-time>
+      </div>
     </div>
   </div>
   <div class="form-field">
@@ -50,8 +56,9 @@
 
 <div *ngIf="showAllCourses" class="app-container">
   <div *ngFor="let course of courses" class="teetime-container">
+
     <div
-      *ngIf="(course.teeTimes | holeFilter: holeFilterValue | dateFilter: dateRangeStart: dateRangeEnd: this.selectedDate).length > 0">
+      *ngIf="(course.teeTimes | holeFilter: holeFilterValue | dateFilter: timeFilterStart: timeFilterEnd: this.selectedDate).length > 0">
       <mat-toolbar class="toolbar">
         <span (click)="bookTeeTime(course.bookingUrl)" class="course">{{course.name}} </span>
       </mat-toolbar>
@@ -66,7 +73,7 @@
         </div>
         <div *ngIf="course.teeTimes && holeFilterValue" class="teetime-card-container-all">
           <mat-card
-            *ngFor="let details of course.teeTimes | holeFilter: holeFilterValue | dateFilter: dateRangeStart: dateRangeEnd: this.selectedDate"
+            *ngFor="let details of course.teeTimes | holeFilter: holeFilterValue | dateFilter: timeFilterStart: timeFilterEnd: this.selectedDate"
             class="teetime-card">
             <mat-card-header>
               <mat-card-title>{{details.time}}</mat-card-title>

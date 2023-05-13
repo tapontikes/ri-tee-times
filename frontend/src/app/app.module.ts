@@ -21,6 +21,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatChipsModule} from "@angular/material/chips";
 import {MatSliderModule} from "@angular/material/slider";
 import {Datefilter} from "./filter/datefilter";
+import {OwlDateTimeModule, OwlNativeDateTimeModule} from "@danielmoncada/angular-datetime-picker";
 
 @NgModule({
   declarations: [
@@ -46,7 +47,9 @@ import {Datefilter} from "./filter/datefilter";
     MatProgressSpinnerModule,
     MatButtonModule,
     MatChipsModule,
-    MatSliderModule
+    MatSliderModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

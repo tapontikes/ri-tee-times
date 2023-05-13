@@ -29,6 +29,9 @@ export class AppComponent implements OnInit {
   public selectedDate: Date = moment().hour() >= 17 ? moment().add(1, 'day').toDate() : moment().toDate();
   public courses: Course[] = [];
   public loading = true;
+  public timeFilterStart: Date = moment().hour(5).minute(0).toDate();
+  public timeFilterEnd: Date = moment().hour(18).minute(0).toDate();
+  protected readonly moment = moment;
 
   constructor(private teeTimeService: TeeTimeService) {
     Object.assign(this.courses, coursesJSON);
@@ -110,6 +113,8 @@ export class AppComponent implements OnInit {
   async updateDateAndTeeTimes(event: Date) {
     this.loading = true;
     this.selectedDate = event;
+    this.timeFilterStart = moment(event).hour(5).minute(0).toDate();
+    this.timeFilterEnd = moment(event).hour(18).minute(0).toDate();
     this.courses.map(course => course.teeTimes = []);
     await this.getTeeTimes();
   }
@@ -146,5 +151,4 @@ export class AppComponent implements OnInit {
   formatCacheString(str: string) {
     return str.replace(/ /g, "_");
   }
-
 }

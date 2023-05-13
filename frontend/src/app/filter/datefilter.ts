@@ -6,10 +6,15 @@ import * as moment from 'moment';
   name: 'dateFilter'
 })
 export class Datefilter implements PipeTransform {
-  transform(items: TeeTime[], dateRangeStart: number, dateRangeEnd: number, selectedDate: Date): TeeTime[] {
-    return items.filter((item) =>
-      moment(selectedDate).hour(moment(item.time, 'h:mm A').hour()).minute(0).isSameOrAfter(moment(selectedDate).hour(dateRangeStart), 'hour')
+  transform(items: TeeTime[], timeRangeStart: Date, timeRangeEnd: Date, selectedDate: Date): TeeTime[] {
+    const _selectedDate = moment(selectedDate);
+    const _timeRangeStart = moment(timeRangeStart);
+    const _timeRangeEnd = moment(timeRangeEnd);
+
+    return items.filter(item =>
+      _selectedDate.hour(moment(item.time, 'h:mm A').hour()).minute(0).isSameOrAfter(_timeRangeStart, 'minute')
       &&
-      moment(selectedDate).hour(moment(item.time, 'h:mm A').hour()).minute(0).isSameOrBefore(moment(selectedDate).hour(dateRangeEnd)), 'hour');
+      _selectedDate.hour(moment(item.time, 'h:mm A').hour()).minute(0).isSameOrBefore(_timeRangeEnd, 'minute')
+    )
   }
 }
