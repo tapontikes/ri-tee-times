@@ -23,14 +23,16 @@
       <span class="text">between </span>
       <mat-form-field class="time-input">
         <input [(ngModel)]="timeFilterStart" [owlDateTimeTrigger]="dtStart" [owlDateTime]="dtStart" inputmode="none"
-               matInput>
+               matInput
+               readonly>
         <owl-date-time #dtStart [hour12Timer]="true" [pickerType]="'timer'"
                        [startAt]="timeFilterStart"
                        [stepMinute]="30"></owl-date-time>
       </mat-form-field>
       <span class="text"> and </span>
       <mat-form-field class="time-input">
-        <input [(ngModel)]="timeFilterEnd" [owlDateTimeTrigger]="dtEnd" [owlDateTime]="dtEnd" inputmode="none" matInput>
+        <input [(ngModel)]="timeFilterEnd" [owlDateTimeTrigger]="dtEnd" [owlDateTime]="dtEnd" inputmode="none" matInput
+               readonly>
         <owl-date-time #dtEnd [hour12Timer]="true" [pickerType]="'timer'"
                        [startAt]="timeFilterEnd"
                        [stepMinute]="30"></owl-date-time>
