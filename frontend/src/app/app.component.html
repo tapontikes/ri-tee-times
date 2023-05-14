@@ -43,10 +43,9 @@
       <mat-chip-option [value]="1">Both</mat-chip-option>
     </mat-chip-listbox>
   </div>
-  <div class="form-field">
+  <div class="form-field" style="margin-left: 1em;">
     <button (click)="showAllCourses = !showAllCourses" *ngIf="!showAllCourses" [disabled]="loading" color="primary"
-            mat-raised-button>Compare
-      All
+            mat-raised-button>All Courses
     </button>
     <button (click)="showAllCourses = !showAllCourses" *ngIf="showAllCourses" [disabled]="loading" color="primary"
             mat-raised-button>Back
