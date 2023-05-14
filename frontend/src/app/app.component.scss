@@ -1,5 +1,7 @@
 .app-container {
-  margin: 0.5em;
+  margin-top: 1em;
+  margin-left: -0.6em;
+  margin-right: -0.6em;
 }
 
 .course {
@@ -11,12 +13,13 @@
 .form-container {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
+  margin-left: 1.5em;
 }
 
 .form-field {
   flex: 1 0 auto;
-  margin-top: 2em;
 }
 
 .teetime-card-container-all {
@@ -25,17 +28,31 @@
   margin: 2em 0 2em 0;
 }
 
+.text {
+  font-size: 16px;
+}
 
 .toolbar {
   min-height: 3em;
 }
 
+.short-form-field {
+  width: 10em;
+}
+
+.time-input {
+  width: 6.1em;
+}
+
+.time-picker-fields mat-form-field input {
+  caret-color: transparent;
+  cursor: pointer;
+}
 
 .tee-time-card-container {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin: 2em 0 6em 0;
+  flex-flow: row wrap;
+  margin: 2em 0 6em 10px;
 }
 
 .flex-container::after {
@@ -50,10 +67,6 @@
 
 }
 
-.time-picker-fields {
-  display: flex;
-  flex-direction: column;
-}
 
 .time-picker-fields input {
   width: 5em;
@@ -64,6 +77,10 @@
   font-size: 12px;
 }
 
+mat-form-field {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
 
 .mat-mdc-radio-button ~ .mat-mdc-radio-button {
   margin-left: 16px;
@@ -94,12 +111,7 @@
 @media only screen and (max-width: 455px) {
 
   .course {
-    font-size: 15px;
-  }
-
-  .form-container {
-    margin-left: 1.5em;
-    flex-direction: column;
+    font-size: 16px;
   }
 
   .mat-mdc-card-title {
@@ -138,10 +150,6 @@
 }
 
 @media only screen and (min-width: 455.01px) and (max-width: 880px) {
-  .form-container {
-    margin-left: 1.5em;
-    flex-direction: column;
-  }
 
   .mat-mdc-card-title {
     font-size: 16px;

@@ -21,20 +21,28 @@ import * as coursesJSON from './model/courses.json';
 })
 export class AppComponent implements OnInit {
 
-  public selectedCourse: Course = <Course>{};
-  public dateRangeStart: number = 5;
-  public dateRangeEnd: number = 19;
-  public showAllCourses: boolean = false;
-  public holeFilterValue: number = 1;
-  public selectedDate: Date = moment().hour() >= 17 ? moment().add(1, 'day').toDate() : moment().toDate();
-  public courses: Course[] = [];
+
+  // NgIf
   public loading = true;
-  public timeFilterStart: Date = moment().hour(5).minute(0).toDate();
-  public timeFilterEnd: Date = moment().hour(18).minute(0).toDate();
-  protected readonly moment = moment;
+  public showAllCourses: boolean = false;
+
+  // Data
+  public selectedCourse: Course = <Course>{};
+  public courses: Course[] = [];
+
+  // Filter by 9 or 18 holes (1 for both)
+  public holeFilterValue: number = 1;
+
+  // Tee Time Filter Date/Times
+  public selectedDate!: Date;
+  public timeFilterStart!: Date;
+  public timeFilterEnd!: Date;
 
   constructor(private teeTimeService: TeeTimeService) {
     Object.assign(this.courses, coursesJSON);
+    this.selectedDate = moment().hour() >= 17 ? moment().add(1, 'day').toDate() : moment().toDate();
+    this.timeFilterStart = moment(this.selectedDate).hour(5).minute(0).toDate();
+    this.timeFilterEnd = moment(this.selectedDate).hour(18).minute(0).toDate();
   }
 
   async ngOnInit() {
@@ -43,9 +51,7 @@ export class AppComponent implements OnInit {
     this.loading = false;
   }
 
-  getCourses() {
-  }
-
+  // Map the course's teeTime[] field with an array of teeTimes[]
   async getTeeTimes() {
     const teeTimeMapPromises = this.courses.map(async course => {
       let teeTimeData: TeeTime[] = [];
@@ -68,46 +74,6 @@ export class AppComponent implements OnInit {
     });
     await Promise.all(teeTimeMapPromises)
     this.loading = false;
-  }
-
-  async getForeUpTeeTimeData(course: Course) {
-    let requestData = {} as ForeUpRequestData;
-
-    Object.assign(requestData, course.requestData)
-    requestData.courseName = this.formatCacheString(course.name);
-    requestData.date = this.formatDateForeUp();
-
-    return await firstValueFrom(this.teeTimeService.getTeeTimesForeUp(requestData));
-  }
-
-  async getTeeSnapTeeTimeData(course: Course) {
-    let requestData = {} as TeeSnapRequestData
-
-    Object.assign(requestData, course.requestData);
-    requestData.courseName = this.formatCacheString(course.name);
-    requestData.date = this.formatDateTeeSnapAndTeeItUp();
-
-    return await firstValueFrom(this.teeTimeService.getTeeTimesTeeSnap(requestData))
-  }
-
-  async getTeeItUpTeeTimeData(course: Course) {
-    let requestData = {} as TeeItUpRequestData
-
-    Object.assign(requestData, course.requestData)
-    requestData.courseName = this.formatCacheString(course.name);
-    requestData.date = this.formatDateTeeSnapAndTeeItUp();
-
-    return await firstValueFrom(this.teeTimeService.getTeeTimesForTeeItUp(requestData));
-  }
-
-  async getTeeWireTeeTimeData(course: Course) {
-    let requestData = {} as TeeWireRequestData
-
-    Object.assign(requestData, course.requestData)
-    requestData.courseName = this.formatCacheString(course.name);
-    requestData.date = this.formatDateTeeWire();
-
-    return await firstValueFrom(this.teeTimeService.getTeeTimesForTeeWire(requestData));
   }
 
   async updateDateAndTeeTimes(event: Date) {
@@ -150,5 +116,46 @@ export class AppComponent implements OnInit {
 
   formatCacheString(str: string) {
     return str.replace(/ /g, "_");
+  }
+
+  // Function to call
+  private async getForeUpTeeTimeData(course: Course) {
+    let requestData = {} as ForeUpRequestData;
+
+    Object.assign(requestData, course.requestData)
+    requestData.courseName = this.formatCacheString(course.name);
+    requestData.date = this.formatDateForeUp();
+
+    return await firstValueFrom(this.teeTimeService.getTeeTimesForeUp(requestData));
+  }
+
+  private async getTeeSnapTeeTimeData(course: Course) {
+    let requestData = {} as TeeSnapRequestData
+
+    Object.assign(requestData, course.requestData);
+    requestData.courseName = this.formatCacheString(course.name);
+    requestData.date = this.formatDateTeeSnapAndTeeItUp();
+
+    return await firstValueFrom(this.teeTimeService.getTeeTimesTeeSnap(requestData))
+  }
+
+  private async getTeeItUpTeeTimeData(course: Course) {
+    let requestData = {} as TeeItUpRequestData
+
+    Object.assign(requestData, course.requestData)
+    requestData.courseName = this.formatCacheString(course.name);
+    requestData.date = this.formatDateTeeSnapAndTeeItUp();
+
+    return await firstValueFrom(this.teeTimeService.getTeeTimesForTeeItUp(requestData));
+  }
+
+  private async getTeeWireTeeTimeData(course: Course) {
+    let requestData = {} as TeeWireRequestData
+
+    Object.assign(requestData, course.requestData)
+    requestData.courseName = this.formatCacheString(course.name);
+    requestData.date = this.formatDateTeeWire();
+
+    return await firstValueFrom(this.teeTimeService.getTeeTimesForTeeWire(requestData));
   }
 }
