@@ -28,6 +28,9 @@
   margin: 2em 0 2em 0;
 }
 
+.text {
+  font-size: 16px;
+}
 
 .toolbar {
   min-height: 3em;
@@ -38,7 +41,7 @@
 }
 
 .time-input {
-  width: 7em;
+  width: 6.1em;
 }
 
 .time-picker-fields mat-form-field input {
@@ -108,11 +111,7 @@ mat-form-field {
 @media only screen and (max-width: 455px) {
 
   .course {
-    font-size: 15px;
-  }
-
-  button {
-    margin-top: 10px;
+    font-size: 16px;
   }
 
   .mat-mdc-card-title {

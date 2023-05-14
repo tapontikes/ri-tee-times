@@ -1,7 +1,7 @@
 <div class="form-container">
   <div class="form-field">
+    <span class="text">Play on </span>
     <mat-form-field class="short-form-field">
-      <mat-label>Select a date</mat-label>
       <input (ngModelChange)="updateDateAndTeeTimes($event)" [matDatepicker]="picker" [ngModel]="selectedDate"
              matInput>
       <mat-datepicker-toggle [for]="picker" matSuffix></mat-datepicker-toggle>
@@ -9,8 +9,8 @@
     </mat-form-field>
   </div>
   <div *ngIf="!showAllCourses" class="form-field">
+    <span class="text">at </span>
     <mat-form-field>
-      <mat-label>Select a Course</mat-label>
       <mat-select [(value)]="selectedCourse">
         <mat-option *ngFor="let course of courses" [value]="course">
           {{ course.name }}
@@ -20,14 +20,14 @@
   </div>
   <ng-container *ngIf="showAllCourses">
     <div class="form-field time-picker-fields">
-      <span style="margin-top:1.3em">between </span>
+      <span class="text">between </span>
       <mat-form-field class="time-input">
         <input [(ngModel)]="timeFilterStart" [owlDateTimeTrigger]="dtStart" [owlDateTime]="dtStart" matInput>
         <owl-date-time #dtStart [hour12Timer]="true" [pickerType]="'timer'"
                        [startAt]="timeFilterStart"
                        [stepMinute]="30"></owl-date-time>
       </mat-form-field>
-      <span> and </span>
+      <span class="text"> and </span>
       <mat-form-field class="time-input">
         <input [(ngModel)]="timeFilterEnd" [owlDateTimeTrigger]="dtEnd" [owlDateTime]="dtEnd" matInput>
         <owl-date-time #dtEnd [hour12Timer]="true" [pickerType]="'timer'"
