@@ -19,6 +19,9 @@ const cache = (duration) => {
         }
     }
 }
+router.get('/', (req, res) => {
+    res.send("ok").status(200);
+});
 
 router.post('/foreup', cache(300), async (req, res) => {
 
