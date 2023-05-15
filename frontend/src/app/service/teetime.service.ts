@@ -27,6 +27,10 @@ export class TeeTimeService {
 
   }
 
+  pollServer(): Observable<string> {
+    return this.http.get<string>(this.baseURL)
+  }
+
   getTeeTimesForeUp(data: ForeUpRequestData): Observable<TeeTime[]> {
     return this.http.post<TeeTime[]>(this.baseURL + this.foreUpRoute, data);
   }
