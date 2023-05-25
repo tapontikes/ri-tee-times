@@ -9,7 +9,7 @@ import {
   TeeTime,
   TeeWireRequestData
 } from "./model/models";
-import {firstValueFrom, interval} from "rxjs";
+import {firstValueFrom} from "rxjs";
 import * as moment from 'moment';
 import * as coursesJSON from './model/courses.json';
 
@@ -46,9 +46,6 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
-    interval(10000).subscribe(() => {
-      this.teeTimeService.pollServer().subscribe();
-    });
     this.selectedCourse = this.courses[Math.floor(Math.random() * this.courses.length)];
     await this.getTeeTimes();
     this.loading = false;
