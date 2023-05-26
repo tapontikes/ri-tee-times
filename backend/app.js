@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const cors = require('cors')
+const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 
@@ -32,5 +32,6 @@ app.use(function (err, req, res) {
     res.status(err.status || 500);
     res.render('error');
 });
+
 
 module.exports = app;
