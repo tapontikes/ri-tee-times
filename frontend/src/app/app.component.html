@@ -57,8 +57,7 @@
 </div>
 
 <div [hidden]="!showAllCourses" class="app-container">
-  <div *ngFor="let course of courses" class="teetime-container">
-
+  <div *ngFor="let course of courses" class="course-container">
     <div
       *ngIf="(course.teeTimes | holeFilter: holeFilterValue | dateFilter: timeFilterStart: timeFilterEnd: this.selectedDate).length > 0">
       <mat-toolbar class="toolbar">
@@ -92,7 +91,7 @@
 </div>
 
 <div [hidden]="showAllCourses" class="app-container">
-  <div class="teetime-container">
+  <div>
     <mat-toolbar class="toolbar">
       <span (click)="bookTeeTime(selectedCourse.bookingUrl)" class="course">{{selectedCourse.name}} </span>
     </mat-toolbar>
