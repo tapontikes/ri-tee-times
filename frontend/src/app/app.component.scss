@@ -10,6 +10,10 @@
   flex-direction: column;
 }
 
+.course-container {
+  margin: 0.5em 0 0.5em 0;
+}
+
 .form-container {
   display: flex;
   flex-direction: row;
@@ -21,12 +25,6 @@
 
 .form-field {
   flex: 1 0 auto;
-}
-
-.teetime-card-container-all {
-  display: flex;
-  flex-direction: row;
-  margin: 2em 0 2em 0;
 }
 
 .text {
@@ -64,8 +62,8 @@
 
 .teetime-card-container-all {
   overflow-x: auto;
-  margin: 2em 0 2em 0;
-
+  display: flex;
+  flex-direction: row;
 }
 
 
