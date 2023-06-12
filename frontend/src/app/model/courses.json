@@ -70,6 +70,16 @@
     "teeTimes": []
   },
   {
+    "name": "Stone E. Lee",
+    "requestData": {
+      "baseUrl": "https://stoneeleagc.teesnap.net",
+      "course": 1312
+    },
+    "bookingUrl": "https://stoneeleagc.teesnap.net",
+    "type": "teesnap",
+    "teeTimes": []
+  },
+  {
     "name": "Country View",
     "requestData": {
       "baseUrl": "https://countryviewgolf.teesnap.net",
