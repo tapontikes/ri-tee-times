@@ -73,6 +73,7 @@ export class AppComponent implements OnInit {
       return course;
     });
     await Promise.all(teeTimeMapPromises)
+    this.courses.sort((a, b) => a.teeTimes.length - b.teeTimes.length);
     this.loading = false;
   }
 
