@@ -28,6 +28,7 @@
     "cookie-parser": "~1.4.6",
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "express-healthcheck": "^0.1.0",
     "http-errors": "~1.6.3",
     "memory-cache": "^0.2.0",
     "moment": "^2.30.1",
