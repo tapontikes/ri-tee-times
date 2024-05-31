@@ -37,6 +37,7 @@ export class AppComponent implements OnInit {
   public selectedDate!: Date;
   public timeFilterStart!: Date;
   public timeFilterEnd!: Date;
+  public today: string = moment().utcOffset('+0000').format('YYYY-MM-DD');
 
   constructor(private teeTimeService: TeeTimeService) {
     Object.assign(this.courses, coursesJSON);
@@ -46,6 +47,7 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
+    console.log(this.today);
     this.selectedCourse = this.courses[Math.floor(Math.random() * this.courses.length)];
     await this.getTeeTimes();
     this.loading = false;

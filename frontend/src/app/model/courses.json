@@ -20,6 +20,16 @@
     "teeTimes": []
   },
   {
+    "name": "Connecticut National",
+    "requestData": {
+      "alias": "connecticut-national-golf-club",
+      "facilityIds": 5166
+    },
+    "bookingUrl": "https://connecticut-national-golf-club.book.teeitup.com/",
+    "type": "teeitup",
+    "teeTimes": []
+  },
+  {
     "name": "Green Valley Country Club",
     "requestData": {
       "alias": "green-valley-country-club1",

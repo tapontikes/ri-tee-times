@@ -2,7 +2,8 @@
   <div class="form-field">
     <span class="text">Play on </span>
     <mat-form-field class="short-form-field">
-      <input (ngModelChange)="updateDateAndTeeTimes($event)" [matDatepicker]="picker" [ngModel]="selectedDate"
+      <input (ngModelChange)="updateDateAndTeeTimes($event)" [matDatepicker]="picker" [min]="today"
+             [ngModel]="selectedDate"
              matInput>
       <mat-datepicker-toggle [for]="picker" matSuffix></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>

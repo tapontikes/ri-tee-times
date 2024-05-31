@@ -42,3 +42,4 @@ testem.log
 Thumbs.db
 **/.angular/cache/16.0.0/
 /target/tee-time.tar
+/frontend/.angular/
