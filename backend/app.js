@@ -3,19 +3,10 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-const cron = require('node-cron');
-const os = require('os');
-const axios = require('axios')
 
 const indexRouter = require('./routes/index');
 
 const app = express();
-
-cron.schedule('*/10 * * * *', () => {
-    axios.get("http://" + os.hostname() + ":" + app.get('port')).then(res => {
-        console.log(res.data);
-    });
-});
 
 app.use(cors())
 app.use(logger('dev'));
@@ -23,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/health', require('express-healthcheck')());
 
 app.use('/', indexRouter);
 
