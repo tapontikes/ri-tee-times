@@ -112,10 +112,20 @@
   {
     "name": "Fenner Hill",
     "requestData": {
-      "baseUrl": " https://fennerhill.teesnap.net",
+      "baseUrl": "https://fennerhill.teesnap.net",
       "course": 1103
     },
-    "bookingUrl": " https://fennerhill.teesnap.net",
+    "bookingUrl": "https://fennerhill.teesnap.net",
+    "type": "teesnap",
+    "teeTimes": []
+  },
+  {
+    "name": "Melody Hill",
+    "requestData": {
+      "baseUrl": "https://melodyhillcc.teesnap.net",
+      "course": 466
+    },
+    "bookingUrl": "https://melodyhillcc.teesnap.net",
     "type": "teesnap",
     "teeTimes": []
   },
