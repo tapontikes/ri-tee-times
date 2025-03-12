@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TeeTimeService} from "./service/teetime.service";
 import {
   Course,
@@ -12,7 +12,6 @@ import {
 import {firstValueFrom} from "rxjs";
 import * as moment from 'moment';
 import * as coursesJSON from './model/courses.json';
-import {MatChipListbox, MatChipListboxChange} from "@angular/material/chips";
 
 
 @Component({
@@ -21,8 +20,7 @@ import {MatChipListbox, MatChipListboxChange} from "@angular/material/chips";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  @ViewChild('chipListBox') chipListBox!: MatChipListbox;
-  @ViewChildren('teeTimeCardContainerAll') teeTimeCardsWrappers!: QueryList<ElementRef>;
+
 
   // NgIf
   public loading = true;
@@ -41,7 +39,6 @@ export class AppComponent implements OnInit {
   public timeFilterEnd!: Date;
   public today: string = moment().utcOffset('+0000').format('YYYY-MM-DD');
 
-
   constructor(private teeTimeService: TeeTimeService) {
     Object.assign(this.courses, coursesJSON);
     this.selectedDate = moment().hour() >= 17 ? moment().add(1, 'day').toDate() : moment().toDate();
@@ -50,6 +47,7 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
+    console.log(this.today);
     this.selectedCourse = this.courses[Math.floor(Math.random() * this.courses.length)];
     await this.getTeeTimes();
     this.loading = false;
@@ -95,6 +93,10 @@ export class AppComponent implements OnInit {
     await this.getTeeTimes();
   }
 
+  formatSliderLabel(value: number): string {
+    return moment().hour(value).minute(0).format("h:mma").toString();
+  }
+
   bookTeeTime(url: string) {
     window.open(url, "_blank");
   }
@@ -117,31 +119,6 @@ export class AppComponent implements OnInit {
 
   formatCacheString(str: string) {
     return str.replace(/ /g, "_");
-  }
-
-  holeFilterChanged(changes: MatChipListboxChange) {
-    if (!changes.value) {
-      this.holeFilterValue = 1;
-      this.chipListBox.value = 1;
-    }
-  }
-
-  scrollLeft(index: number) {
-    const element = this.teeTimeCardsWrappers.toArray()[index].nativeElement.querySelector('.tee-time-card-container-all');
-    if (element) {
-      element.scrollBy({left: -400, behavior: 'smooth'});
-    }
-  }
-
-  scrollRight(index: number) {
-    const element = this.teeTimeCardsWrappers.toArray()[index].nativeElement.querySelector('.tee-time-card-container-all');
-    if (element) {
-      element.scrollBy({left: 400, behavior: 'smooth'});
-    }
-  }
-
-  showAllCourse() {
-    this.showAllCourses = !this.showAllCourses;
   }
 
   // Function to call
