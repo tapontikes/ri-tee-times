@@ -55,23 +55,17 @@
 }
 
 .flex-container::after {
+  content: "";
   flex: auto;
 }
 
-.tee-time-row {
-  display: flex;
-  margin: 1em;
-}
 
-.tee-time-card-container-all {
+.teetime-card-container-all {
   overflow-x: auto;
   display: flex;
   flex-direction: row;
 }
 
-.tee-time-card-container-all::-webkit-scrollbar {
-  display: none;
-}
 
 .time-picker-fields input {
   width: 5em;
@@ -98,6 +92,18 @@ mat-form-field {
   margin-top: 1.5em;
   margin-bottom: 1em;
   font-size: 1.5em;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+  overflow-y: scroll;
+  background: grey;
+  box-shadow: inset 0 0 4px #707070;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #673ab7;
+  border-radius: 15px;
 }
 
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const mcache = require('memory-cache');
 const router = express.Router();
-const teeTimes = require('../service/teetime')
+const courses = require('../service/courses')
 
 const cache = (duration) => {
     return (req, res, next) => {
@@ -34,7 +34,7 @@ router.post('/foreup', cache(300), async (req, res) => {
         "api_key": "no_limits",
         "booking_class": req.body.booking_class
     }
-    const times = await teeTimes.getForeUpTeeTimes(data)
+    const times = await courses.getForeUpTeeTimes(data)
     res.json(times);
 });
 
@@ -47,7 +47,7 @@ router.post('/teesnap', cache(300), async (req, res) => {
         "course": req.body.course,
         "addons": "off",
     }
-    const times = await teeTimes.getTeeSnapTeeTimes(req.body.baseUrl, data)
+    const times = await courses.getTeeSnapTeeTimes(req.body.baseUrl, data)
     res.json(times);
 });
 
@@ -57,7 +57,7 @@ router.post('/teeitup', cache(300), async (req, res) => {
         "date": req.body.date,
         "course": req.body.course,
     }
-    const times = await teeTimes.getTeeItUpTeeTimes(data, req.body.alias)
+    const times = await courses.getTeeItUpTeeTimes(data, req.body.alias)
     res.json(times);
 });
 
@@ -73,7 +73,7 @@ router.post('/teewire', cache(300), async (req, res) => {
         "cid": req.body.cid
     }
 
-    const times = await teeTimes.getTeeWireTeeTime(params, data, req.body.path)
+    const times = await courses.getTeeWireTeeTime(params, data, req.body.path)
     res.json(times);
 });
 
