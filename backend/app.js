@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== 'production') {
 const teeTimeRouter = require('./routes/teetimes'); // New tee time routes
 
 // Import database and scheduler
-const {initializeJobs} = require('./jobs/teetime');
+const {initializeJobs, refreshAllCoursesSevenDays} = require('./jobs/teetime');
 const {initDatabase} = require('./database/init')
 const customLogger = require('./utils/logger');
 
@@ -43,9 +43,14 @@ app.use('/api/tee-times', teeTimeRouter);
         } else {
             customLogger.info('Skipping tee time jobs initialization.');
         }
+        if (process.env.REFRESH_ON_STARTUP === 'true') {
+            customLogger.info('Running refresh on startup.');
+            await refreshAllCoursesSevenDays();
+        }
     } catch (error) {
         customLogger.error('Error during initialization:', error);
     }
+    customLogger.info('App started successfully.');
 })();
 
 

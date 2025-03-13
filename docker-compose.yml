@@ -13,6 +13,7 @@ services:
       DB_NAME: tee_times_pg
       DB_SSL: false
       SCHEDULER_ENABLED: false
+      REFRESH_ON_STARTUP: false
     ports:
       - "3000:3000"
     networks:
