@@ -3,8 +3,17 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: .
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: tee_times_pg
+      DB_SSL: false
     ports:
-      - 3000:3000
+      - "3000:3000"
+    networks:
+      - pg
 
   postgres:
     image: postgres:14
@@ -22,7 +31,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - pg
 
 
 volumes:
   postgres_data:
+
+networks:
+  pg:

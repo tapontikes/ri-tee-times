@@ -1,14 +1,12 @@
-require('dotenv').config({path: require('path').resolve(__dirname, './.env')});
-
 module.exports = {
     // Database configuration
     database: {
-        host: process.env.DB_HOST || 'localhost',
-        port: process.env.DB_PORT || 5432,
-        user: process.env.DB_USER || 'user',
-        password: process.env.DB_PASSWORD || 'password',
-        database: process.env.DB_NAME || 'tee_times_pg',
-        ssl: process.env.DB_SSL === 'true' ? {rejectUnauthorized: false} : false
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        ssl: false
     },
 
     // API configurations
