@@ -27,16 +27,18 @@ app.use('/health', require('express-healthcheck')());
 app.use('/', indexRouter);
 app.use('/api/tee-times', teeTimeRouter);
 
+customLogger.info(process.env.SCHEDULER_ENABLED);
+
 // Initialize database and jobs on app startup
 (async () => {
     try {
-        if (process.env.DB_SEED) {
+        if (process.env.DB_SEED === 'true') {
             await initDatabase();
             customLogger.info('Database initialized successfully')
         } else {
             customLogger.info('Skipping database initialization.');
         }
-        if (process.env.SCHEDULER_ENABLED) {
+        if (process.env.SCHEDULER_ENABLED === 'true') {
             await initializeJobs();
             customLogger.info('Tee time jobs initialized successfully');
         } else {
