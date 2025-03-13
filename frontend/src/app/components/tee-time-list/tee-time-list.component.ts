@@ -27,11 +27,18 @@ export class TeeTimeListComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     // Default search parameters
+    const now = new Date();
+    const isAfter5PM = now.getHours() >= 17;
+
     this.searchParams = {
-      date: formatDate(new Date(), 'yyyy-MM-dd', 'en-US'),
+      date: formatDate(
+        isAfter5PM ? new Date(now.setDate(now.getDate() + 1)) : now,
+        'yyyy-MM-dd',
+        'en-US'
+      ),
       startTime: '06:00',
       endTime: '18:00',
-      holes: 18
+      holes: 9
     };
   }
 

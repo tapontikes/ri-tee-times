@@ -17,15 +17,6 @@ const logger = winston.createLogger({
                 winston.format.colorize(),
                 logFormat
             )
-        }),
-        // File transport for errors
-        new winston.transports.File({
-            filename: 'error.log',
-            level: 'error'
-        }),
-        // File transport for all logs
-        new winston.transports.File({
-            filename: 'combined.log'
         })
     ]
 });

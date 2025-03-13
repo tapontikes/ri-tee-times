@@ -95,7 +95,7 @@ class DbClient {
 
             // Query the database for tee times within the date range
             const result = await client.query(
-                'SELECT * FROM tee_times WHERE tee_time BETWEEN $1 AND $2 ORDER BY tee_time',
+                'SELECT * FROM tee_times WHERE tee_time BETWEEN $1 AND $2 ORDER BY tee_time, holes',
                 [startOfDay, endOfDay]
             );
 
@@ -127,7 +127,7 @@ class DbClient {
             const endOfDay = moment(date).endOf('day').toISOString();
 
             const result = await client.query(
-                'SELECT * FROM tee_times WHERE course_id = $1 AND tee_time BETWEEN $2 AND $3 ORDER BY tee_time',
+                'SELECT * FROM tee_times WHERE course_id = $1 AND tee_time BETWEEN $2 AND $3 ORDER BY tee_time, holes',
                 [courseId, startOfDay, endOfDay]
             );
 

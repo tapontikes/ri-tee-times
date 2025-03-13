@@ -47,7 +47,7 @@
     "@angular/cli": "~17.3.8",
     "@angular/compiler-cli": "^17.3.10",
     "@types/node": "^20.12.13",
-    "nodemon": "^3.1.2",
+    "nodemon": "^3.1.9",
     "typescript": "~5.4.5"
   },
   "engines": {

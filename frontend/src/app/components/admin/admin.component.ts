@@ -4,6 +4,7 @@ import {Course, RefreshRequest} from "../../model/models";
 import {TeeTimeService} from "../../service/teetime.service";
 import {DataSharingService} from "../../service/data-sharing.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {formatDate} from "../../util/date-formatter";
 
 @Component({
   selector: 'app-admin',
@@ -60,7 +61,7 @@ export class AdminComponent implements OnInit {
       this.refreshing = true;
 
       const formValues = this.refreshForm.value;
-      const date = this.formatDate(formValues.date);
+      const date = formatDate(formValues.date);
       const request: RefreshRequest = {date};
 
       if (formValues.courseId === 'all') {
@@ -107,19 +108,4 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  formatDate(date: Date): string {
-    const d = new Date(date);
-    let month = '' + (d.getMonth() + 1);
-    let day = '' + d.getDate();
-    const year = d.getFullYear();
-
-    if (month.length < 2) {
-      month = '0' + month;
-    }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-
-    return [year, month, day].join('-');
-  }
 }

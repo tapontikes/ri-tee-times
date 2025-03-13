@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const morgan = require('morgan');
+const logger = require('./utils/logger');
 const cors = require('cors');
 
 if (process.env.NODE_ENV !== 'production') {
@@ -13,16 +14,21 @@ const teeTimeRouter = require('./routes/teetimes'); // New tee time routes
 // Import database and scheduler
 const {initializeJobs, refreshAllCoursesSevenDays} = require('./jobs/teetime');
 const {initDatabase} = require('./database/init')
-const customLogger = require('./utils/logger');
 
 const app = express();
 
 app.use(cors());
-app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(morgan(':method :url :status - :response-time ms', {
+    stream: {
+        write: (message) => {
+            logger.info(message.trim()); // Log to Winston
+        }
+    }
+}));
 
 // API routes
 app.use('/api/tee-times', teeTimeRouter);
@@ -33,24 +39,24 @@ app.use('/api/tee-times', teeTimeRouter);
     try {
         if (process.env.DB_SEED === 'true') {
             await initDatabase();
-            customLogger.info('Database initialized successfully')
+            logger.info('Database initialized successfully')
         } else {
-            customLogger.info('Skipping database initialization.');
+            logger.info('Skipping database initialization.');
         }
         if (process.env.SCHEDULER_ENABLED === 'true') {
             await initializeJobs();
-            customLogger.info('Tee time jobs initialized successfully');
+            logger.info('Tee time jobs initialized successfully');
         } else {
-            customLogger.info('Skipping tee time jobs initialization.');
+            logger.info('Skipping tee time jobs initialization.');
         }
         if (process.env.REFRESH_ON_STARTUP === 'true') {
-            customLogger.info('Running refresh on startup.');
+            logger.info('Running refresh on startup.');
             await (refreshAllCoursesSevenDays())();
         }
     } catch (error) {
-        customLogger.error('Error during initialization:', error);
+        logger.error('Error during initialization:', error);
     }
-    customLogger.info('App started successfully.');
+    logger.info('App started successfully.');
 })();
 
 
