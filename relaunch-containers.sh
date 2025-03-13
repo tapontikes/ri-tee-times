@@ -1,15 +1,19 @@
 #!/bin/bash
 
-# Stop and remove Docker Compose services
-docker-compose down
+# Specify the container name and service name
+SERVICE_NAME="app"
+CONTAINER_NAME="tee-times"
 
-# Remove all containers
-docker rm -f $(docker ps -aq)
+# Shut down the container
+echo "Stopping container ${CONTAINER_NAME}..."
+docker compose stop ${SERVICE_NAME}
 
-# Remove all images
-docker rmi -f $(docker images -q)
+# Rebuild the container without cache
+echo "Rebuilding the container ${CONTAINER_NAME} without cache..."
+docker compose build --no-cache ${SERVICE_NAME}
 
-# Rebuild and restart the Docker Compose stack
-docker-compose up --build -d
+# Restart the container
+echo "Starting container ${CONTAINER_NAME}..."
+docker compose up -d ${SERVICE_NAME}
 
-echo "Docker stack has been rebuilt and restarted."
+echo "Container ${CONTAINER_NAME} has been rebuilt and restarted."
