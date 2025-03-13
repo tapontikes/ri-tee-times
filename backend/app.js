@@ -28,21 +28,25 @@ app.use('/', indexRouter);
 app.use('/api/tee-times', teeTimeRouter);
 
 // Initialize database and jobs on app startup
-if (process.env.DB_SEED) {
-    (async () => {
-        try {
+(async () => {
+    try {
+        if (process.env.DB_SEED) {
             await initDatabase();
-            customLogger.info('Database initialized successfully');
-
-            // Start the tee time job scheduler
+            customLogger.info('Database initialized successfully')
+        } else {
+            customLogger.info('Skipping database initialization.');
+        }
+        if (process.env.SCHEDULER_ENABLED) {
             await initializeJobs();
             customLogger.info('Tee time jobs initialized successfully');
-
-        } catch (error) {
-            customLogger.error('Error during initialization:', error);
+        } else {
+            customLogger.info('Skipping tee time jobs initialization.');
         }
-    })();
-}
+    } catch (error) {
+        customLogger.error('Error during initialization:', error);
+    }
+})();
+
 
 // catch 404 and forward to error handler
 app.use((req, res) => {
