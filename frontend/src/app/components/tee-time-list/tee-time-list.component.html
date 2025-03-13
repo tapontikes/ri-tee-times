@@ -26,10 +26,10 @@
   </div>
 
   <div *ngIf="!loading && !error && teeTimes.length > 0" class="courses-container">
-    <div (click)="goToCourseDetail(course.id)" *ngFor="let course of courses" class="course-row">
+    <div *ngFor="let course of courses" class="course-row">
       <div class="course-info">
         <h3 class="course-name">{{ course.name }}</h3>
-        <span class="course-type">{{ course.type }}</span>
+        <span (click)="goToCourseDetail(course.id)" class="course-type">See all times</span>
       </div>
 
       <div class="tee-times-wrapper">

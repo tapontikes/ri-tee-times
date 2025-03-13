@@ -37,13 +37,16 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .course-row:hover {
   transform: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Keep the original shadow */
+}
+
+.course-type {
+  cursor: pointer;
 }
 
 .course-info {
