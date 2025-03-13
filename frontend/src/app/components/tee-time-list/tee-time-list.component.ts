@@ -36,33 +36,23 @@ export class TeeTimeListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loading = true
     this.loadCourses();
     this.route.queryParams.subscribe(params => {
-      // Update search params from query parameters if available
       if (params['date']) this.searchParams.date = params['date'];
       if (params['startTime']) this.searchParams.startTime = params['startTime'];
       if (params['endTime']) this.searchParams.endTime = params['endTime'];
       if (params['holes']) this.searchParams.holes = parseInt(params['holes'], 10);
-
       this.loadTeeTimes();
-      this.sortCoursesByAvailability();
     });
   }
 
   loadCourses(): void {
-    // Check if courses are already loaded in the data sharing service
     const existingCourses = this.dataSharingService.getCourses();
 
     if (existingCourses && existingCourses.length > 0) {
       // Use existing courses data
       this.courses = existingCourses;
-
-      // Rebuild the course map
-      this.courseMap.clear();
-      this.courses.forEach(course => {
-        this.courseMap.set(course.id, course);
-      });
-
       return;
     }
 
@@ -71,17 +61,12 @@ export class TeeTimeListComponent implements OnInit {
       (coursesData) => {
         this.courses = coursesData;
 
-        // Create a map of course ID to course for easy lookup
-        this.courseMap.clear();
-        this.courses.forEach(course => {
-          this.courseMap.set(course.id, course);
-        });
-
         // Store courses in the sharing service
         this.dataSharingService.setCourses(this.courses);
       },
       (error) => {
         console.error('Error loading courses:', error);
+        this.loading = false;
         this.error = true;
         this.snackBar.open('Error loading courses. Please try again.', 'Close', {
           duration: 5000
@@ -106,10 +91,11 @@ export class TeeTimeListComponent implements OnInit {
           return bTeeTimesCount - aTeeTimesCount;
         });
 
-        this.loading = false;
-
         // Store tee times in the sharing service
         this.dataSharingService.setTeeTimes(this.teeTimes);
+        setTimeout(() => {
+          this.loading = false;
+        }, 750)
       },
       (error) => {
         console.error('Error loading tee times:', error);
@@ -135,14 +121,6 @@ export class TeeTimeListComponent implements OnInit {
     const endTime = this.convertTimeToMinutes(this.searchParams.endTime);
 
     return teeTimeMinutes >= startTime && teeTimeMinutes <= endTime;
-  }
-
-  sortCoursesByAvailability(): void {
-    this.courses = [...this.courses].sort((a, b) => {
-      const aTeeTimesCount = this.getTeeTimesByCourseId(a.id).length;
-      const bTeeTimesCount = this.getTeeTimesByCourseId(b.id).length;
-      return bTeeTimesCount - aTeeTimesCount; // Descending order (most to least)
-    });
   }
 
   convertTimeToMinutes(time: string): number {

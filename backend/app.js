@@ -4,13 +4,16 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 
+if (process.env.NODE_ENV !== 'production') {
+    require("dotenv").config({path: path.join(__dirname, '.env')})
+}
+
 const indexRouter = require('./routes/index');
 const teeTimeRouter = require('./routes/teetimes'); // New tee time routes
 
 // Import database and scheduler
 const {initializeJobs} = require('./jobs/teetime');
 const {initDatabase} = require('./database/init')
-const {refreshAllCoursesSevenDays} = require('./jobs/teetime');
 const customLogger = require('./utils/logger');
 
 const app = express();
@@ -27,7 +30,6 @@ app.use('/health', require('express-healthcheck')());
 app.use('/', indexRouter);
 app.use('/api/tee-times', teeTimeRouter);
 
-customLogger.info(process.env.SCHEDULER_ENABLED);
 
 // Initialize database and jobs on app startup
 (async () => {

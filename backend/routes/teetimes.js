@@ -4,49 +4,28 @@ const dbClient = require('../database/client');
 const logger = require('../utils/logger');
 const moment = require('moment-timezone');
 
-// Get all tee times for a specific course and date
-router.get('/:courseId/:date', async (req, res, next) => {
+// Get all available courses
+router.get('/courses', async (req, res, next) => {
     try {
-        const {courseId, date, players, holes} = req.params;
-
-        // Validate date format
-        if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
-            return res.status(400).json({error: 'Invalid date format. Use YYYY-MM-DD'});
-        }
-
-        const teeTimes = await dbClient.getTeeTimesByCourseAndDate(courseId, date, players, holes);
-
-        res.json({
-            course_id: parseInt(courseId),
-            date,
-            tee_times: teeTimes.map(time => ({
-                id: time.id,
-                courseId: time.courseId,
-                tee_time: moment(time.tee_time).format('YYYY-MM-DD HH:mm:ss'),
-                formatted_time: moment(time.tee_time).format('h:mm A'),
-                holes: time.holes,
-                spots: time.spots,
-                start_position: time.start_position
-            }))
-        });
+        const courses = await dbClient.getAllCourses();
+        res.json(courses);
     } catch (error) {
-        logger.error('Error fetching tee times:', error);
+        logger.error('Error fetching courses:', error);
         next(error);
     }
 });
 
-
 // Get tee times for a specific course and date
 router.get('/:courseId/:date', async (req, res, next) => {
     try {
-        const {courseId, date, players, holes} = req.params;
+        const {courseId, date} = req.params;
 
         // Validate date format
         if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
             return res.status(400).json({error: 'Invalid date format. Use YYYY-MM-DD'});
         }
 
-        const teeTimes = await dbClient.getTeeTimesByCourseAndDate(courseId, date, players, holes);
+        const teeTimes = await dbClient.getTeeTimesByCourseAndDate(courseId, date);
 
         res.json(teeTimes);
 
@@ -72,17 +51,6 @@ router.get('/all', async (req, res, next) => {
 
     } catch (error) {
         logger.error('Error fetching tee times:', error);
-        next(error);
-    }
-});
-
-// Get all available courses
-router.get('/courses', async (req, res, next) => {
-    try {
-        const courses = await dbClient.getAllCourses();
-        res.json(courses);
-    } catch (error) {
-        logger.error('Error fetching courses:', error);
         next(error);
     }
 });

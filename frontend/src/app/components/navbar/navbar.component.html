@@ -2,7 +2,7 @@
   <span class="logo" routerLink="/">Golf Tee Times</span>
 
   <div class="search-form">
-    <form (ngSubmit)="search()" [formGroup]="searchForm" class="search-form">
+    <form (ngSubmit)="search()" *ngIf="showSearch" [formGroup]="searchForm" class="search-form">
       <div class="form-row">
         <div class="form-item">
           <mat-form-field appearance="outline">

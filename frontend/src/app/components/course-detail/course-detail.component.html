@@ -20,8 +20,26 @@
         <div class="course-header">
             <h1 class="course-title">{{ course.name }}</h1>
             <h2 class="course-subtitle">Available Tee Times for {{ searchParams.date | date:'fullDate' }}</h2>
+            <div class="filter-options">
+                <div class="filter-group">
+                    <button (click)="filterByHoles(9)"
+                            [class.active]="searchParams.holes === 9"
+                            mat-raised-button>
+                        9 Holes
+                    </button>
+                    <button (click)="filterByHoles(18)"
+                            [class.active]="searchParams.holes === 18"
+                            mat-raised-button>
+                        18 Holes
+                    </button>
+                    <button (click)="filterByHoles(null)"
+                            [class.active]="searchParams.holes === undefined || searchParams.holes === null"
+                            mat-raised-button>
+                        All
+                    </button>
+                </div>
+            </div>
         </div>
-
         <div *ngIf="!loading && !error && getFilteredTeeTimes().length === 0" class="no-results">
             <p>No tee times available for the selected criteria.</p>
         </div>

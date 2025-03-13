@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {Course, RefreshRequest} from "../../model/models";
 import {TeeTimeService} from "../../service/teetime.service";
+import {DataSharingService} from "../../service/data-sharing.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-admin',
@@ -19,8 +20,9 @@ export class AdminComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private snackBar: MatSnackBar,
     private teeTimeService: TeeTimeService,
-    private snackBar: MatSnackBar
+    private dataSharingService: DataSharingService,
   ) {
     // Initialize refresh form
     this.refreshForm = this.fb.group({
@@ -43,19 +45,14 @@ export class AdminComponent implements OnInit {
 
   loadCourses(): void {
     this.loading = true;
-    this.teeTimeService.getCourses().subscribe(
-      (data) => {
-        this.courses = data;
-        this.loading = false;
-      },
-      (error) => {
-        console.error('Error loading courses:', error);
-        this.loading = false;
-        this.snackBar.open('Error loading courses. Please try again.', 'Close', {
-          duration: 5000
-        });
-      }
-    );
+
+    const existingCourses = this.dataSharingService.getCourses();
+
+    if (existingCourses && existingCourses.length > 0) {
+      // Use existing courses data
+      this.courses = existingCourses;
+
+    }
   }
 
   refreshTeeTimes(): void {

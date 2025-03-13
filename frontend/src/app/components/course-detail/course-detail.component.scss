@@ -43,6 +43,20 @@
   color: #424242;
 }
 
+.filter-group button.active {
+  background-color: #3f51b5;
+  color: white;
+}
+
+.filter-options {
+  margin: 16px 0;
+}
+
+.filter-group {
+  display: flex;
+  gap: 8px;
+}
+
 .tee-times-container {
   margin-top: 24px;
 }

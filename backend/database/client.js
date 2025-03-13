@@ -121,14 +121,14 @@ class DbClient {
      * @param {String} date - Date string in YYYY-MM-DD format
      * @returns {Promise<Array>} - Array of tee time objects
      */
-    async getTeeTimesByCourseAndDate(courseId, date, players, holes) {
+    async getTeeTimesByCourseAndDate(courseId, date) {
         try {
             const startOfDay = moment(date).startOf('day').toISOString();
             const endOfDay = moment(date).endOf('day').toISOString();
 
             const result = await client.query(
-                'SELECT * FROM tee_times WHERE course_id = $1 AND tee_time BETWEEN $2 AND $3 AND players = $4 AND holes = $5 ORDER BY tee_time',
-                [courseId, startOfDay, endOfDay, players, holes]
+                'SELECT * FROM tee_times WHERE course_id = $1 AND tee_time BETWEEN $2 AND $3 ORDER BY tee_time',
+                [courseId, startOfDay, endOfDay]
             );
 
             return result.rows.map(row => ({
@@ -141,7 +141,7 @@ class DbClient {
             }));
 
         } catch (error) {
-            logger.error(`Error getting tee times for course ${courseId} on ${date} with ${players} players and ${holes} holes:`, error);
+            logger.error(`Error getting tee times for course ${courseId} on ${date}`, error);
             throw error;
         }
     }

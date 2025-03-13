@@ -21,7 +21,7 @@ export interface TeeTimeSearchParams {
   date: string;
   startTime?: string;
   endTime?: string;
-  holes?: number;
+  holes?: number | null
   players?: number;
 }
 
