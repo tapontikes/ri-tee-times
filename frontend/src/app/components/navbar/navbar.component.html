@@ -8,7 +8,6 @@
           <mat-form-field appearance="outline">
             <mat-label>Date</mat-label>
             <input [matDatepicker]="picker" [min]="minDate" formControlName="date" matInput>
-            <mat-hint>{{ searchForm.get('date')?.value | date:'MM-dd-yyyy' }}</mat-hint>
             <mat-datepicker-toggle [for]="picker" matSuffix></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>

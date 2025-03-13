@@ -1,58 +1,50 @@
 <div class="container">
-  <div class="back-button">
-    <button (click)="goBack()" color="primary" mat-stroked-button>
-      <mat-icon>arrow_back</mat-icon>
-      Back to All Courses
-    </button>
-  </div>
-
-  <div *ngIf="loading" class="loading-container">
-    <mat-spinner diameter="50"></mat-spinner>
-    <p>Loading course information...</p>
-  </div>
-
-  <div *ngIf="error" class="error-container">
-    <mat-icon color="warn">error</mat-icon>
-    <p>Failed to load course information. Please try again later.</p>
-  </div>
-
-  <div *ngIf="!loading && !error && course" class="course-detail">
-    <div class="course-header">
-      <h1 class="course-title">{{ course.name }}</h1>
-      <h2 class="course-subtitle">{{ course.type }}</h2>
-      <div class="course-details">
-        <p>Available Tee Times for {{ searchParams.date | date:'fullDate' }}</p>
-        <p *ngIf="searchParams.startTime && searchParams.endTime">
-          Between {{ searchParams.startTime }} and {{ searchParams.endTime }}
-        </p>
-        <p *ngIf="searchParams.holes">
-          {{ searchParams.holes }} Holes
-        </p>
-      </div>
+    <div class="back-button">
+        <button (click)="goBack()" color="primary" mat-stroked-button>
+            <mat-icon>arrow_back</mat-icon>
+            Back to All Courses
+        </button>
     </div>
 
-    <div *ngIf="!loading && !error && getFilteredTeeTimes().length === 0" class="no-results">
-      <p>No tee times available for the selected criteria.</p>
+    <div *ngIf="loading" class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading course information...</p>
     </div>
 
-    <div *ngIf="!loading && !error && getFilteredTeeTimes().length > 0" class="tee-times-container">
-      <div class="tee-times-grid">
-        <div *ngFor="let teeTime of getFilteredTeeTimes()" class="tee-time-card">
-          <div class="tee-time-content">
-            <div class="tee-time-time">{{ teeTime.time | date:'shortTime' }}</div>
-            <div class="tee-time-info">
-              <div class="tee-time-spots">{{ teeTime.spots }} spots available</div>
-              <div class="tee-time-holes">
-                <mat-chip-set>
-                  <mat-chip *ngFor="let hole of teeTime.holes" [highlighted]="hole === searchParams.holes">
-                    {{ hole }} Holes
-                  </mat-chip>
-                </mat-chip-set>
-              </div>
-            </div>
-          </div>
+    <div *ngIf="error" class="error-container">
+        <mat-icon color="warn">error</mat-icon>
+        <p>Failed to load course information. Please try again later.</p>
+    </div>
+
+    <div *ngIf="!loading && !error && course" class="course-detail">
+        <div class="course-header">
+            <h1 class="course-title">{{ course.name }}</h1>
+            <h2 class="course-subtitle">Available Tee Times for {{ searchParams.date | date:'fullDate' }}</h2>
         </div>
-      </div>
+
+        <div *ngIf="!loading && !error && getFilteredTeeTimes().length === 0" class="no-results">
+            <p>No tee times available for the selected criteria.</p>
+        </div>
+
+        <div *ngIf="!loading && !error && getFilteredTeeTimes().length > 0" class="tee-times-container">
+            <div class="tee-times-grid">
+                <div *ngFor="let teeTime of getFilteredTeeTimes()" class="tee-time-card">
+                    <div class="tee-time-content">
+                        <div class="tee-time-time">{{ teeTime.time | date:'shortTime' }}</div>
+                        <div class="tee-time-info">
+                            <div class="tee-time-spots">{{ teeTime.spots }} spots available</div>
+                            <div class="tee-time-holes">
+                                <mat-chip-set>
+                                    <mat-chip *ngFor="let hole of teeTime.holes"
+                                              [highlighted]="false">
+                                        {{ hole }} Holes
+                                    </mat-chip>
+                                </mat-chip-set>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

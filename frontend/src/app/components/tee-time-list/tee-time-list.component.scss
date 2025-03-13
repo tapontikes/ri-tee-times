@@ -1,5 +1,5 @@
 .container {
-  max-width: 1200px;
+  max-width: 90vw;
   margin: 0 auto;
   padding: 16px;
 }
@@ -42,8 +42,8 @@
 }
 
 .course-row:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Keep the original shadow */
 }
 
 .course-info {
@@ -70,14 +70,15 @@
 }
 
 .tee-times-wrapper {
-  padding: 16px;
   margin-top: 12px;
+  padding: 8px 16px 16px;
 }
 
 .tee-times-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 8px; /* Space for scrollbar */
+  padding-bottom: 12px;
+  padding-top: 6px;
 }
 
 .tee-times-row {
@@ -94,14 +95,17 @@
   border: 1px solid #e0e0e0;
   border-radius: 6px;
   text-align: center;
+  transform-origin: center bottom;
   transition: all 0.2s ease;
+  margin-top: 3px;
 }
 
 .tee-time-box:hover {
-  transform: translateY(-3px);
+  transform: translateY(-3px) scale(1.02);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #f0f4ff;
   border-color: #c0c9e0;
+  margin-top: 0;
 }
 
 .time {
@@ -122,15 +126,8 @@
   justify-content: center;
 }
 
-.holes-container mat-chip-set {
-  display: flex;
-  justify-content: center;
-}
-
 .holes-container mat-chip {
-  font-size: 0.75rem;
-  min-height: 20px;
-  padding: 0 6px;
+  margin: 0 2px !important; /* Add some spacing between chips */
 }
 
 .no-tee-times {
@@ -181,4 +178,5 @@
     width: 110px;
     padding: 10px;
   }
+
 }

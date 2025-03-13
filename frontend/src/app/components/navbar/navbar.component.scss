@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   padding: 0 16px;
-  height: 64px;
+  height: 100px;
 }
 
 .logo {
@@ -35,7 +35,12 @@
 }
 
 mat-form-field {
-  width: 120px;
+  width: 150px;
+  margin-bottom: -1em;
+}
+
+.form-item:first-child mat-form-field {
+  width: 180px;
 }
 
 .spacer {

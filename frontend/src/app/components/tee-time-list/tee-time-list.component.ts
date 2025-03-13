@@ -36,6 +36,7 @@ export class TeeTimeListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadCourses();
     this.route.queryParams.subscribe(params => {
       // Update search params from query parameters if available
       if (params['date']) this.searchParams.date = params['date'];
@@ -47,11 +48,24 @@ export class TeeTimeListComponent implements OnInit {
     });
   }
 
-  loadTeeTimes(): void {
-    this.loading = true;
-    this.error = false;
+  loadCourses(): void {
+    // Check if courses are already loaded in the data sharing service
+    const existingCourses = this.dataSharingService.getCourses();
 
-    // First, load the courses to get their information
+    if (existingCourses && existingCourses.length > 0) {
+      // Use existing courses data
+      this.courses = existingCourses;
+
+      // Rebuild the course map
+      this.courseMap.clear();
+      this.courses.forEach(course => {
+        this.courseMap.set(course.id, course);
+      });
+
+      return;
+    }
+
+    // Otherwise make the API call
     this.teeTimeService.getCourses().subscribe(
       (coursesData) => {
         this.courses = coursesData;
@@ -62,26 +76,12 @@ export class TeeTimeListComponent implements OnInit {
           this.courseMap.set(course.id, course);
         });
 
-        // Then load the tee times
-        this.teeTimeService.getAllTeeTimes(this.searchParams).subscribe(
-          (teeTimesData) => {
-            this.teeTimes = teeTimesData;
-            this.loading = false;
-          },
-          (error) => {
-            console.error('Error loading tee times:', error);
-            this.error = true;
-            this.loading = false;
-            this.snackBar.open('Error loading tee times. Please try again.', 'Close', {
-              duration: 5000
-            });
-          }
-        );
+        // Store courses in the sharing service
+        this.dataSharingService.setCourses(this.courses);
       },
       (error) => {
         console.error('Error loading courses:', error);
         this.error = true;
-        this.loading = false;
         this.snackBar.open('Error loading courses. Please try again.', 'Close', {
           duration: 5000
         });
@@ -89,11 +89,36 @@ export class TeeTimeListComponent implements OnInit {
     );
   }
 
-  bookTeeTime(teeTime: TeeTime): void {
-    const course = this.courseMap.get(teeTime.courseId);
-    if (course) {
-      window.open(course.bookingUrl, '_blank');
-    }
+  loadTeeTimes(): void {
+    this.loading = true;
+    this.error = false;
+
+    // Load tee times based on search parameters
+    this.teeTimeService.getAllTeeTimes(this.searchParams).subscribe(
+      (teeTimesData) => {
+        this.teeTimes = teeTimesData;
+
+        // Sort courses by available tee times
+        this.courses.sort((a, b) => {
+          const aTeeTimesCount = this.getTeeTimesByCourseId(a.id).length;
+          const bTeeTimesCount = this.getTeeTimesByCourseId(b.id).length;
+          return bTeeTimesCount - aTeeTimesCount; // Descending order (most to least)
+        });
+
+        this.loading = false;
+
+        // Store tee times in the sharing service
+        this.dataSharingService.setTeeTimes(this.teeTimes);
+      },
+      (error) => {
+        console.error('Error loading tee times:', error);
+        this.error = true;
+        this.loading = false;
+        this.snackBar.open('Error loading tee times. Please try again.', 'Close', {
+          duration: 5000
+        });
+      }
+    );
   }
 
   isTimeInRange(timeString: string): boolean {
@@ -109,6 +134,14 @@ export class TeeTimeListComponent implements OnInit {
     const endTime = this.convertTimeToMinutes(this.searchParams.endTime);
 
     return teeTimeMinutes >= startTime && teeTimeMinutes <= endTime;
+  }
+
+  sortCoursesByAvailability(): void {
+    this.courses = [...this.courses].sort((a, b) => {
+      const aTeeTimesCount = this.getTeeTimesByCourseId(a.id).length;
+      const bTeeTimesCount = this.getTeeTimesByCourseId(b.id).length;
+      return bTeeTimesCount - aTeeTimesCount; // Descending order (most to least)
+    });
   }
 
   convertTimeToMinutes(time: string): number {

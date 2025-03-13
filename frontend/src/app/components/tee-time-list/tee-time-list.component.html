@@ -39,15 +39,17 @@
 
         <div *ngIf="getTeeTimesByCourseId(course.id).length > 0" class="tee-times-scroll">
           <div class="tee-times-row">
-            <div *ngFor="let teeTime of getTeeTimesByCourseId(course.id)" class="tee-time-box">
-              <div class="time">{{ teeTime.time | date:'shortTime' }}</div>
-              <div class="spots">{{ teeTime.spots }} spots</div>
-              <div class="holes-container">
-                <mat-chip-set>
-                  <mat-chip *ngFor="let hole of teeTime.holes" [highlighted]="hole === searchParams.holes">
-                    {{ hole }}
-                  </mat-chip>
-                </mat-chip-set>
+            <div *ngFor="let teeTime of getTeeTimesByCourseId(course.id)" class="tee-time-wrapper">
+              <div class="tee-time-box">
+                <div class="time">{{ teeTime.time | date:'shortTime' }}</div>
+                <div class="spots">{{ teeTime.spots }} spots</div>
+                <div class="holes-container">
+                  <mat-chip-set>
+                    <mat-chip *ngFor="let hole of teeTime.holes" [highlighted]="false">
+                      {{ hole }}
+                    </mat-chip>
+                  </mat-chip-set>
+                </div>
               </div>
             </div>
           </div>
