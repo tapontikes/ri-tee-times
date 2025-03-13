@@ -45,7 +45,7 @@ app.use('/api/tee-times', teeTimeRouter);
         }
         if (process.env.REFRESH_ON_STARTUP === 'true') {
             customLogger.info('Running refresh on startup.');
-            await refreshAllCoursesSevenDays();
+            await (refreshAllCoursesSevenDays())();
         }
     } catch (error) {
         customLogger.error('Error during initialization:', error);
