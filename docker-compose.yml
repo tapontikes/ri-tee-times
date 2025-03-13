@@ -11,8 +11,7 @@ services:
       DB_USER: user
       DB_PASSWORD: password
       DB_NAME: tee_times_pg
-      DB_SSL: true
-      DB_SEED: true
+      DB_SSL: false
       SCHEDULER_ENABLED: false
     ports:
       - "3000:3000"
