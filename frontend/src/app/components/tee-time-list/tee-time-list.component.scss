@@ -1,0 +1,184 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.page-title {
+  color: #3f51b5;
+  margin-bottom: 8px;
+}
+
+.date-subtitle {
+  color: #757575;
+  font-weight: normal;
+  margin-bottom: 24px;
+}
+
+.loading-container, .error-container, .no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+}
+
+.courses-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.course-row {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.course-row:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.course-info {
+  background-color: #3f51b5;
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.course-name {
+  font-size: 1.3rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.course-type {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.tee-times-wrapper {
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.tee-times-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px; /* Space for scrollbar */
+}
+
+.tee-times-row {
+  display: flex;
+  gap: 12px;
+  min-width: min-content;
+}
+
+.tee-time-box {
+  flex: 0 0 auto;
+  width: 120px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.tee-time-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f0f4ff;
+  border-color: #c0c9e0;
+}
+
+.time {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #3f51b5;
+  margin-bottom: 4px;
+}
+
+.spots {
+  font-size: 0.85rem;
+  color: #4caf50;
+  margin-bottom: 6px;
+}
+
+.holes-container {
+  display: flex;
+  justify-content: center;
+}
+
+.holes-container mat-chip-set {
+  display: flex;
+  justify-content: center;
+}
+
+.holes-container mat-chip {
+  font-size: 0.75rem;
+  min-height: 20px;
+  padding: 0 6px;
+}
+
+.no-tee-times {
+  font-style: italic;
+  color: #757575;
+  padding: 16px 0;
+  text-align: center;
+}
+
+/* Custom scrollbar styling */
+.tee-times-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tee-times-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.tee-times-scroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.tee-times-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* For Firefox */
+.tee-times-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+  .course-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .course-type {
+    align-self: flex-start;
+  }
+
+  .tee-time-box {
+    width: 110px;
+    padding: 10px;
+  }
+}

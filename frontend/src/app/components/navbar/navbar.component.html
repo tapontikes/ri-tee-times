@@ -1,0 +1,47 @@
+<mat-toolbar class="navbar" color="primary">
+  <span class="logo" routerLink="/">Golf Tee Times</span>
+
+  <div class="search-form">
+    <form (ngSubmit)="search()" [formGroup]="searchForm" class="search-form">
+      <div class="form-row">
+        <div class="form-item">
+          <mat-form-field appearance="outline">
+            <mat-label>Date</mat-label>
+            <input [matDatepicker]="picker" [min]="minDate" formControlName="date" matInput>
+            <mat-hint>{{ searchForm.get('date')?.value | date:'MM-dd-yyyy' }}</mat-hint>
+            <mat-datepicker-toggle [for]="picker" matSuffix></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="form-item">
+          <mat-form-field appearance="outline">
+            <mat-label>Start Time</mat-label>
+            <input formControlName="startTime" matInput type="time">
+          </mat-form-field>
+        </div>
+
+        <div class="form-item">
+          <mat-form-field appearance="outline">
+            <mat-label>End Time</mat-label>
+            <input formControlName="endTime" matInput type="time">
+          </mat-form-field>
+        </div>
+
+        <div class="form-item">
+          <mat-button-toggle-group formControlName="holes">
+            <mat-button-toggle [value]="9">9 Holes</mat-button-toggle>
+            <mat-button-toggle [value]="18">18 Holes</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+        <button color="accent" mat-raised-button type="submit">Search</button>
+      </div>
+    </form>
+  </div>
+
+  <span class="spacer"></span>
+
+  <button class="nav-link" mat-button routerLink="/">All Courses</button>
+  <button (click)="goToAdmin()" class="nav-link" mat-button>Admin</button>
+</mat-toolbar>

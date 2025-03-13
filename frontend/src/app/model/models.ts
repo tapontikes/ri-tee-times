@@ -1,56 +1,30 @@
-// Models and Tee Time Models
+// src/app/models/models.ts
 
 export interface Course {
+  id: number;
   name: string;
   requestData: string;
-  type: CourseType;
+  type: string;
   teeTimes: TeeTime[];
   bookingUrl: string;
 }
 
-export enum CourseType {
-  FOREUP = "foreup",
-  TEESNAP = "teesnap",
-  TEEITUP = "teeitup",
-  TEEWIRE = "teewire"
-}
-
 export interface TeeTime {
+  id: number;
+  courseId: number;
   time: string;
   holes: number[];
-  start: string;
-  spots: string;
-
+  spots: number;
 }
 
-// Http Request Data Models
-export interface ForeUpRequestData {
-  courseName: string;
-  id: string;
-  booking_class: string;
+export interface TeeTimeSearchParams {
   date: string;
+  startTime?: string;
+  endTime?: string;
+  holes?: number;
+  players?: number;
 }
 
-export interface TeeSnapRequestData {
-  courseName: string;
-  baseUrl: string;
+export interface RefreshRequest {
   date: string;
-  course: string;
-}
-
-export interface TeeItUpRequestData {
-  courseName: string;
-  date: string;
-  facilityIds: string;
-  alias: string;
-}
-
-export interface TeeWireRequestData {
-  courseName: string;
-  date: string;
-  controller: string;
-  action: string;
-  cid: string;
-  cal_id: string;
-  path: string;
 }

@@ -5,10 +5,17 @@ const logger = require('morgan');
 const cors = require('cors');
 
 const indexRouter = require('./routes/index');
+const teeTimeRouter = require('./routes/teetimes'); // New tee time routes
+
+// Import database and scheduler
+const {initializeJobs} = require('./jobs/teetime');
+const {initDatabase} = require('./database/init')
+const {refreshAllCoursesSevenDays} = require('./jobs/teetime');
+const customLogger = require('./utils/logger');
 
 const app = express();
 
-app.use(cors())
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -16,23 +23,46 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/health', require('express-healthcheck')());
 
+// API routes
 app.use('/', indexRouter);
+app.use('/api/tee-times', teeTimeRouter);
+
+// Initialize database and jobs on app startup
+if (process.env.SEED_DATA) {
+    (async () => {
+        try {
+            await initDatabase();
+            customLogger.info('Database initialized successfully');
+
+            // Start the tee time job scheduler
+            await initializeJobs();
+            customLogger.info('Tee time jobs initialized successfully');
+
+        } catch (error) {
+            customLogger.error('Error during initialization:', error);
+        }
+    })();
+}
 
 // catch 404 and forward to error handler
 app.use((req, res) => {
-    res.send("Error").status(404);
+    res.status(404).send("Not Found");
 });
 
 // error handler
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.json({
+        error: {
+            message: err.message,
+            status: err.status || 500
+        }
+    });
 });
-
 
 module.exports = app;
