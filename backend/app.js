@@ -8,7 +8,6 @@ if (process.env.NODE_ENV !== 'production') {
     require("dotenv").config({path: path.join(__dirname, '.env')})
 }
 
-const indexRouter = require('./routes/index');
 const teeTimeRouter = require('./routes/teetimes'); // New tee time routes
 
 // Import database and scheduler
@@ -24,10 +23,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/health', require('express-healthcheck')());
 
 // API routes
-app.use('/', indexRouter);
 app.use('/api/tee-times', teeTimeRouter);
 
 
