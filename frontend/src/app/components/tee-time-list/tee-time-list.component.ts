@@ -45,6 +45,7 @@ export class TeeTimeListComponent implements OnInit {
       if (params['holes']) this.searchParams.holes = parseInt(params['holes'], 10);
 
       this.loadTeeTimes();
+      this.sortCoursesByAvailability();
     });
   }
 
@@ -102,7 +103,7 @@ export class TeeTimeListComponent implements OnInit {
         this.courses.sort((a, b) => {
           const aTeeTimesCount = this.getTeeTimesByCourseId(a.id).length;
           const bTeeTimesCount = this.getTeeTimesByCourseId(b.id).length;
-          return bTeeTimesCount - aTeeTimesCount; // Descending order (most to least)
+          return bTeeTimesCount - aTeeTimesCount;
         });
 
         this.loading = false;
