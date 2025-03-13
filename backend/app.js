@@ -28,7 +28,7 @@ app.use('/', indexRouter);
 app.use('/api/tee-times', teeTimeRouter);
 
 // Initialize database and jobs on app startup
-if (process.env.SEED_DATA) {
+if (process.env.DB_SEED) {
     (async () => {
         try {
             await initDatabase();
