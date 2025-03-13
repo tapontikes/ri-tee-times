@@ -7,52 +7,53 @@ import {catchError} from 'rxjs/operators';
 import {Course, RefreshRequest, TeeTime, TeeTimeSearchParams} from "../model/models";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class TeeTimeService {
-  private apiUrl = 'http://localhost:3000/api/tee-times';
 
-  constructor(private http: HttpClient) {
-  }
+    private readonly apiUrl = window.location.protocol + '//' + window.location.host + "/api/tee-times";
 
-  // Get all available courses
-  getCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>(`${this.apiUrl}/courses`);
-  }
+    constructor(private http: HttpClient) {
+    }
 
-  // Get tee times for a specific course and date
-  getCourseTeeTimes(courseId: number, params: TeeTimeSearchParams): Observable<TeeTime[]> {
-    const {date, players, holes} = params;
-    let url = `${this.apiUrl}/${courseId}/${date}`;
+    // Get all available courses
+    getCourses(): Observable<Course[]> {
+        return this.http.get<Course[]>(`${this.apiUrl}/courses`);
+    }
 
-    // Add query parameters if provided
-    const queryParams: any = {};
-    if (players) queryParams.players = players;
-    if (holes) queryParams.holes = holes;
+    // Get tee times for a specific course and date
+    getCourseTeeTimes(courseId: number, params: TeeTimeSearchParams): Observable<TeeTime[]> {
+        const {date, players, holes} = params;
+        let url = `${this.apiUrl}/${courseId}/${date}`;
 
-    return this.http.get<TeeTime[]>(url, {params: queryParams}).pipe(
-      catchError(error => {
-        console.error('Error fetching course tee times:', error);
-        return of([] as TeeTime[]); // Return empty array on error
-      })
-    );
-  }
+        // Add query parameters if provided
+        const queryParams: any = {};
+        if (players) queryParams.players = players;
+        if (holes) queryParams.holes = holes;
 
-  // Get all tee times for a specific date
-  getAllTeeTimes(params: TeeTimeSearchParams): Observable<TeeTime[]> {
-    const {date} = params;
-    return this.http.get<TeeTime[]>(`${this.apiUrl}/all`, {
-      params: {date}
-    });
-  }
+        return this.http.get<TeeTime[]>(url, {params: queryParams}).pipe(
+            catchError(error => {
+                console.error('Error fetching course tee times:', error);
+                return of([] as TeeTime[]); // Return empty array on error
+            })
+        );
+    }
 
-  // Refresh all tee times for a specific date
-  refreshAllTeeTimes(request: RefreshRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/refresh/all`, request);
-  }
+    // Get all tee times for a specific date
+    getAllTeeTimes(params: TeeTimeSearchParams): Observable<TeeTime[]> {
+        const {date} = params;
+        return this.http.get<TeeTime[]>(`${this.apiUrl}/all`, {
+            params: {date}
+        });
+    }
 
-  // Refresh tee times for a specific course and date
-  refreshCourseTeeTimes(courseId: number, request: RefreshRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/refresh/${courseId}`, request);
-  }
+    // Refresh all tee times for a specific date
+    refreshAllTeeTimes(request: RefreshRequest): Observable<any> {
+        return this.http.post(`${this.apiUrl}/refresh/all`, request);
+    }
+
+    // Refresh tee times for a specific course and date
+    refreshCourseTeeTimes(courseId: number, request: RefreshRequest): Observable<any> {
+        return this.http.post(`${this.apiUrl}/refresh/${courseId}`, request);
+    }
 }
