@@ -3,6 +3,8 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: .
+    depends_on:
+      - postgres
     environment:
       DB_HOST: postgres
       DB_PORT: 5432
