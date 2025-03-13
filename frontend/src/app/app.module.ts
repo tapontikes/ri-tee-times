@@ -1,66 +1,77 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {RouterModule} from '@angular/router';
 
-import {AppRoutingModule} from './app-routing.module';
+// Angular Material Imports
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatIconModule} from '@angular/material/icon';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatTableModule} from '@angular/material/table';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+
+// Components
 import {AppComponent} from './app.component';
-import {CommonModule} from "@angular/common";
-import {MatCardModule} from "@angular/material/card";
-import {MatInputModule} from "@angular/material/input";
-import {MatDatepickerModule} from "@angular/material/datepicker";
-import {FormsModule} from "@angular/forms";
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {MatTableModule} from "@angular/material/table";
-import {MatToolbarModule} from "@angular/material/toolbar";
-import {HoleFilter} from "./filter/holefilter";
-import {MatRadioModule} from "@angular/material/radio";
-import {MatSelectModule} from "@angular/material/select";
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import {MatButtonModule} from "@angular/material/button";
-import {MatChipsModule} from "@angular/material/chips";
-import {MatSliderModule} from "@angular/material/slider";
-import {Datefilter} from "./filter/datefilter";
-import {OwlDateTimeModule, OwlNativeDateTimeModule} from "@danielmoncada/angular-datetime-picker";
-import {HttpClientModule} from "@angular/common/http";
-import {
-  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
-  MAT_MOMENT_DATE_FORMATS,
-  MomentDateAdapter
-} from "@angular/material-moment-adapter";
+import {NavbarComponent} from './components/navbar/navbar.component';
+import {TeeTimeListComponent} from './components/tee-time-list/tee-time-list.component';
+import {AdminComponent} from './components/admin/admin.component';
+
+// Routing
+import {AppRoutingModule} from './app-routing.module';
+import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
+import {CourseDetailComponent} from "./components/course-detail/course-detail.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-    HoleFilter,
-    Datefilter
+    NavbarComponent,
+    TeeTimeListComponent,
+    CourseDetailComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    CommonModule,
-    HttpClientModule,
-    MatCardModule,
-    MatInputModule,
-    MatDatepickerModule,
     FormsModule,
-    MatNativeDateModule,
+    ReactiveFormsModule,
+    HttpClientModule,
     BrowserAnimationsModule,
-    MatTableModule,
+    RouterModule,
+    AppRoutingModule,
+
+    // Angular Material
     MatToolbarModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
     MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatIconModule,
+    MatTabsModule,
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
     MatChipsModule,
-    MatSliderModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
+    MatDividerModule,
+    MatButtonToggleModule,
+    MatMenuTrigger,
+    MatMenu
   ],
-  providers: [
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}},
-    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS}
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {
