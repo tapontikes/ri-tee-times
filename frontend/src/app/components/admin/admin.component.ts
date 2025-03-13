@@ -4,7 +4,7 @@ import {Course, RefreshRequest} from "../../model/models";
 import {TeeTimeService} from "../../service/teetime.service";
 import {DataSharingService} from "../../service/data-sharing.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {formatDate} from "../../util/date-formatter";
+import {formatDate} from "../../util/utils";
 
 @Component({
   selector: 'app-admin',

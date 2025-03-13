@@ -2,6 +2,7 @@
   max-width: 90vw;
   margin: 0 auto;
   padding: 16px;
+  user-select: none;
 }
 
 .page-title {
@@ -55,13 +56,31 @@
   padding: 16px 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; /* This pushes the name left and actions right */
 }
 
 .course-name {
   font-size: 1.3rem;
   margin: 0;
   font-weight: 500;
+}
+
+.course-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.course-button {
+  font-size: 0.9rem;
+  padding: 4px 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.course-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .course-type {

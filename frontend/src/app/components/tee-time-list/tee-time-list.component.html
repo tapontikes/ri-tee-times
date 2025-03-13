@@ -29,9 +29,11 @@
     <div *ngFor="let course of courses" class="course-row">
       <div class="course-info">
         <h3 class="course-name">{{ course.name }}</h3>
-        <span (click)="goToCourseDetail(course.id)" class="course-type">See all times</span>
+        <div class="course-actions">
+          <span (click)="goToCourseDetail(course.id)" class="course-button">See all times</span>
+          <span (click)="bookWithCourse(course.booking_url)" class="course-button">Book With Course</span>
+        </div>
       </div>
-
       <div class="tee-times-wrapper">
         <div *ngIf="getTeeTimesByCourseId(course.id).length === 0" class="no-tee-times">
           No available tee times matching your criteria.

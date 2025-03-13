@@ -5,6 +5,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {Course, TeeTime, TeeTimeSearchParams} from "../../model/models";
 import {TeeTimeService} from "../../service/teetime.service";
 import {DataSharingService} from "../../service/data-sharing.service";
+import {bookWithCourse} from "../../util/utils";
 
 @Component({
   selector: 'app-tee-time-list',
@@ -14,17 +15,18 @@ import {DataSharingService} from "../../service/data-sharing.service";
 export class TeeTimeListComponent implements OnInit {
   courses: Course[] = [];
   teeTimes: TeeTime[] = [];
-  courseMap: Map<number, Course> = new Map();
   loading = true;
   error = false;
   searchParams: TeeTimeSearchParams;
+  bookWithCourse = bookWithCourse;
+
 
   constructor(
     private teeTimeService: TeeTimeService,
     private dataSharingService: DataSharingService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {
     // Default search parameters
     const now = new Date();

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Course} from "../../model/models";
-import {formatDate} from "../../util/date-formatter";
+import {formatDate} from "../../util/utils";
 
 @Component({
   selector: 'app-navbar',

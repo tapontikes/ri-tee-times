@@ -13,3 +13,7 @@ export function formatDate(date: Date): string {
 
   return [year, month, day].join('-');
 }
+
+export function bookWithCourse(bookingUrl: string) {
+  window.open(bookingUrl, '_blank');
+}

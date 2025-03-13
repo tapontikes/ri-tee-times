@@ -3,10 +3,10 @@
 export interface Course {
   id: number;
   name: string;
-  requestData: string;
+  request_data: string;
   type: string;
   teeTimes: TeeTime[];
-  bookingUrl: string;
+  booking_url: string;
 }
 
 export interface TeeTime {
