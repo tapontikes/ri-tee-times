@@ -1,3 +1,4 @@
+// navbar.component.scss
 .navbar {
   position: sticky;
   top: 0;
@@ -18,8 +19,8 @@
 
 .search-form {
   display: flex;
-  flex-grow: 1;
   max-width: 1000px;
+  transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
 }
 
 .form-row {
@@ -40,6 +41,7 @@ mat-form-field {
   font-size: 20px;
 }
 
+/* Make date input wider */
 .form-item:first-child mat-form-field {
   width: 180px;
 }
@@ -53,28 +55,96 @@ mat-form-field {
   white-space: nowrap;
 }
 
-/* Responsive adjustments */
+.mobile-menu-toggle {
+  display: none;
+}
+
+/* Mobile styles */
 @media (max-width: 960px) {
   .navbar {
-    flex-direction: column;
+    flex-wrap: wrap;
     height: auto;
+    min-height: 64px;
     padding: 8px 16px;
+    justify-content: space-between;
+  }
+
+  .mobile-menu-toggle {
+    display: block;
+    order: 2;
   }
 
   .logo {
-    margin-bottom: 16px;
+    order: 1;
+    margin-right: 0;
+  }
+
+  .search-form {
+    order: 3;
+    flex-basis: 100%;
+    max-width: 100%;
+    margin-top: 16px;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  .search-form.mobile-expanded {
+    display: block;
+    max-height: 600px; /* Adjust as needed to accommodate your form */
+    opacity: 1;
+    transform: translateY(0);
+    padding-top: 0.5em;
   }
 
   .form-row {
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-item {
+    margin-right: 0;
+    margin-bottom: 12px;
+    width: 100%;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .form-item:first-child mat-form-field,
+  mat-form-field {
+    width: 100%;
+  }
+
+  .nav-links {
+    order: 4;
+    flex-basis: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+    transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  .mobile-nav-links {
+    display: flex;
+    max-height: 200px; /* Adjust based on your navigation height */
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .nav-link {
+    margin-left: 0;
+    margin-bottom: 8px;
+    width: 100%;
   }
 
   .spacer {
     display: none;
-  }
-
-  .nav-link {
-    margin-top: 8px;
   }
 }

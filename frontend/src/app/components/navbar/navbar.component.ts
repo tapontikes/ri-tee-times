@@ -14,6 +14,8 @@ export class NavbarComponent implements OnInit {
   searchForm: FormGroup;
   courses: Course[] = [];
   minDate = new Date();
+  isMobile = false;
+  showMobileMenu = false;
 
   constructor(
     private fb: FormBuilder,
@@ -32,7 +34,24 @@ export class NavbarComponent implements OnInit {
         this.showSearch = !event.url.includes('/course/');
       }
     });
+
+    this.checkScreenSize();
+    window.addEventListener('resize', () => this.checkScreenSize());
   }
+
+// Add these methods
+  checkScreenSize(): void {
+    this.isMobile = window.innerWidth < 960;
+    // Hide mobile menu when resizing to desktop
+    if (!this.isMobile) {
+      this.showMobileMenu = false;
+    }
+  }
+
+  toggleMobileMenu(): void {
+    this.showMobileMenu = !this.showMobileMenu;
+  }
+
 
   ngOnInit(): void {
     // Default to next day if after 5pm
