@@ -92,7 +92,6 @@
 }
 
 .tee-times-wrapper {
-  margin-top: 12px;
   padding: 8px 16px 16px;
 }
 
@@ -120,6 +119,7 @@
   transform-origin: center bottom;
   transition: all 0.2s ease;
   margin-top: 3px;
+  margin-left: 2px
 }
 
 .tee-time-box:hover {
@@ -159,7 +159,6 @@
   text-align: center;
 }
 
-/* Custom scrollbar styling */
 .tee-times-scroll::-webkit-scrollbar {
   height: 6px;
 }
@@ -178,13 +177,19 @@
   background: #a8a8a8;
 }
 
-/* For Firefox */
+.holes-container mat-chip {
+  font-weight: bold !important;
+}
+
+.holes-container mat-chip.mdc-evolution-chip--disabled {
+  font-weight: bold !important;
+  opacity: 1 !important;
+}
+
 .tee-times-scroll {
-  scrollbar-width: thin;
   scrollbar-color: #c1c1c1 #f1f1f1;
 }
 
-/* Responsive styles */
 @media (max-width: 600px) {
   .course-info {
     flex-direction: column;

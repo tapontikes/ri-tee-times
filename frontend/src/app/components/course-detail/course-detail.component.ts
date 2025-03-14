@@ -128,14 +128,6 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
-  filterByHoles(holes: number | null): void {
-    // If same value is clicked again, toggle it off (set to null)
-    if (this.searchParams.holes === holes) {
-      this.searchParams.holes = null;
-    } else {
-      this.searchParams.holes = holes;
-    }
-  }
 
   getFilteredTeeTimes(): TeeTime[] {
     if (!this.teeTimes || !Array.isArray(this.teeTimes)) {
@@ -146,12 +138,93 @@ export class CourseDetailComponent implements OnInit {
     let filteredTimes = this.teeTimes;
 
     // Apply holes filter if selected
-    if (this.searchParams.holes !== undefined && this.searchParams.holes !== null) {
+    if (this.searchParams.holes) {
       filteredTimes = filteredTimes.filter(teeTime =>
         teeTime.holes.includes(this.searchParams.holes as number)
       );
     }
 
     return filteredTimes;
+  }
+
+  getGroupedTeeTimesByHour(): { [key: string]: TeeTime[] } {
+    const filteredTimes = this.getFilteredTeeTimes();
+
+    // First, sort all tee times chronologically
+    const sortedTimes = filteredTimes.sort((a, b) => {
+      const dateA = new Date(a.time);
+      const dateB = new Date(b.time);
+      return dateA.getTime() - dateB.getTime();
+    });
+
+    const groupedTimes: { [key: string]: TeeTime[] } = {};
+
+    sortedTimes.forEach(teeTime => {
+      const date = new Date(teeTime.time);
+      const hour = date.getHours();
+      const hourKey = this.getHourRangeLabel(hour);
+
+      if (!groupedTimes[hourKey]) {
+        groupedTimes[hourKey] = [];
+      }
+
+      groupedTimes[hourKey].push(teeTime);
+    });
+
+    return groupedTimes;
+  }
+
+  getHourRangeLabel(hour: number): string {
+    const nextHour = (hour + 1) % 24;
+    const currentHourLabel = hour === 0 ? '12am' : hour < 12 ? `${hour}am` : hour === 12 ? '12pm' : `${hour - 12}pm`;
+    const nextHourLabel = nextHour === 0 ? '12am' : nextHour < 12 ? `${nextHour}am` : nextHour === 12 ? '12pm' : `${nextHour - 12}pm`;
+
+    return `${currentHourLabel} - ${nextHourLabel}`;
+  }
+
+  getSortedHourGroups(): { label: string, teeTimes: TeeTime[] }[] {
+    const groupedTimes = this.getGroupedTeeTimesByHour();
+    const result = [];
+
+    // Convert the groupedTimes object to an array
+    for (const label in groupedTimes) {
+      if (groupedTimes.hasOwnProperty(label)) {
+        result.push({
+          label: label,
+          teeTimes: groupedTimes[label]
+        });
+      }
+    }
+
+    // Sort by the first hour in each label
+    return result.sort((a, b) => {
+      const hourA = this.getHourFromLabel(a.label);
+      const hourB = this.getHourFromLabel(b.label);
+      return hourA - hourB;
+    });
+  }
+
+  getHourFromLabel(label: string): number {
+    // Extract the starting hour from labels like "7am - 8am"
+    const match = label.match(/(\d+)(am|pm)/);
+    if (!match) return 0;
+
+    let hour = parseInt(match[1], 10);
+    const period = match[2];
+
+    // Convert to 24-hour format for sorting
+    if (period === 'pm' && hour < 12) hour += 12;
+    if (period === 'am' && hour === 12) hour = 0;
+
+    return hour;
+  }
+
+  filterByHoles(holes: number | null): void {
+    // If same value is clicked again, toggle it off (set to null)
+    if (this.searchParams.holes === holes) {
+      this.searchParams.holes = undefined; // Use undefined instead of null
+    } else {
+      this.searchParams.holes = holes === null ? undefined : holes; // Convert null to undefined
+    }
   }
 }

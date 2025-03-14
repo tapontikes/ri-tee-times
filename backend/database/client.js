@@ -60,10 +60,9 @@ class DbClient {
 
             for (const teeTime of teeTimes) {
                 const teeTimeDate = moment(teeTime.time).toISOString();
-
                 const result = await client.query(
                     'INSERT INTO tee_times (course_id, tee_time, holes, spots, start_position) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-                    [courseId, teeTimeDate, JSON.stringify(teeTime.holes), teeTime.spots, teeTime.start || null]
+                    [courseId, teeTimeDate, JSON.stringify(teeTime.holes.sort((a, b) => a - b)), teeTime.spots, teeTime.start || null]
                 );
                 savedTeeTimes.push(result.rows[0]);
             }
@@ -95,7 +94,7 @@ class DbClient {
 
             // Query the database for tee times within the date range
             const result = await client.query(
-                'SELECT * FROM tee_times WHERE tee_time BETWEEN $1 AND $2 ORDER BY tee_time, holes',
+                'SELECT * FROM tee_times WHERE tee_time BETWEEN $1 AND $2 ORDER BY tee_time',
                 [startOfDay, endOfDay]
             );
 
@@ -127,7 +126,7 @@ class DbClient {
             const endOfDay = moment(date).endOf('day').toISOString();
 
             const result = await client.query(
-                'SELECT * FROM tee_times WHERE course_id = $1 AND tee_time BETWEEN $2 AND $3 ORDER BY tee_time, holes',
+                'SELECT * FROM tee_times WHERE course_id = $1 AND tee_time BETWEEN $2 AND $3 ORDER BY tee_time',
                 [courseId, startOfDay, endOfDay]
             );
 

@@ -8,6 +8,57 @@
   margin-bottom: 24px;
 }
 
+.hour-group {
+  margin-bottom: 24px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.hour-group-header {
+  background-color: var(--mat-primary-color, #3f51b5);
+  color: white;
+  padding: 12px 16px;
+  font-weight: 500;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.hour-group-header::before {
+  content: 'schedule';
+  font-family: 'Material Icons';
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+.tee-times-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+/* Add subtle hover state to the tee time cards */
+.tee-time-card {
+  transition: all 0.2s ease;
+}
+
+.tee-time-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tee-time-holes mat-chip {
+  font-weight: bold !important;
+}
+
+.tee-time-holes mat-chip.mdc-evolution-chip--disabled {
+  font-weight: bold !important;
+  opacity: 1 !important;
+}
+
 .loading-container, .error-container, .no-results {
   display: flex;
   flex-direction: column;
@@ -83,7 +134,7 @@
 }
 
 .tee-time-content {
-  padding: 20px;
+  padding: 6px;
   display: flex;
   flex-direction: column;
   align-items: center;

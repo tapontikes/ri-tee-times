@@ -47,7 +47,7 @@
                 <div class="spots">{{ teeTime.spots }} spots</div>
                 <div class="holes-container">
                   <mat-chip-set>
-                    <mat-chip *ngFor="let hole of teeTime.holes" [highlighted]="false">
+                    <mat-chip *ngFor="let hole of teeTime.holes" [highlighted]="false" disabled="true">
                       {{ hole }}
                     </mat-chip>
                   </mat-chip-set>

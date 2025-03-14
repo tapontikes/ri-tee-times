@@ -47,19 +47,24 @@
     </div>
 
     <div *ngIf="!loading && !error && getFilteredTeeTimes().length > 0" class="tee-times-container">
-      <div class="tee-times-grid">
-        <div *ngFor="let teeTime of getFilteredTeeTimes()" class="tee-time-card">
-          <div class="tee-time-content">
-            <div class="tee-time-time">{{ teeTime.time | date:'shortTime' }}</div>
-            <div class="tee-time-info">
-              <div class="tee-time-spots">{{ teeTime.spots }} spots available</div>
-              <div class="tee-time-holes">
-                <mat-chip-set>
-                  <mat-chip *ngFor="let hole of teeTime.holes"
-                            [highlighted]="false">
-                    {{ hole }} Holes
-                  </mat-chip>
-                </mat-chip-set>
+      <!-- Hour group boxes -->
+      <div *ngFor="let hourGroup of getSortedHourGroups()" class="hour-group">
+        <div class="hour-group-header">{{ hourGroup.label }} Start</div>
+        <div class="tee-times-grid">
+          <div *ngFor="let teeTime of hourGroup.teeTimes" class="tee-time-card">
+            <div class="tee-time-content">
+              <div class="tee-time-time">{{ teeTime.time | date:'shortTime' }}</div>
+              <div class="tee-time-info">
+                <div class="tee-time-spots">{{ teeTime.spots }} spots available</div>
+                <div class="tee-time-holes">
+                  <mat-chip-set>
+                    <mat-chip *ngFor="let hole of teeTime.holes"
+                              [highlighted]="false"
+                              disabled="true">
+                      {{ hole }} Holes
+                    </mat-chip>
+                  </mat-chip-set>
+                </div>
               </div>
             </div>
           </div>
