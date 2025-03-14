@@ -28,8 +28,6 @@ async function refreshTeeTimesForCourse(courseId, date) {
             return;
         }
 
-        logger.info(`Refreshing tee times for course ${course.name} on ${date}`);
-
         let teeTimes = [];
 
         // Call the appropriate service based on the provider
@@ -56,9 +54,7 @@ async function refreshTeeTimesForCourse(courseId, date) {
             return;
         }
 
-        // Save the tee times to the database
         await client.saveTeeTimes(course.id, teeTimes, date);
-        logger.info(`Saved ${teeTimes.length} tee times for course ${course.name} on ${date}`);
     } catch (error) {
         logger.error(`Error refreshing tee times for course ${courseId}:`, error);
     }
@@ -85,20 +81,51 @@ async function refreshAllCoursesByDate(date) {
 /**
  * Create a job to refresh tee times for all courses
  */
-function refreshAllCoursesSevenDays() {
+function refreshAllTeeTimesJob() {
     return async () => {
+        const errors = [];
+        let successCount = 0;
         try {
             const courses = await client.getAllCourses();
-            logger.info(`Refreshing tee times for all ${courses.length} courses for the next 7 days`);
 
             for (const course of courses) {
-                for (let i = 0; i < 7; i++) {  // Loop over the next 7 days
-                    const targetDate = moment().add(i, 'days');
-                    await refreshTeeTimesForCourse(course.id, targetDate);
+                try {
+                    for (let i = 0; i < 7; i++) {  // Loop over the next 7 days
+                        const targetDate = moment().add(i, 'days');
+                        await refreshTeeTimesForCourse(course.id, targetDate);
+                    }
+                    successCount++;
+                } catch (error) {
+                    errors.push({
+                        courseId: course.id,
+                        courseName: course.name,
+                        error: error.message
+                    });
                 }
             }
+
+            // Log summary after completion
+            logger.info(`Refreshed ${successCount} out of ${courses.length} courses for the next 7 days`);
+
+            // Log errors if any
+            if (errors.length > 0) {
+                logger.error(`Encountered ${errors.length} errors while refreshing tee times:`, errors);
+            }
         } catch (error) {
-            logger.error('Error refreshing tee times for all courses:', error);
+            logger.error('Error getting courses for tee time refresh:', error);
+        }
+    };
+}
+
+/**
+ * Create a job to delete all tee times at 11:59pm for the current day
+ */
+function removeOldTeeTimesJob() {
+    return async () => {
+        try {
+            await client.deleteAllTeeTimesForCurrentDay();
+        } catch (error) {
+            logger.error('Error cleaning up tee times:', error);
         }
     };
 }
@@ -107,10 +134,13 @@ function refreshAllCoursesSevenDays() {
  * Initialize all tee time jobs
  */
 async function initializeJobs() {
-    // Schedule jobs for each provider
+    // Schedule jobs for removing old tee times at the end of the day
+    scheduler.scheduleJob('remove-old-tee-times', '59 23 * * *', removeOldTeeTimesJob());
+
+    // Schedule refresh jobs
     for (const [provider, providerConfig] of Object.entries(config.apis)) {
         const jobName = `refresh-${provider}-tee-times`;
-        scheduler.scheduleJob(jobName, providerConfig.cronSchedule, refreshAllCoursesSevenDays());
+        scheduler.scheduleJob(jobName, providerConfig.cronSchedule, refreshAllTeeTimesJob());
     }
 }
 
@@ -118,5 +148,5 @@ module.exports = {
     initializeJobs,
     refreshAllCoursesByDate,
     refreshTeeTimesForCourse,
-    refreshAllCoursesSevenDays
+    refreshAllTeeTimesJob,
 };

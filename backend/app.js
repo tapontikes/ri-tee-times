@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'production') {
 const teeTimeRouter = require('./routes/teetimes'); // New tee time routes
 
 // Import database and scheduler
-const {initializeJobs, refreshAllCoursesSevenDays} = require('./jobs/teetime');
+const {initializeJobs, refreshAllTeeTimesJob} = require('./jobs/teetime');
 const {initDatabase} = require('./database/init')
 
 const app = express();
@@ -51,8 +51,9 @@ app.use('/api/tee-times', teeTimeRouter);
         }
         if (process.env.REFRESH_ON_STARTUP === 'true') {
             logger.info('Running refresh on startup.');
-            await (refreshAllCoursesSevenDays())();
+            await (refreshAllTeeTimesJob())();
         }
+
     } catch (error) {
         logger.error('Error during initialization:', error);
     }

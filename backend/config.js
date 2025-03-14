@@ -9,23 +9,19 @@ module.exports = {
         ssl: false
     },
 
-    // API configurations
+    // Refresh every 10 min
     apis: {
         foreUp: {
-            // Add any specific ForeUp API configuration here
-            cronSchedule: process.env.FOREUP_CRON || '0 */6 * * *'  // Default: every 6 hours
+            cronSchedule: process.env.FOREUP_CRON || '*/10 * * * *'
         },
         teeItUp: {
-            // Add any specific TeeItUp API configuration here
-            cronSchedule: process.env.TEEITUP_CRON || '0 */6 * * *'  // Default: every 6 hours
+            cronSchedule: process.env.TEEITUP_CRON || '*/10 * * * *'
         },
         teeSnap: {
-            // Add any specific TeeSnap API configuration here
-            cronSchedule: process.env.TEESNAP_CRON || '0 */6 * * *'  // Default: every 6 hours
+            cronSchedule: process.env.TEESNAP_CRON || '*/10 * * * *'
         },
         teeWire: {
-            // Add any specific TeeWire API configuration here
-            cronSchedule: process.env.TEEWIRE_CRON || '0 */6 * * *'  // Default: every 6 hours
+            cronSchedule: process.env.TEEWIRE_CRON || '*/10 * * * *'
         }
     },
 
