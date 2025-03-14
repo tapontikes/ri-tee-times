@@ -190,7 +190,14 @@
   scrollbar-color: #c1c1c1 #f1f1f1;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1050px) {
+  .container {
+    max-width: 98vw;
+    margin: 0 auto;
+    padding: 16px 0;
+    user-select: none;
+  }
+
   .course-info {
     flex-direction: column;
     align-items: flex-start;
@@ -201,9 +208,8 @@
     align-self: flex-start;
   }
 
-  .tee-time-box {
-    width: 110px;
-    padding: 10px;
+  .content-container {
+    padding: 16px 0;
   }
 
 }
