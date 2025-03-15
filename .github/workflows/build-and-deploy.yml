@@ -14,16 +14,18 @@ jobs:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build the Docker image with datetime tag
+      - name: Build the Docker image with latest tag
         run: |
-          IMAGE_TAG="tapontikes/golf-ri.com:$(date +'%Y-%m-%d_%H-%M-%S')"
+          IMAGE_TAG="tapontikes/golf-ri.com:latest"
+          
+          # Build the Docker image and tag it as 'latest'
           docker build . --file Dockerfile --tag $IMAGE_TAG
-          docker tag $IMAGE_TAG tapontikes/golf-ri.com:latest
 
       - name: Push the Docker image
         run: |
-          DATETIME_TAG=$(date +'%Y-%m-%d_%H-%M-%S')
-          IMAGE_TAG="tapontikes/golf-ri.com:$DATETIME_TAG"
+          IMAGE_TAG="tapontikes/golf-ri.com:latest"
+          
+          # Push the image with the 'latest' tag
           docker push $IMAGE_TAG
 
   deploy:
@@ -41,16 +43,12 @@ jobs:
         run: |
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SERVER_IP }} << 'EOF'
           cd /home/tom/ri-tee-times/
-          
-          DATETIME_TAG=$(date +'%Y-%m-%d_%H-%M-%S')
-          docker pull tapontikes/golf-ri.com:$DATETIME_TAG
-          docker tag tapontikes/golf-ri.com:$DATETIME_TAG tapontikes/golf-ri.com:latest
-          
+                    
           # Stop and remove the old app container (but keep the PostgreSQL container running)
           docker stop ri-tee-times-app-1          
           docker rm ri-tee-times-app-1
           docker image prune -f
-          
+
           # Restart the application container with the new image
           docker-compose up -d app
           
