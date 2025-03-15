@@ -11,5 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag tapontikes/golf-ri.com:$(date +%s)
+      run: |
+        IMAGE_TAG=tapontikes/golf-ri.com:latest
+        docker build . --file Dockerfile --tag $IMAGE_TAG
+
+    - name: Push the Docker image
+      run: |
+        IMAGE_TAG=tapontikes/golf-ri.com:latest
+        docker push $IMAGE_TAG
