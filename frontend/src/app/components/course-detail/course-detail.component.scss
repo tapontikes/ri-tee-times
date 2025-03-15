@@ -40,7 +40,11 @@
   padding: 16px;
 }
 
-/* Add subtle hover state to the tee time cards */
+.hole-buttons {
+  display: flex;
+  gap: 10px
+}
+
 .tee-time-card {
   transition: all 0.2s ease;
 }
@@ -207,6 +211,7 @@ mat-form-field {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    gap: 10px
   }
 
   .hole-buttons button {
