@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Course, TeeTime} from "../model/models";
+import {NotFound} from "http-errors";
+import {findCourseById} from "../util/utils";
 
 @Injectable({
   providedIn: 'root'
@@ -27,8 +29,14 @@ export class DataSharingService {
     return this.courses;
   }
 
-  getCourseById(id: number): Course | null {
-    return this.courses.find(course => course.id === id) || null;
+  getCourseById(id: number): Course {
+    const course = findCourseById(this.courses, id);
+    if (!course) {
+      throw new NotFound(
+        `Course with ID ${id} not found`);
+    }
+    return course;
+
   }
 
   getTeeTimesByCourseId(courseId: number): TeeTime[] {

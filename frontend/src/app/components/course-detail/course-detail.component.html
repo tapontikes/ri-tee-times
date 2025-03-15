@@ -6,52 +6,56 @@
     </button>
   </div>
 
-  <div *ngIf="loading" class="loading-container">
-    <mat-spinner diameter="50"></mat-spinner>
-    <p>Loading course information...</p>
-  </div>
-
   <div *ngIf="error" class="error-container">
     <mat-icon color="warn">error</mat-icon>
     <p>Failed to load course information. Please try again later.</p>
   </div>
 
-  <div *ngIf="!loading && !error && course" class="course-detail">
+  <div *ngIf="!error && course" class="course-detail">
     <div class="course-header">
       <h1 class="course-title">{{ course.name }}</h1>
       <h2 class="course-subtitle">Available Tee Times for {{ searchParams.date | date:'fullDate' }}</h2>
       <div class="filter-options">
         <div class="filter-group">
-          <button (click)="filterByHoles(9)"
-                  [class.active]="searchParams.holes === 9"
-                  mat-raised-button>
-            9 Holes
-          </button>
-          <button (click)="filterByHoles(18)"
-                  [class.active]="searchParams.holes === 18"
-                  mat-raised-button>
-            18 Holes
-          </button>
-          <button (click)="filterByHoles(null)"
-                  [class.active]="searchParams.holes === undefined || searchParams.holes === null"
-                  mat-raised-button>
-            All
-          </button>
+          <div class="hole-buttons">
+            <button (click)="filterByHoles(9)"
+                    [class.active]="searchParams.holes === 9"
+                    mat-raised-button>
+              9 Holes
+            </button>
+            <button (click)="filterByHoles(18)"
+                    [class.active]="searchParams.holes === 18"
+                    mat-raised-button>
+              18 Holes
+            </button>
+            <button (click)="filterByHoles(null)"
+                    [class.active]="searchParams.holes === undefined || searchParams.holes === null"
+                    mat-raised-button>
+              All
+            </button>
+          </div>
           <mat-divider [vertical]="true"></mat-divider>
-          <button (click)="bookWithCourse(course.booking_url)" mat-raised-button>Book</button>
+          <mat-form-field appearance="outline">
+            <mat-label>Select Course</mat-label>
+            <mat-select (selectionChange)="changeCourse($event.value)" [value]="courseId">
+              <mat-option *ngFor="let c of allCourses" [value]="c.id">
+                {{ c.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </div>
     </div>
-    <div *ngIf="getFilteredTeeTimes().length === 0 && !error && !loading" class="no-results">
+    <div *ngIf="getFilteredTeeTimes().length === 0 && !error" class="no-results">
       <p>No tee times available for the selected criteria.</p>
     </div>
 
-    <div *ngIf="!loading && !error && getFilteredTeeTimes().length > 0" class="tee-times-container">
-      <!-- Hour group boxes -->
+    <div *ngIf="!error && getFilteredTeeTimes().length > 0" class="tee-times-container">
       <div *ngFor="let hourGroup of getSortedHourGroups()" class="hour-group">
         <div class="hour-group-header">{{ hourGroup.label }}</div>
         <div class="tee-times-grid">
-          <div *ngFor="let teeTime of hourGroup.teeTimes" class="tee-time-card">
+          <div (click)="bookWithCourse(this.course.booking_url)" *ngFor="let teeTime of hourGroup.teeTimes"
+               class="tee-time-card">
             <div class="tee-time-content">
               <div class="tee-time-time">{{ teeTime.time | date:'shortTime' }}</div>
               <div class="tee-time-info">

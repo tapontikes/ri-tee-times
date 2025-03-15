@@ -1,62 +1,61 @@
 <div class="container">
-  <h1 class="page-title">Available Tee Times</h1>
-  <h2 class="date-subtitle">
-    {{ searchParams.date | date:'fullDate' }}
-    <span *ngIf="searchParams.startTime && searchParams.endTime">
+    <h1 class="page-title">Available Tee Times</h1>
+    <h2 class="date-subtitle">
+        {{ searchParams.date | date:'fullDate' }}
+        <span *ngIf="searchParams.startTime && searchParams.endTime">
       | {{ searchParams.startTime }} to {{ searchParams.endTime }}
     </span>
-    <span *ngIf="searchParams.holes">
+        <span *ngIf="searchParams.holes">
       | {{ searchParams.holes }} Holes
     </span>
-  </h2>
+    </h2>
 
-  <div *ngIf="loading" class="loading-container">
-    <mat-spinner diameter="50"></mat-spinner>
-    <p>Loading tee times...</p>
-  </div>
-
-  <div *ngIf="error" class="error-container">
-    <mat-icon color="warn">error</mat-icon>
-    <p>Failed to load tee times. Please try again later.</p>
-    <button (click)="loadTeeTimes()" color="primary" mat-raised-button>Retry</button>
-  </div>
-
-  <div *ngIf="!loading && !error && teeTimes.length === 0" class="no-results">
-    <p>No tee times available for the selected criteria.</p>
-  </div>
-
-  <div *ngIf="!loading && !error && teeTimes.length > 0" class="courses-container">
-    <div *ngFor="let course of courses" class="course-row">
-      <div class="course-info">
-        <h3 class="course-name">{{ course.name }}</h3>
-        <div class="course-actions">
-          <span (click)="goToCourseDetail(course.id)" class="course-button">See all times</span>
-          <span (click)="bookWithCourse(course.booking_url)" class="course-button">Book</span>
-        </div>
-      </div>
-      <div class="tee-times-wrapper">
-        <div *ngIf="getTeeTimesByCourseId(course.id).length === 0" class="no-tee-times">
-          No available tee times matching your criteria.
-        </div>
-
-        <div *ngIf="getTeeTimesByCourseId(course.id).length > 0" class="tee-times-scroll">
-          <div class="tee-times-row">
-            <div *ngFor="let teeTime of getTeeTimesByCourseId(course.id)" class="tee-time-wrapper">
-              <div class="tee-time-box">
-                <div class="time">{{ teeTime.time | date:'shortTime' }}</div>
-                <div class="spots">{{ teeTime.spots }} spots</div>
-                <div class="holes-container">
-                  <mat-chip-set>
-                    <mat-chip *ngFor="let hole of teeTime.holes" [highlighted]="false" disabled="true">
-                      {{ hole }}
-                    </mat-chip>
-                  </mat-chip-set>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div *ngIf="loading" class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading tee times...</p>
     </div>
-  </div>
+
+    <div *ngIf="error" class="error-container">
+        <mat-icon color="warn">error</mat-icon>
+        <p>Failed to load tee times. Please try again later.</p>
+        <button (click)="loadTeeTimes()" color="primary" mat-raised-button>Retry</button>
+    </div>
+
+    <div *ngIf="!loading && !error && teeTimes.length === 0" class="no-results">
+        <p>No tee times available for the selected criteria.</p>
+    </div>
+
+    <div *ngIf="!loading && !error && teeTimes.length > 0" class="courses-container">
+        <!-- Filter courses directly in the ngFor -->
+        <div *ngFor="let course of getFilteredCourses()" class="course-row">
+            <div class="course-info">
+                <h3 class="course-name">{{ course.name }}</h3>
+                <div class="course-actions">
+                    <span (click)="goToCourseDetail(course.id)" class="course-button">See all times</span>
+                </div>
+            </div>
+
+            <div class="tee-times-wrapper">
+                <div class="tee-times-scroll">
+                    <div class="tee-times-row">
+                        <div *ngFor="let teeTime of getTeeTimesByCourseId(course.id)" class="tee-time-wrapper">
+                            <div (click)="bookWithCourse(course.booking_url)" class="tee-time-box">
+                                <div class="time">{{ teeTime.time | date:'shortTime' }}</div>
+                                <div class="spots">{{ teeTime.spots }} spots</div>
+                                <div class="holes-container">
+                                    <mat-chip-set>
+                                        <mat-chip *ngFor="let hole of teeTime.holes"
+                                                  [highlighted]="false"
+                                                  disabled="true">
+                                            {{ hole }}
+                                        </mat-chip>
+                                    </mat-chip-set>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
