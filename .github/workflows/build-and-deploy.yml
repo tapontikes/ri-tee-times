@@ -44,5 +44,5 @@ jobs:
         docker pull tapontikes/golf-ri.com:latest
         docker stop golf-ri || true
         docker rm golf-ri || true
-        docker run -d --name golf-ri -p 80:80 tapontikes/golf-ri.com:latest
+        docker run -d --name golf-ri -p 127.0.0.1:3000:3000 tapontikes/golf-ri.com:latest
         EOF
