@@ -1,0 +1,25 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.DEPLOY_SERVER_IP }} >> ~/.ssh/known_hosts
+
+    - name: Deploy to server
+      run: |
+        ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SERVER_IP }} << 'EOF'
+        docker pull tapontikes/golf-ri.com:latest
+        docker stop golf-ri || true
+        docker rm golf-ri || true
+        docker run -d --name golf-ri -p 80:80 tapontikes/golf-ri.com:latest
+        EOF
