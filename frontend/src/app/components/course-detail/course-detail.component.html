@@ -49,7 +49,7 @@
     <div *ngIf="!loading && !error && getFilteredTeeTimes().length > 0" class="tee-times-container">
       <!-- Hour group boxes -->
       <div *ngFor="let hourGroup of getSortedHourGroups()" class="hour-group">
-        <div class="hour-group-header">{{ hourGroup.label }} Start</div>
+        <div class="hour-group-header">{{ hourGroup.label }}</div>
         <div class="tee-times-grid">
           <div *ngFor="let teeTime of hourGroup.teeTimes" class="tee-time-card">
             <div class="tee-time-content">

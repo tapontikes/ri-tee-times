@@ -171,6 +171,17 @@
 
 /* Responsive styles */
 @media (max-width: 600px) {
+  ::ng-deep .tee-time-holes .mdc-evolution-chip-set__chips {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  ::ng-deep .tee-time-holes .mat-mdc-chip {
+    margin: 2px 0 !important;
+    font-size: 0.65rem !important;
+    height: 20px !important;
+  }
   .tee-times-grid {
     grid-template-columns: 1fr 1fr;
   }
