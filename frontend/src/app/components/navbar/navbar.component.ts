@@ -10,6 +10,7 @@ import {formatDate} from "../../util/utils";
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
+  showHamburger = true;
   showSearch = true;
   searchForm: FormGroup;
   courses: Course[] = [];
@@ -30,8 +31,9 @@ export class NavbarComponent implements OnInit {
 
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        // Hide search on course detail page
         this.showSearch = !event.url.includes('/course/');
+        this.showHamburger = !event.url.includes('/course/');
+        this.showMobileMenu = false;
       }
     });
 

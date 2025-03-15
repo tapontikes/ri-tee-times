@@ -2,7 +2,10 @@
   <span class="logo" routerLink="/">Golf Tee Times</span>
 
   <!-- Hamburger icon for mobile -->
-  <button (click)="toggleMobileMenu()" class="mobile-menu-toggle" mat-icon-button>
+  <button (click)="toggleMobileMenu()"
+          *ngIf="showHamburger"
+          class="mobile-menu-toggle"
+          mat-icon-button>
     <mat-icon>{{ showMobileMenu ? 'close' : 'menu' }}</mat-icon>
   </button>
 
