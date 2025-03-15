@@ -22,7 +22,8 @@ jobs:
 
       - name: Push the Docker image
         run: |
-          IMAGE_TAG="tapontikes/golf-ri.com:$(date +'%Y-%m-%d_%H-%M-%S')"
+          DATETIME_TAG=$(date +'%Y-%m-%d_%H-%M-%S')
+          IMAGE_TAG="tapontikes/golf-ri.com:$DATETIME_TAG"
           docker push $IMAGE_TAG
 
   deploy:
