@@ -24,7 +24,6 @@ jobs:
         run: |
           IMAGE_TAG="tapontikes/golf-ri.com:$(date +'%Y-%m-%d_%H-%M-%S')"
           docker push $IMAGE_TAG
-          docker push tapontikes/golf-ri.com:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -41,6 +40,10 @@ jobs:
         run: |
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SERVER_IP }} << 'EOF'
           cd /home/tom/ri-tee-times/
+          
+          DATETIME_TAG=$(date +'%Y-%m-%d_%H-%M-%S')
+          docker pull tapontikes/golf-ri.com:$DATETIME_TAG
+          docker tag tapontikes/golf-ri.com:$DATETIME_TAG tapontikes/golf-ri.com:latest
           
           # Stop and remove the old app container (but keep the PostgreSQL container running)
           docker stop ri-tee-times-app-1          
