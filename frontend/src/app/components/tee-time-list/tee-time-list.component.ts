@@ -141,6 +141,12 @@ export class TeeTimeListComponent implements OnInit {
     return !this.searchParams.holes || teeTime.holes.includes(this.searchParams.holes);
   }
 
+  getFilteredCourses(): Course[] {
+    return this.courses.filter(course =>
+      this.getTeeTimesByCourseId(course.id).length > 0
+    );
+  }
+
   getFilteredTeeTimes(): TeeTime[] {
     return this.teeTimes.filter(teeTime =>
       this.isTimeInRange(teeTime.time) &&

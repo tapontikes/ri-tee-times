@@ -1,3 +1,5 @@
+import {Course} from "../model/models";
+
 export function formatDate(date: Date): string {
   const d = new Date(date);
   let month = '' + (d.getMonth() + 1);
@@ -17,3 +19,12 @@ export function formatDate(date: Date): string {
 export function bookWithCourse(bookingUrl: string) {
   window.open(bookingUrl, '_blank');
 }
+
+export function findCourseById(courses: Course[], id: number): Course {
+  const course = courses.find(course => course.id === id);
+  if (!course) {
+    throw new Error('Course not found');
+  }
+  return course;
+}
+
