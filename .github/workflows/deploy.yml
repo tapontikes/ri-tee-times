@@ -3,6 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches: [ "master" ]
+  workflow_dispatch: # Allows manual deployment
 
 jobs:
   deploy:
@@ -15,7 +16,7 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.DEPLOY_SERVER_IP }} >> ~/.ssh/known_hosts
 
-    - name: Deploy to server
+    - name: Deploy to Server
       run: |
         ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SERVER_IP }} << 'EOF'
         docker pull tapontikes/golf-ri.com:latest
