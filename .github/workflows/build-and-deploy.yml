@@ -18,6 +18,7 @@ jobs:
         run: |
           IMAGE_TAG="tapontikes/golf-ri.com:$(date +'%Y-%m-%d_%H-%M-%S')"
           docker build . --file Dockerfile --tag $IMAGE_TAG
+          docker tag $IMAGE_TAG tapontikes/golf-ri.com:latest
 
       - name: Push the Docker image
         run: |
@@ -42,7 +43,7 @@ jobs:
           
           DATETIME_TAG=$(date +'%Y-%m-%d_%H-%M-%S')
           docker pull tapontikes/golf-ri.com:$DATETIME_TAG
-          docker tag tapontikes/golf-ri.com:$DATETIME_TAG latest
+          docker tag tapontikes/golf-ri.com:$DATETIME_TAG tapontikes/golf-ri.com:latest
           
           # Stop and remove the old app container (but keep the PostgreSQL container running)
           docker stop ri-tee-times-app-1          
