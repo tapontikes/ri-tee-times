@@ -47,7 +47,7 @@ jobs:
           # Stop and remove the old app container (but keep the PostgreSQL container running)
           docker stop ri-tee-times-app-1          
           docker rm ri-tee-times-app-1
-          docker image prune -f
+          docker image rm tapontikes/golf-ri.com:latest
 
           # Restart the application container with the new image
           docker-compose up -d app
