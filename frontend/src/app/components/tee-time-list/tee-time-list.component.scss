@@ -210,5 +210,15 @@
   .content-container {
     padding: 16px 0;
   }
+  .course-name {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .booking-badge {
+    margin-left: 0 !important;
+    margin-top: 5px;
+  }
 
 }

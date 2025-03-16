@@ -1,7 +1,22 @@
 .dialog-container {
   position: relative;
   width: 100%;
-  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+mat-dialog-content {
+  flex: 1;
+  overflow-y: auto;
+  margin: 0;
+  padding: 16px;
+  max-height: none;
+}
+
+mat-dialog-actions {
+  padding: 8px 24px;
+  margin: 0;
 }
 
 .dialog-header {
@@ -84,7 +99,7 @@
   margin-bottom: 3px;
 }
 
-.full-width {
+.mobile-form-width {
   width: 100%;
 }
 

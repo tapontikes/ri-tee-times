@@ -13,7 +13,7 @@
   <form (ngSubmit)="search()" *ngIf="showSearch" [class.mobile-expanded]="showMobileMenu" [formGroup]="searchForm"
         class="search-form">
     <div class="form-row">
-      <div class="form-item full-width">
+      <div class="form-item mobile-form-width">
         <mat-form-field appearance="outline">
           <mat-label style="color: white;">Date</mat-label>
           <input [matDatepicker]="picker" [min]="minDate" formControlName="date" matInput style="color: white;">
@@ -22,21 +22,22 @@
         </mat-form-field>
       </div>
 
-      <div class="form-item full-width">
+      <div class="form-item mobile-form-width">
         <mat-form-field appearance="outline">
           <mat-label style="color: white;">Start Time</mat-label>
           <input formControlName="startTime" matInput style="color: white;" type="time">
         </mat-form-field>
       </div>
 
-      <div class="form-item full-width">
+      <div class="form-item mobile-form-width">
         <mat-form-field appearance="outline">
           <mat-label style="color: white;">End Time</mat-label>
           <input formControlName="endTime" matInput style="color: white;" type="time">
         </mat-form-field>
       </div>
 
-      <button class="full-width" mat-raised-button style="color: white; background-color: #9c27b0;" type="submit">
+      <button class="mobile-form-width" mat-raised-button style="color: white; background-color: #9c27b0;"
+              type="submit">
         Search
       </button>
     </div>

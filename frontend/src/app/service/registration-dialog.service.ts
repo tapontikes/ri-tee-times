@@ -28,7 +28,7 @@ export class ReservationDialogService {
   private bookWithTeesnapDialog(course: Course, teeTime: TeeTime,): Observable<any> {
     const dialogRef = this.dialog.open(BookWithTeesnapComponent, {
       width: '30em',
-      maxHeight: '100vh',
+      maxHeight: '90vh',
       disableClose: true,
       data: {
         course,
