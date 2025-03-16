@@ -5,6 +5,7 @@ import {Course, TeeTime, TeeTimeSearchParams} from "../../model/models";
 import {TeeTimeService} from "../../service/teetime.service";
 import {DataSharingService} from "../../service/data-sharing.service";
 import {bookWithCourse} from "../../util/utils";
+import {ReservationService} from "../../service/registration.service";
 
 @Component({
     selector: 'app-course-detail',
@@ -21,7 +22,7 @@ export class CourseDetailComponent implements OnInit {
     bookWithCourse = bookWithCourse;
 
     constructor(
-        private teeTimeService: TeeTimeService,
+        private reservationService: ReservationService,
         private dataSharingService: DataSharingService,
         private route: ActivatedRoute,
         private router: Router,
@@ -178,4 +179,25 @@ export class CourseDetailComponent implements OnInit {
             this.searchParams.holes = holes === null ? undefined : holes; // Convert null to undefined
         }
     }
+
+  handleTeeTimeClick(teeTime: TeeTime): void {
+    // Check if this is a Teesnap course
+    if (this.course?.type === 'teesnap') {
+      this.reservationService.openTeesnapReservationDialog(
+        this.course,
+        teeTime,
+        this.searchParams.date
+      ).subscribe(result => {
+        if (result && result.success) {
+          // Handle successful reservation
+          console.log('Teesnap reservation successful:', result);
+        }
+      });
+    } else {
+      // For non-Teesnap courses, just use the existing booking method
+      if (this.course) {
+        this.bookWithCourse(this.course.booking_url);
+      }
+    }
+  }
 }

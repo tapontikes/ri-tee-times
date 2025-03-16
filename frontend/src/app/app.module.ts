@@ -33,6 +33,8 @@ import {AdminComponent} from './components/admin/admin.component';
 import {AppRoutingModule} from './app-routing.module';
 import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
 import {CourseDetailComponent} from "./components/course-detail/course-detail.component";
+import {TeesnapModalComponent} from "./components/model/teesnap-modal/teesnap-modal.component";
+import {MatDialogActions, MatDialogContent} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import {CourseDetailComponent} from "./components/course-detail/course-detail.co
     NavbarComponent,
     TeeTimeListComponent,
     CourseDetailComponent,
-    AdminComponent
+    AdminComponent,
+    TeesnapModalComponent
   ],
   imports: [
     BrowserModule,
@@ -69,7 +72,9 @@ import {CourseDetailComponent} from "./components/course-detail/course-detail.co
     MatDividerModule,
     MatButtonToggleModule,
     MatMenuTrigger,
-    MatMenu
+    MatMenu,
+    MatDialogContent,
+    MatDialogActions,
   ],
   providers: [],
   bootstrap: [AppComponent]

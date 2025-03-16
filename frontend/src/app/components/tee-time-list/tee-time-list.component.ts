@@ -70,7 +70,7 @@ export class TeeTimeListComponent implements OnInit {
       (coursesData) => {
         this.courses = coursesData;
 
-        // Store courses in the sharing service
+        // Store courses in the sharing teetimes
         this.dataSharingService.setCourses(this.courses);
       },
       (error) => {
@@ -100,7 +100,7 @@ export class TeeTimeListComponent implements OnInit {
           return bTeeTimesCount - aTeeTimesCount;
         });
 
-        // Store tee times in the sharing service
+        // Store tee times in the sharing teetimes
         this.dataSharingService.setTeeTimes(this.teeTimes);
         setTimeout(() => {
           this.loading = false;
