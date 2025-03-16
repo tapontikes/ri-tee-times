@@ -50,6 +50,6 @@ jobs:
           docker image rm tapontikes/golf-ri.com:latest
 
           # Restart the application container with the new image
-          docker-compose up -d app
+          docker compose up -d app
           
           EOF
