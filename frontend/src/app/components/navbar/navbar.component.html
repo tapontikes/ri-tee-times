@@ -36,8 +36,14 @@
         </mat-form-field>
       </div>
 
-      <button class="mobile-form-width" mat-raised-button style="color: white; background-color: #9c27b0;"
-              type="submit">
+      <div class="form-item full-width">
+        <mat-button-toggle-group formControlName="holes">
+          <mat-button-toggle [value]="9">9 Holes</mat-button-toggle>
+          <mat-button-toggle [value]="18">18 Holes</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      <button class="full-width" color="accent" mat-raised-button style="background-color: #9c27b0" type="submit">
         Search
       </button>
     </div>
