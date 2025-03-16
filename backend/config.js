@@ -12,16 +12,16 @@ module.exports = {
     // Refresh every 10 min
     apis: {
         foreUp: {
-            cronSchedule: process.env.FOREUP_CRON || '*/10 * * * *'
+            cronSchedule: process.env.FOREUP_CRON || '*/20 * * * *'
         },
         teeItUp: {
-            cronSchedule: process.env.TEEITUP_CRON || '*/10 * * * *'
+            cronSchedule: process.env.TEEITUP_CRON || '*/20 * * * *'
         },
         teeSnap: {
-            cronSchedule: process.env.TEESNAP_CRON || '*/10 * * * *'
+            cronSchedule: process.env.TEESNAP_CRON || '*/20 * * * *'
         },
         teeWire: {
-            cronSchedule: process.env.TEEWIRE_CRON || '*/10 * * * *'
+            cronSchedule: process.env.TEEWIRE_CRON || '*/20 * * * *'
         }
     },
 
