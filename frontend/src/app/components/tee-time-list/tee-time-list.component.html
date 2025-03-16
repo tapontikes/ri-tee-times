@@ -29,7 +29,15 @@
     <!-- Filter courses directly in the ngFor -->
     <div *ngFor="let course of getFilteredCourses()" class="course-row">
       <div class="course-info">
-        <h3 class="course-name">{{ course.name }}</h3>
+        <h3 class="course-name">
+          {{ course.name }}
+          <span *ngIf="course.provider === 'teesnap'" class="booking-badge badge">
+            Book in App
+          </span>
+          <span *ngIf="course.provider !== 'teesnap'" class="booking-badge badge">
+            Book with Course
+          </span>
+        </h3>
         <div class="course-actions">
           <span (click)="goToCourseDetail(course.id)" class="course-button">See all times</span>
         </div>
