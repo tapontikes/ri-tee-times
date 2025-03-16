@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Specify the container name and service name
+# Specify the container name and teetimes name
 SERVICE_NAME="app"
 CONTAINER_NAME="tee-times"
 

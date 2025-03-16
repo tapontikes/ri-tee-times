@@ -1,7 +1,7 @@
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 
@@ -33,6 +33,15 @@ import {AdminComponent} from './components/admin/admin.component';
 import {AppRoutingModule} from './app-routing.module';
 import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
 import {CourseDetailComponent} from "./components/course-detail/course-detail.component";
+import {BookWithTeesnapComponent} from "./components/modal/book-with-teesnap/book-with-teesnap.component";
+import {MatDialogActions, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
+import {SessionService} from "./service/session.service";
+import {firstValueFrom} from "rxjs";
+import {SessionInterceptor} from "./interceptors/session.interceptor";
+
+export function initializeSession(sessionService: SessionService) {
+  return () => firstValueFrom(sessionService.initializeSession());
+}
 
 @NgModule({
   declarations: [
@@ -40,7 +49,8 @@ import {CourseDetailComponent} from "./components/course-detail/course-detail.co
     NavbarComponent,
     TeeTimeListComponent,
     CourseDetailComponent,
-    AdminComponent
+    AdminComponent,
+    BookWithTeesnapComponent
   ],
   imports: [
     BrowserModule,
@@ -69,9 +79,28 @@ import {CourseDetailComponent} from "./components/course-detail/course-detail.co
     MatDividerModule,
     MatButtonToggleModule,
     MatMenuTrigger,
-    MatMenu
+    MatMenu,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogTitle,
   ],
-  providers: [],
+  providers: [
+    provideHttpClient(),
+    SessionService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: SessionInterceptor,
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (sessionService: SessionService) => {
+        return () => firstValueFrom(sessionService.initializeSession());
+      },
+      deps: [SessionService],
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

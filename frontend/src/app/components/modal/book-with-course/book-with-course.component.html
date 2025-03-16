@@ -1,0 +1,74 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2 [style.color]="'white'" mat-dialog-title>Book Tee Time</h2>
+    <button (click)="cancel()" class="close-button" mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content cdkFocusInitial class="mat-typography">
+    <mat-card class="reservation-info-card">
+      <mat-card-content>
+        <div class="reservation-info-list">
+          <div class="info-item">
+            <mat-icon color="primary">golf_course</mat-icon>
+            <div>
+              <span class="info-label">Course:</span>
+              <span class="info-value"> {{ data.course.name }}</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <mat-icon color="primary">calendar_today</mat-icon>
+            <div>
+              <span class="info-label">Date:</span>
+              <span class="info-value"> {{ data.teeTime.time | date:'fullDate' }}</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <mat-icon color="primary">access_time</mat-icon>
+            <div>
+              <span class="info-label">Time:</span>
+              <span class="info-value"> {{ data.teeTime.time | date:'shortTime' }}</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <mat-icon color="primary">people</mat-icon>
+            <div>
+              <span class="info-label">Players:</span>
+              <span class="info-value"> {{ data.teeTime.spots }}</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <mat-icon color="primary">flag</mat-icon>
+            <div>
+              <span class="info-label">Holes:</span>
+              <span class="info-value">
+              <ng-container *ngIf="data.teeTime.holes && data.teeTime.holes.length === 1">
+                {{ data.teeTime.holes[0] }}
+              </ng-container>
+              <ng-container *ngIf="data.teeTime.holes && data.teeTime.holes.length === 2">
+                {{ data.teeTime.holes[0] }} or {{ data.teeTime.holes[1] }}
+              </ng-container>
+            </span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="booking-message">
+      <p>You'll be redirected to the course's booking website to complete your reservation.</p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="center">
+    <button (click)="bookWithCourse()" color="primary" mat-raised-button>
+      <mat-icon>open_in_new</mat-icon>
+      Book on Course Website
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -91,6 +91,8 @@ async function getTeeSnapTeeTimes(date, booking_url, params) {
                 return;
             }
 
+            teeTimeObj.start = time.teeOffSections[0].teeOff;
+
             // Determine available hole options
             const roundTypes = time.prices.map(item => item.roundType);
             teeTimeObj.holes = [];

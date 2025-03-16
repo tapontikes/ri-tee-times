@@ -5,10 +5,10 @@ const logger = require('../utils/logger');
 const Scheduler = require('./scheduler');
 
 // Import API services
-const foreUpService = require('../service/courses/foreup-service');
-const teeItUpService = require('../service/courses/teeitup-service');
-const teeSnapService = require('../service/courses/teesnap-service');
-const teeWireService = require('../service/courses/teewire-service');
+const foreUpService = require('../service/courses/foreup/teetimes/service');
+const teeItUpService = require('../service/courses/teeitup/teetimes/service');
+const teeSnapService = require('../service/courses/teesnap/teetimes/service');
+const teeWireService = require('../service/courses/teewire/teetimes/service');
 
 // Create a scheduler instance
 const scheduler = new Scheduler();
@@ -30,7 +30,7 @@ async function refreshTeeTimesForCourse(courseId, date) {
 
         let teeTimes = [];
 
-        // Call the appropriate service based on the provider
+        // Call the appropriate teetimes based on the provider
         switch (course.provider) {
             case 'foreup':
                 teeTimes = await foreUpService.getForeUpTeeTimes(moment(date).format('MM-DD-YYYY'), course.request_data);

@@ -6,6 +6,7 @@ import {Course, TeeTime, TeeTimeSearchParams} from "../../model/models";
 import {TeeTimeService} from "../../service/teetime.service";
 import {DataSharingService} from "../../service/data-sharing.service";
 import {bookWithCourse} from "../../util/utils";
+import {ReservationDialogService} from "../../service/registration-dialog.service";
 
 @Component({
   selector: 'app-tee-time-list',
@@ -24,6 +25,7 @@ export class TeeTimeListComponent implements OnInit {
   constructor(
     private teeTimeService: TeeTimeService,
     private dataSharingService: DataSharingService,
+    public reservationDialogService: ReservationDialogService,
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
@@ -70,7 +72,7 @@ export class TeeTimeListComponent implements OnInit {
       (coursesData) => {
         this.courses = coursesData;
 
-        // Store courses in the sharing service
+        // Store courses in the sharing teetimes
         this.dataSharingService.setCourses(this.courses);
       },
       (error) => {
@@ -100,7 +102,6 @@ export class TeeTimeListComponent implements OnInit {
           return bTeeTimesCount - aTeeTimesCount;
         });
 
-        // Store tee times in the sharing service
         this.dataSharingService.setTeeTimes(this.teeTimes);
         setTimeout(() => {
           this.loading = false;
@@ -120,7 +121,6 @@ export class TeeTimeListComponent implements OnInit {
   isTimeInRange(timeString: string): boolean {
     if (!this.searchParams.startTime || !this.searchParams.endTime) return true;
 
-    // Parse the ISO date string
     const time = new Date(timeString);
     const hours = time.getHours();
     const minutes = time.getMinutes();
@@ -174,4 +174,9 @@ export class TeeTimeListComponent implements OnInit {
       }
     });
   }
+
+  handleTeeTimeClick(course: Course, teeTime: TeeTime): void {
+
+  }
+
 }

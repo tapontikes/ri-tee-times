@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const dbClient = require('../database/client');
-const logger = require('../utils/logger');
+const dbClient = require('../../database/client');
+const logger = require('../../utils/logger');
 const moment = require('moment-timezone');
 
 // Get all available courses
@@ -63,7 +63,7 @@ router.post('/refresh/all', async (req, res, next) => {
             return res.status(400).json({error: 'Invalid date format. Use YYYY-MM-DD'});
         }
 
-        const {refreshAllCoursesByDate} = require('../jobs/teetime');
+        const {refreshAllCoursesByDate} = require('../../jobs/teetime');
         await refreshAllCoursesByDate(moment(date, 'YYYY-MM-DD'));
 
         res.json({success: true, message: `Tee times refreshed for all courses`});
@@ -82,7 +82,7 @@ router.post('/refresh/:courseId', async (req, res, next) => {
             return res.status(400).json({error: 'Invalid or missing date. Use YYYY-MM-DD format in request body'});
         }
 
-        const {refreshTeeTimesForCourse} = require('../jobs/teetime');
+        const {refreshTeeTimesForCourse} = require('../../jobs/teetime');
         await refreshTeeTimesForCourse(courseId, date);
 
         res.json({success: true, message: `Tee times refreshed for course ${courseId} on ${date}`});

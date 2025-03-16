@@ -54,7 +54,7 @@
       <div *ngFor="let hourGroup of getSortedHourGroups()" class="hour-group">
         <div class="hour-group-header">{{ hourGroup.label }}</div>
         <div class="tee-times-grid">
-          <div (click)="bookWithCourse(this.course.booking_url)" *ngFor="let teeTime of hourGroup.teeTimes"
+          <div (click)="this.reservationDialogService.book(course, teeTime)" *ngFor="let teeTime of hourGroup.teeTimes"
                class="tee-time-card">
             <div class="tee-time-content">
               <div class="tee-time-time">{{ teeTime.time | date:'shortTime' }}</div>
