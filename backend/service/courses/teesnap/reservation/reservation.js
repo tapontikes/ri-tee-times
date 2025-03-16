@@ -10,7 +10,7 @@ async function getCSRFToken(client, domain) {
     logger.info(`Fetching CSRF token from ${domain}`);
 
     try {
-        const response = await client.get(`https://${domain}.teesnap.net/`, {
+        const response = await client.get(domain, {
             withCredentials: true,
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
@@ -27,7 +27,7 @@ async function getCSRFToken(client, domain) {
         logger.debug(`Initial page fetch status: ${response.status}`);
 
         // Extract token
-        const cookies = client.defaults.jar.getCookiesSync(`https://${domain}.teesnap.net/`);
+        const cookies = client.defaults.jar.getCookiesSync(domain);
         logger.debug(`Cookies received: ${cookies.map(c => c.key).join(', ')}`);
 
         const xsrfCookie = cookies.find(cookie => cookie.key === 'XSRF-TOKEN');
@@ -63,8 +63,8 @@ async function login(client, domain, email, password, xsrfToken) {
     logger.info(`Logging in to ${domain} with email: ${email}`);
 
     try {
-        const response = await client.post(`https://${domain}.teesnap.net/customer-api/login`,
-            { email, password },
+        const response = await client.post(`${domain}/customer-api/login`,
+            {email, password},
             {
                 withCredentials: true,
                 headers: {
@@ -72,8 +72,8 @@ async function login(client, domain, email, password, xsrfToken) {
                     'Accept': 'application/json, text/plain, */*',
                     'Accept-Language': 'en-US,en;q=0.8',
                     'Content-Type': 'application/json;charset=UTF-8',
-                    'Origin': `https://${domain}.teesnap.net`,
-                    'Referer': `https://${domain}.teesnap.net/login`,
+                    'Origin': `${domain}`,
+                    'Referer': `${domain}/login`,
                     'X-XSRF-TOKEN': xsrfToken
                 }
             }
@@ -108,7 +108,7 @@ async function getReservationQuote(client, domain, reservationData, xsrfToken) {
 
     try {
         const response = await client.post(
-            `https://${domain}.teesnap.net/customer-api/reservation-quote`,
+            `${domain}/customer-api/reservation-quote`,
             reservationData,
             {
                 withCredentials: true,
@@ -117,8 +117,8 @@ async function getReservationQuote(client, domain, reservationData, xsrfToken) {
                     'Accept': 'application/json, text/plain, */*',
                     'Accept-Language': 'en-US,en;q=0.8',
                     'Content-Type': 'application/json;charset=UTF-8',
-                    'Origin': `https://${domain}.teesnap.net`,
-                    'Referer': `https://${domain}.teesnap.net/reservation?${teeTimeParams}`,
+                    'Origin': `${domain}`,
+                    'Referer': `${domain}/reservation?${teeTimeParams}`,
                     'X-XSRF-TOKEN': xsrfToken
                 }
             }
@@ -167,15 +167,15 @@ async function confirmReservation(client, domain, reservationId, xsrfToken) {
 
     try {
         const response = await client.post(
-            `https://${domain}.teesnap.net/customer-api/reservations`,
-            { id: reservationId },
+            `${domain}/customer-api/reservations`,
+            {id: reservationId},
             {
                 withCredentials: true,
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/json;charset=UTF-8',
-                    'Origin': `https://${domain}.teesnap.net`,
+                    'Origin': `${domain}`,
                     'X-XSRF-TOKEN': xsrfToken
                 }
             }
@@ -208,6 +208,8 @@ async function completeTeesnapFlow(client, domain, email, password, reservationD
     logger.info(`Starting complete Teesnap flow for ${domain}`);
 
     try {
+
+
         // Get CSRF token
         const initialToken = await getCSRFToken(client, domain);
         logger.info('Initial XSRF token obtained');
@@ -217,7 +219,7 @@ async function completeTeesnapFlow(client, domain, email, password, reservationD
         logger.info('Login successful');
 
         // Get updated token after login
-        const updatedCookies = client.defaults.jar.getCookiesSync(`https://${domain}.teesnap.net/`);
+        const updatedCookies = client.defaults.jar.getCookiesSync(domain);
         logger.debug(`Cookies after login: ${updatedCookies.map(c => c.key).join(', ')}`);
 
         const updatedXsrfCookie = updatedCookies.find(cookie => cookie.key === 'XSRF-TOKEN');

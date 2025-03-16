@@ -7,7 +7,8 @@ const logger = require('./utils/logger');
 const cors = require('cors');
 const axios = require('axios');
 const {CookieJar} = require("tough-cookie");
-const { wrapper } = require('axios-cookiejar-support');
+const {wrapper} = require('axios-cookiejar-support');
+const {v4: uuidv4} = require('uuid');
 
 
 if (process.env.NODE_ENV !== 'production') {
@@ -15,7 +16,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const teeTimeRouter = require('./routes/teetimes/controller'); // New tee time routes
-const teesnapRoutes = require('./routes/teesnap/controller');
+const teesnapRouter = require('./routes/teesnap/controller');
+const authRouter = require('./routes/auth/auth')
 
 // Import database and scheduler
 const {initializeJobs, refreshAllTeeTimesJob} = require('./jobs/teetime');
@@ -38,22 +40,35 @@ app.use(morgan(':method :url :status - :response-time ms', {
 }));
 
 app.use(session({
-    secret: 'your-secret-key',
+    secret: 'session-tom',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+    cookie: {
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000
+    }
 }));
 
 app.use((req, res, next) => {
     try {
+        // Assign unique user ID if not exists
+        if (!req.session.userId) {
+            req.session.userId = uuidv4();
+            req.session.createdAt = new Date();
+        }
+
+        // Set up cookie jar for this session if not exists
         if (!req.session.cookieClientCreated) {
             const cookieJar = new CookieJar();
             req.session.cookieJar = cookieJar.serializeSync();
             req.session.cookieClientCreated = true;
         }
 
+        // Deserialize the cookie jar and create an axios instance with it
         const cookieJar = CookieJar.deserializeSync(req.session.cookieJar);
-        req.cookieClient = wrapper(axios.create({ jar: cookieJar }));
+        req.cookieClient = wrapper(axios.create({jar: cookieJar}));
+
+        // Add helper method to save updated cookie jar to session
         req.saveCookieJar = () => {
             req.session.cookieJar = req.cookieClient.defaults.jar.serializeSync();
         };
@@ -71,11 +86,11 @@ app.use((req, res, next) => {
     }
 });
 
+
 // API routes
+app.use('/api/auth', authRouter)
 app.use('/api/tee-times', teeTimeRouter);
-app.use('/api/teesnap', teesnapRoutes);
-
-
+app.use('/api/teesnap', teesnapRouter);
 
 // Initialize database and jobs on app startup
 (async () => {

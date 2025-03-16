@@ -3,12 +3,9 @@ const teesnapService = require('../../service/courses/teesnap/reservation/reserv
 
 const router = express.Router();
 
-/**
- * Single endpoint for the whole reservation process
- */
 router.post('/reserve', async (req, res) => {
     try {
-        const { domain, email, password, reservationData } = req.body;
+        const {domain, email, password, reservationData} = req.body;
 
         // Validate required parameters
         if (!domain || !email || !password || !reservationData) {
@@ -55,7 +52,7 @@ router.post('/reserve', async (req, res) => {
  */
 router.post('/confirm', async (req, res) => {
     try {
-        const { reservationId } = req.body;
+        const {reservationId} = req.body;
         const domain = req.session.domain;
         const token = req.session.lastToken;
 
