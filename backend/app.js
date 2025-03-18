@@ -109,7 +109,7 @@ app.use('/api/teesnap', teesnapRouter);
         }
         if (process.env.REFRESH_ON_STARTUP === 'true') {
             logger.info('Running refresh on startup.');
-            await (refreshAllTeeTimesJob())();
+            await (refreshAllTeeTimesJob(0,6))();
         }
 
     } catch (error) {
