@@ -1,0 +1,224 @@
+.container {
+  max-width: 90vw;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.booking-badge {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+  vertical-align: middle;
+  font-weight: normal;
+}
+
+.badge {
+  background-color: #9c27b0; /* Purple 500 */
+  color: white;
+}
+
+.page-title {
+  color: #3f51b5;
+  margin-bottom: 8px;
+}
+
+.date-subtitle {
+  color: #757575;
+  font-weight: normal;
+  margin-bottom: 24px;
+}
+
+
+.courses-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.course-row {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.course-row:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Keep the original shadow */
+}
+
+.course-type {
+  cursor: pointer;
+}
+
+.course-info {
+  background-color: #3f51b5;
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* This pushes the name left and actions right */
+}
+
+.course-name {
+  font-size: 1.3rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.course-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.course-button {
+  font-size: 0.9rem;
+  padding: 4px 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.course-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.course-type {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.tee-times-wrapper {
+  padding: 8px 16px 16px;
+  cursor: pointer;
+}
+
+.tee-times-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 12px;
+  padding-top: 6px;
+}
+
+.tee-times-row {
+  display: flex;
+  gap: 12px;
+  min-width: min-content;
+}
+
+.tee-time-box {
+  flex: 0 0 auto;
+  width: 120px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border: 1.7px solid var(--mat-primary-color, #3f51b5);
+  border-radius: 6px;
+  text-align: center;
+  transform-origin: center bottom;
+  transition: all 0.2s ease;
+  margin-top: 3px;
+  margin-left: 2px
+}
+
+.tee-time-box:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f0f4ff;
+  border-color: #c0c9e0;
+  margin-top: 0;
+}
+
+.time {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #3f51b5;
+  margin-bottom: 4px;
+}
+
+.spots {
+  font-size: 0.85rem;
+  color: #4caf50;
+  margin-bottom: 6px;
+}
+
+.holes-container {
+  display: flex;
+  justify-content: center;
+}
+
+.holes-container mat-chip {
+  margin: 0 2px !important; /* Add some spacing between chips */
+}
+
+.no-tee-times {
+  font-style: italic;
+  color: #757575;
+  padding: 16px 0;
+  text-align: center;
+}
+
+.tee-times-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tee-times-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.tee-times-scroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.tee-times-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.holes-container mat-chip {
+  font-weight: bold !important;
+}
+
+.holes-container mat-chip.mdc-evolution-chip--disabled {
+  font-weight: bold !important;
+  opacity: 1 !important;
+}
+
+.tee-times-scroll {
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+@media (max-width: 1050px) {
+  .container {
+    max-width: 98vw;
+    margin: 0 auto;
+    padding: 16px 0;
+  }
+
+  .course-type {
+    align-self: flex-start;
+  }
+
+  .content-container {
+    padding: 16px 0;
+  }
+  .course-name {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .booking-badge {
+    margin-left: 0 !important;
+    margin-top: 5px;
+  }
+
+}

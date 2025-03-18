@@ -1,0 +1,184 @@
+<div class="dialog-container">
+    <div [class.success-header]="reservationSuccess" class="dialog-header">
+        <h2 [style.color]="'white'"
+            mat-dialog-title>{{ reservationSuccess ? 'Reservation Successful' : 'Book Tee Time' }}</h2>
+        <button (click)="cancel()" class="close-button" mat-icon-button>
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div *ngIf="submitting || completingReservation" class="loading-overlay">
+        <div class="loading-content">
+            <mat-spinner color="primary" diameter="60"></mat-spinner>
+            <p>{{ completingReservation ? 'Completing your reservation...' : 'Processing your reservation...' }}</p>
+        </div>
+    </div>
+    <!-- Reservation form - shown when not yet successful -->
+    <div *ngIf="!reservationSuccess">
+        <mat-dialog-content cdkFocusInitial class="mat-typography">
+            <mat-card class="reservation-info-card">
+                <mat-card-content>
+                    <div class="reservation-info-list">
+                        <div class="info-item">
+                            <mat-icon color="primary">golf_course</mat-icon>
+                            <div>
+                                <span class="info-label">Course:</span>
+                                <span class="info-value"> {{ data.course.name }}</span>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <mat-icon color="primary">calendar_today</mat-icon>
+                            <div>
+                                <span class="info-label">Date:</span>
+                                <span class="info-value"> {{ data.teeTime.time | date:'fullDate' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <mat-icon color="primary">access_time</mat-icon>
+                            <div>
+                                <span class="info-label">Time:</span>
+                                <span class="info-value"> {{ data.teeTime.time | date:'shortTime' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+            <form #form="ngForm" (ngSubmit)="onSubmit()" [formGroup]="reservationForm">
+                <h3 class="mat-h3">Teesnap Account Information</h3>
+
+                <!-- Keep domain in form but hidden -->
+                <input formControlName="domain" type="hidden">
+
+                <div class="form-row">
+                    <mat-form-field appearance="outline" class="mobile-form-width">
+                        <mat-label>Email</mat-label>
+                        <input formControlName="email" matInput placeholder="Enter your Teesnap email" type="email">
+                        <mat-icon matSuffix>email</mat-icon>
+                        <mat-error *ngIf="reservationForm.get('email')?.hasError('required')">Email is required
+                        </mat-error>
+                        <mat-error *ngIf="reservationForm.get('email')?.hasError('email')">Please enter a valid email
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                    <mat-form-field appearance="outline" class="mobile-form-width">
+                        <mat-label>Password</mat-label>
+                        <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" matInput
+                               placeholder="Enter your Teesnap password">
+                        <button (click)="hidePassword = !hidePassword" mat-icon-button matSuffix type="button">
+                            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </button>
+                        <mat-error *ngIf="reservationForm.get('password')?.hasError('required')">Password is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div formGroupName="reservationData">
+                    <h3 class="mat-h3">Reservation Details</h3>
+
+                    <div class="form-row">
+                        <mat-form-field appearance="outline" class="mobile-form-width">
+                            <mat-label>Number of Players</mat-label>
+                            <mat-select formControlName="players">
+                                <ng-container *ngFor="let i of [1, 2, 3, 4]">
+                                    <mat-option *ngIf="i <= maxPlayers" [value]="i">
+                                        {{ i }} Player{{ i > 1 ? 's' : '' }}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                            <mat-icon matSuffix>people</mat-icon>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-row">
+                        <mat-form-field appearance="outline" class="mobile-form-width">
+                            <mat-label>Holes</mat-label>
+                            <mat-select [value]="teeTime.holes" formControlName="holes">
+                                <mat-option *ngFor="let holes of availableHoles" [value]="holes">
+                                    {{ holes }} Holes
+                                </mat-option>
+                            </mat-select>
+                            <mat-icon matSuffix>flag</mat-icon>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Hidden fields -->
+                    <input formControlName="teeOffSection" type="hidden">
+                    <input formControlName="addons" type="hidden">
+                </div>
+            </form>
+        </mat-dialog-content>
+
+        <mat-dialog-actions align="end">
+            <button (click)="cancel()" [disabled]="submitting" mat-button>Cancel</button>
+            <button (click)="onSubmit()"
+                    [disabled]="reservationForm.get('email')?.invalid || reservationForm.get('password')?.invalid || submitting"
+                    color="primary"
+                    mat-raised-button type="submit">
+                <mat-icon>golf_course</mat-icon>
+                Book Now
+            </button>
+        </mat-dialog-actions>
+    </div>
+
+    <!-- Success state - shown after successful reservation -->
+    <div *ngIf="reservationSuccess">
+        <mat-dialog-content class="mat-typography">
+            <div class="success-container">
+                <div class="success-icon">
+                    <mat-icon>check_circle</mat-icon>
+                </div>
+
+                <h3 class="success-title">Tee Time Reserved!</h3>
+
+                <p class="success-message">
+                    Your tee time has been successfully reserved at {{ data.course.name }}.
+                </p>
+
+                <div class="timer-container">
+                    <div class="timer">
+                        <span class="timer-value">{{ timeInMinutes }}:{{ timeInSeconds | number:'2.0-0' }}</span>
+                        <span class="timer-label">Time Remaining</span>
+                    </div>
+
+                    <p class="timer-info">
+                        Please complete your reservation within the time limit to secure your tee time.
+                    </p>
+                </div>
+
+                <div class="reservation-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Date:</span>
+                        <span class="detail-value">{{ data.teeTime.time | date:'fullDate' }}</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Time:</span>
+                        <span class="detail-value">{{ data.teeTime.time | date:'shortTime' }}</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Players:</span>
+                        <span class="detail-value">{{ reservationForm.get('reservationData.players')?.value }}</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Holes:</span>
+                        <span class="detail-value">{{ reservationForm.get('reservationData.holes')?.value }}</span>
+                    </div>
+                </div>
+            </div>
+        </mat-dialog-content>
+
+        <mat-dialog-actions align="center">
+            <button (click)="completeReservation()" [disabled]="true" color="primary" mat-raised-button>
+                <mat-icon>check</mat-icon>
+                Feature will be enabled at a later time
+            </button>
+        </mat-dialog-actions>
+    </div>
+</div>

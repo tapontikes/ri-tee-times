@@ -1,0 +1,44 @@
+services:
+  app:
+    image: tapontikes/golf-ri.com
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: tee_times_pg
+      DB_SSL: false
+      DB_SEED: false
+      SCHEDULER_ENABLED: false
+      REFRESH_ON_STARTUP: false
+    ports:
+      - "3000:3000"
+    networks:
+      - pg
+
+  postgres:
+    image: bitnami/postgresql
+    container_name: golf-tee-times-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: tee_times_pg
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pg
+
+volumes:
+  postgres_data:
+
+networks:
+  pg:

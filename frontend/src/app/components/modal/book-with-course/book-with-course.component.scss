@@ -1,0 +1,60 @@
+.dialog-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3f51b5;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.close-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  color: white;
+}
+
+.reservation-info-card {
+  margin-bottom: 20px;
+}
+
+.reservation-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.info-label {
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.info-value {
+  font-weight: 400;
+}
+
+.booking-message {
+  margin: 20px 0;
+  text-align: center;
+  color: #666;
+}
+
+mat-dialog-actions {
+  padding: 16px;
+}
+
+button[mat-raised-button] {
+  min-width: 200px;
+}

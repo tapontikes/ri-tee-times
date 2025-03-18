@@ -1,0 +1,151 @@
+// navbar.component.scss
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 100px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 24px;
+  white-space: nowrap;
+}
+
+.search-form {
+  display: flex;
+  max-width: 1000px;
+  transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.form-item {
+  margin-right: 8px;
+}
+
+mat-form-field {
+  width: 150px;
+  margin-bottom: -1em;
+  font-size: 20px;
+}
+
+/* Make date input wider */
+.form-item:first-child mat-form-field {
+  width: 180px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.nav-link {
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+.mobile-menu-toggle {
+  display: none;
+}
+
+/* Mobile styles */
+@media (max-width: 1050px) {
+  .navbar {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 64px;
+    padding: 8px 16px;
+    justify-content: space-between;
+  }
+
+  .mobile-menu-toggle {
+    display: block;
+    order: 2;
+  }
+
+  .logo {
+    order: 1;
+    margin-right: 0;
+  }
+
+  .search-form {
+    order: 3;
+    flex-basis: 100%;
+    max-width: 100%;
+    margin-top: 16px;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  .search-form.mobile-expanded {
+    display: block;
+    max-height: 600px; /* Adjust as needed to accommodate your form */
+    opacity: 1;
+    transform: translateY(0);
+    padding-top: 0.5em;
+  }
+
+  .form-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-item {
+    margin-right: 0;
+    margin-bottom: 12px;
+    width: 100%;
+  }
+
+  .mobile-form-width {
+    width: 30vw;
+  }
+
+  .form-item:first-child mat-form-field,
+  mat-form-field {
+    width: 100%;
+  }
+
+  .nav-links {
+    order: 4;
+    flex-basis: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+    transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  .mobile-nav-links {
+    display: flex;
+    max-height: 200px; /* Adjust based on your navigation height */
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .nav-link {
+    margin-left: 0;
+    margin-bottom: 8px;
+    width: 100%;
+  }
+
+  .spacer {
+    display: none;
+  }
+
+}
