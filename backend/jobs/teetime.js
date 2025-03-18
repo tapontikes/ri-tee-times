@@ -1,5 +1,4 @@
 const moment = require('moment');
-const config = require('../config');
 const client = require('../database/client');
 const logger = require('../utils/logger');
 const Scheduler = require('./scheduler');
@@ -79,18 +78,23 @@ async function refreshAllCoursesByDate(date) {
 }
 
 /**
- * Create a job to refresh tee times for all courses
+ * Create a job to refresh tee times for all courses with configurable date range
+ * @param {number} startDay - First day to refresh (e.g., 0 for today)
+ * @param {number} endDay - Last day to refresh (exclusive, e.g., 7 for a week)
  */
-function refreshAllTeeTimesJob() {
+function refreshAllTeeTimesJob(startDay, endDay) {
     return async () => {
         const errors = [];
         let successCount = 0;
+        const rangeDescription = `${startDay}-${endDay - 1}`;
+
         try {
             const courses = await client.getAllCourses();
+            logger.info(`Refreshing tee times for all courses for days ${rangeDescription}`);
 
             for (const course of courses) {
                 try {
-                    for (let i = 0; i < 7; i++) {  // Loop over the next 7 days
+                    for (let i = startDay; i < endDay; i++) {
                         const targetDate = moment().add(i, 'days');
                         await refreshTeeTimesForCourse(course.id, targetDate);
                     }
@@ -105,14 +109,14 @@ function refreshAllTeeTimesJob() {
             }
 
             // Log summary after completion
-            logger.info(`Refreshed ${successCount} out of ${courses.length} courses for the next 7 days`);
+            logger.info(`Refreshed ${successCount} out of ${courses.length} courses for days ${rangeDescription}`);
 
             // Log errors if any
             if (errors.length > 0) {
-                logger.error(`Encountered ${errors.length} errors while refreshing tee times:`, errors);
+                logger.error(`Encountered ${errors.length} errors while refreshing tee times for days ${rangeDescription}:`, errors);
             }
         } catch (error) {
-            logger.error('Error getting courses for tee time refresh:', error);
+            logger.error(`Error getting courses for tee time refresh (days ${rangeDescription}):`, error);
         }
     };
 }
@@ -131,17 +135,18 @@ function removeOldTeeTimesJob() {
 }
 
 /**
- * Initialize all tee time jobs
+ * Initialize all tee time jobs with alternating schedules
  */
 async function initializeJobs() {
     // Schedule jobs for removing old tee times at the end of the day
     scheduler.scheduleJob('remove-old-tee-times', '59 23 * * *', removeOldTeeTimesJob());
 
-    // Schedule refresh jobs
-    for (const [provider, providerConfig] of Object.entries(config.apis)) {
-        const jobName = `refresh-${provider}-tee-times`;
-        scheduler.scheduleJob(jobName, providerConfig.cronSchedule, refreshAllTeeTimesJob());
-    }
+    // Schedule alternating refresh jobs
+    // Near-term job (days 0-6) - run at minutes 0, 40 (every 40 minutes starting at 0)
+    scheduler.scheduleJob('refresh-near-term', '0,40 * * * *', refreshAllTeeTimesJob(0, 6));
+
+    // Future-term job (days 7-13) - run at minutes 20 (every 40 minutes starting at 20)
+    scheduler.scheduleJob('refresh-future-term', '20 * * * *', refreshAllTeeTimesJob(7, 14));
 }
 
 module.exports = {
