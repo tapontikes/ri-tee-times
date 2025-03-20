@@ -1,30 +1,30 @@
 .dialog-container {
-  position: relative;
-  width: 100%;
   display: flex;
   flex-direction: column;
   max-height: 100%;
+  position: relative;
+  width: 100%;
 }
 
 mat-dialog-content {
   flex: 1;
-  overflow-y: auto;
   margin: 0;
-  padding: 16px;
   max-height: none;
+  overflow-y: auto;
+  padding: 16px;
 }
 
 mat-dialog-actions {
-  padding: 8px 24px;
   margin: 0;
+  padding: 8px 24px;
 }
 
 .dialog-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
   background-color: #3f51b5;
   border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
 }
 
 .success-header {
@@ -32,41 +32,38 @@ mat-dialog-actions {
 }
 
 .close-button {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 10;
   color: white;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 10;
 }
 
 .loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.95); /* More opaque to hide form */
+  align-items: center;
+  backdrop-filter: blur(2px); /* Optional: adds a slight blur effect */
+  background-color: rgb(255 255 255 / 95%); /* More opaque to hide form */
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  inset: 0;
   justify-content: center;
+  position: absolute;
   z-index: 1000; /* Ensure it's above everything */
-  border-radius: 4px;
-  backdrop-filter: blur(2px); /* Optional: adds a slight blur effect */
 }
 
 .loading-content {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   text-align: center;
 }
 
 .loading-overlay p {
-  margin-top: 16px;
-  font-weight: 500;
   color: var(--mat-primary-color, #3f51b5);
+  font-weight: 500;
+  margin-top: 16px;
   text-align: center;
 }
 
@@ -81,14 +78,14 @@ mat-dialog-actions {
 }
 
 .info-item {
-  display: flex;
   align-items: center;
+  display: flex;
   gap: 6px;
 }
 
 .info-label {
+  color: rgb(0 0 0 / 60%);
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.6);
 }
 
 .info-value {
@@ -104,16 +101,16 @@ mat-dialog-actions {
 }
 
 .success-container {
-  text-align: center;
   padding: 16px 0;
+  text-align: center;
 }
 
 .success-icon {
+  color: #4caf50;
   font-size: 64px;
   height: 64px;
-  width: 64px;
   margin: 0 auto 24px;
-  color: #4caf50;
+  width: 64px;
 }
 
 .success-icon mat-icon {
@@ -123,65 +120,65 @@ mat-dialog-actions {
 }
 
 .success-title {
+  color: #333;
   font-size: 24px;
   font-weight: 500;
   margin-bottom: 16px;
-  color: #333;
 }
 
 .success-message {
-  font-size: 16px;
   color: #666;
+  font-size: 16px;
   margin-bottom: 24px;
 }
 
 .timer-container {
   background-color: #f5f5f5;
   border-radius: 8px;
-  padding: 16px;
   margin-bottom: 24px;
+  padding: 16px;
   width: 100%;
 }
 
 .timer {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin-bottom: 8px;
 }
 
 .timer-value {
-  font-size: 32px;
-  font-weight: 500;
   color: #f44336;
   font-family: monospace;
+  font-size: 32px;
+  font-weight: 500;
 }
 
 .timer-label {
-  font-size: 14px;
   color: #666;
+  font-size: 14px;
   margin-top: 4px;
 }
 
 .timer-info {
-  font-size: 14px;
   color: #666;
+  font-size: 14px;
   margin: 0;
 }
 
 .reservation-details {
   background-color: #f9f9f9;
   border-radius: 8px;
-  padding: 16px;
   margin-bottom: 16px;
+  padding: 16px;
   width: 100%;
 }
 
 .detail-item {
+  border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid #eee;
 }
 
 .detail-item:last-child {
@@ -189,8 +186,8 @@ mat-dialog-actions {
 }
 
 .detail-label {
-  font-weight: 500;
   color: #666;
+  font-weight: 500;
 }
 
 .detail-value {

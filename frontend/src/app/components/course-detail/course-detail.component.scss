@@ -1,6 +1,6 @@
 .container {
-  max-width: 90vw;
   margin: 0 auto;
+  max-width: 90vw;
   padding: 16px;
 }
 
@@ -9,34 +9,34 @@
 }
 
 .hour-group {
-  margin-bottom: 24px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  margin-bottom: 24px;
+  overflow: hidden;
 }
 
 .hour-group-header {
+  align-items: center;
   background-color: var(--mat-primary-color, #3f51b5);
   color: white;
-  padding: 12px 16px;
-  font-weight: 500;
-  font-size: 16px;
   display: flex;
-  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px 16px;
 }
 
 .hour-group-header::before {
   content: 'schedule';
   font-family: 'Material Icons', serif;
-  margin-right: 8px;
   font-size: 20px;
+  margin-right: 8px;
 }
 
 .tee-times-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   padding: 16px;
 }
 
@@ -50,8 +50,8 @@
 }
 
 .tee-time-card:hover {
+  box-shadow: 0 4px 8px rgb(0 0 0 / 10%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .tee-time-holes mat-chip {
@@ -64,29 +64,30 @@
 }
 
 .course-header {
-  margin-bottom: 24px;
-  padding: 24px 24px 0px;
   background-color: #f5f5f5;
-  border-radius: 8px;
   border-left: 5px solid #3f51b5;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  padding: 24px 24px 0;
+  max-width: 55vw;
 }
 
 .course-title {
   color: #3f51b5;
-  margin-bottom: 8px;
   font-size: 2rem;
+  margin-bottom: 8px;
 }
 
 .course-subtitle {
   color: #757575;
+  font-size: 1.2rem;
   font-weight: normal;
   margin-bottom: 16px;
-  font-size: 1.2rem;
 }
 
 .course-details {
-  font-size: 1rem;
   color: #424242;
+  font-size: 1rem;
 }
 
 .filter-group button.active {
@@ -109,59 +110,59 @@
 
 .tee-times-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
 .tee-time-card {
-  cursor: pointer;
+  background-color: #f8f9fa;
   border: 1.7px solid var(--mat-primary-color, #3f51b5);
   border-radius: 8px;
+  cursor: pointer;
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-  background-color: #f8f9fa
+  transition: transform 0.2s, box-shadow 0.2s
 }
 
 .tee-time-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   border-color: #3f51b5;
+  box-shadow: 0 6px 12px rgb(0 0 0 / 10%);
+  transform: translateY(-3px);
 }
 
 .tee-time-content {
-  padding: 6px;
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  padding: 6px;
   user-select: none;
 }
 
 .tee-time-time {
+  color: #3f51b5;
   font-size: 1.8rem;
   font-weight: 600;
-  color: #3f51b5;
   margin-bottom: 12px;
 }
 
 .tee-time-info {
-  width: 100%;
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 100%;
 }
 
 .tee-time-spots {
-  font-size: 1rem;
   color: #4caf50;
-  margin-bottom: 12px;
+  font-size: 1rem;
   font-weight: 500;
+  margin-bottom: 12px;
 }
 
 .tee-time-holes {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 8px;
+  justify-content: center;
 }
 
 mat-form-field {
@@ -170,20 +171,17 @@ mat-form-field {
 }
 
 /* Responsive styles */
-@media (max-width: 1050px) {
+@media (width <= 1050px) {
   ::ng-deep .tee-time-holes .mdc-evolution-chip-set__chips {
+    align-items: center !important;
     display: flex !important;
     flex-direction: column !important;
-    align-items: center !important;
   }
 
   ::ng-deep .tee-time-holes .mat-mdc-chip {
-    margin: 2px 0 !important;
     font-size: 0.65rem !important;
     height: 20px !important;
-  }
-  .tee-times-grid {
-    grid-template-columns: 1fr 1fr;
+    margin: 2px 0 !important;
   }
 
   .tee-time-time {
@@ -191,30 +189,42 @@ mat-form-field {
   }
 
   .filter-group {
-    flex-direction: column;
     align-items: stretch;
+    flex-direction: column;
   }
 
   mat-divider[vertical] {
     display: block;
-    width: 100%;
     height: 1px;
     margin: 12px 0;
+    width: 100%;
   }
 
   mat-form-field {
-    width: 100%;
     margin: 8px 0;
+    width: 100%;
   }
 
   .hole-buttons {
     display: flex;
+    gap: 10px;
     justify-content: space-between;
-    width: 100%;
-    gap: 10px
+    width: 100%
   }
 
   .hole-buttons button {
     flex: 1;
   }
+}
+
+@media (width <= 800px) {
+
+  .tee-times-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .course-header {
+    max-width: 80vw;
+  }
+
 }

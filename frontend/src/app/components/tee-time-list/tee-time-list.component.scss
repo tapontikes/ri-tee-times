@@ -1,16 +1,16 @@
 .container {
-  max-width: 90vw;
   margin: 0 auto;
+  max-width: 90vw;
   padding: 16px;
 }
 
 .booking-badge {
-  font-size: 12px;
-  padding: 3px 8px;
   border-radius: 12px;
-  margin-left: 8px;
-  vertical-align: middle;
+  font-size: 12px;
   font-weight: normal;
+  margin-left: 8px;
+  padding: 3px 8px;
+  vertical-align: middle;
 }
 
 .badge {
@@ -37,18 +37,18 @@
 }
 
 .course-row {
-  display: flex;
-  flex-direction: column;
   background-color: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .course-row:hover {
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%); /* Keep the original shadow */
   transform: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Keep the original shadow */
 }
 
 .course-type {
@@ -56,18 +56,18 @@
 }
 
 .course-info {
+  align-items: center;
   background-color: #3f51b5;
   color: white;
-  padding: 16px 20px;
   display: flex;
-  align-items: center;
   justify-content: space-between; /* This pushes the name left and actions right */
+  padding: 16px 20px;
 }
 
 .course-name {
   font-size: 1.3rem;
-  margin: 0;
   font-weight: 500;
+  margin: 0;
 }
 
 .course-actions {
@@ -76,34 +76,34 @@
 }
 
 .course-button {
-  font-size: 0.9rem;
-  padding: 4px 10px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgb(255 255 255 / 20%);
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px 10px;
   transition: background-color 0.2s;
 }
 
 .course-button:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgb(255 255 255 / 30%);
 }
 
 .course-type {
+  background-color: rgb(255 255 255 / 20%);
+  border-radius: 4px;
   font-size: 0.9rem;
   opacity: 0.9;
-  background-color: rgba(255, 255, 255, 0.2);
   padding: 4px 10px;
-  border-radius: 4px;
 }
 
 .tee-times-wrapper {
-  padding: 8px 16px 16px;
   cursor: pointer;
+  padding: 8px 16px 16px;
 }
 
 .tee-times-scroll {
-  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
   padding-bottom: 12px;
   padding-top: 6px;
 }
@@ -115,37 +115,37 @@
 }
 
 .tee-time-box {
-  flex: 0 0 auto;
-  width: 120px;
-  padding: 12px;
   background-color: #f8f9fa;
   border: 1.7px solid var(--mat-primary-color, #3f51b5);
   border-radius: 6px;
+  flex: 0 0 auto;
+  margin-left: 2px;
+  margin-top: 3px;
+  padding: 12px;
   text-align: center;
   transform-origin: center bottom;
   transition: all 0.2s ease;
-  margin-top: 3px;
-  margin-left: 2px
+  width: 120px
 }
 
 .tee-time-box:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #f0f4ff;
   border-color: #c0c9e0;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 10%);
   margin-top: 0;
+  transform: translateY(-3px) scale(1.02);
 }
 
 .time {
+  color: #3f51b5;
   font-size: 1.2rem;
   font-weight: 600;
-  color: #3f51b5;
   margin-bottom: 4px;
 }
 
 .spots {
-  font-size: 0.85rem;
   color: #4caf50;
+  font-size: 0.85rem;
   margin-bottom: 6px;
 }
 
@@ -159,8 +159,8 @@
 }
 
 .no-tee-times {
-  font-style: italic;
   color: #757575;
+  font-style: italic;
   padding: 16px 0;
   text-align: center;
 }
@@ -196,10 +196,10 @@
   scrollbar-color: #c1c1c1 #f1f1f1;
 }
 
-@media (max-width: 1050px) {
+@media (width <= 1050px) {
   .container {
-    max-width: 98vw;
     margin: 0 auto;
+    max-width: 98vw;
     padding: 16px 0;
   }
 
@@ -210,10 +210,11 @@
   .content-container {
     padding: 16px 0;
   }
+
   .course-name {
+    align-items: flex-start;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
   }
 
   .booking-badge {

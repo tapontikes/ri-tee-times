@@ -1,18 +1,18 @@
 // navbar.component.scss
 .navbar {
+  align-items: center;
+  display: flex;
+  height: 100px;
+  padding: 0 16px;
   position: sticky;
   top: 0;
   z-index: 1000;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  height: 100px;
 }
 
 .logo {
+  cursor: pointer;
   font-size: 1.5rem;
   font-weight: 500;
-  cursor: pointer;
   margin-right: 24px;
   white-space: nowrap;
 }
@@ -24,8 +24,8 @@
 }
 
 .form-row {
-  display: flex;
   align-items: center;
+  display: flex;
   flex-wrap: nowrap;
   gap: 8px;
   width: 100%;
@@ -36,9 +36,9 @@
 }
 
 mat-form-field {
-  width: 150px;
-  margin-bottom: -1em;
   font-size: 20px;
+  margin-bottom: -1em;
+  width: 150px;
 }
 
 /* Make date input wider */
@@ -60,13 +60,13 @@ mat-form-field {
 }
 
 /* Mobile styles */
-@media (max-width: 1050px) {
+@media (width <= 1050px) {
   .navbar {
     flex-wrap: wrap;
     height: auto;
+    justify-content: space-between;
     min-height: 64px;
     padding: 8px 16px;
-    justify-content: space-between;
   }
 
   .mobile-menu-toggle {
@@ -75,18 +75,18 @@ mat-form-field {
   }
 
   .logo {
-    order: 1;
     margin-right: 0;
+    order: 1;
   }
 
   .search-form {
-    order: 3;
     flex-basis: 100%;
-    max-width: 100%;
     margin-top: 16px;
-    overflow: hidden;
     max-height: 0;
+    max-width: 100%;
     opacity: 0;
+    order: 3;
+    overflow: hidden;
     transform: translateY(-20px);
   }
 
@@ -94,18 +94,18 @@ mat-form-field {
     display: block;
     max-height: 600px; /* Adjust as needed to accommodate your form */
     opacity: 1;
-    transform: translateY(0);
     padding-top: 0.5em;
+    transform: translateY(0);
   }
 
   .form-row {
-    flex-direction: column;
     align-items: stretch;
+    flex-direction: column;
   }
 
   .form-item {
-    margin-right: 0;
     margin-bottom: 12px;
+    margin-right: 0;
     width: 100%;
   }
 
@@ -119,16 +119,16 @@ mat-form-field {
   }
 
   .nav-links {
-    order: 4;
-    flex-basis: 100%;
     display: flex;
+    flex-basis: 100%;
     flex-direction: column;
     margin-top: 16px;
-    transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
     max-height: 0;
-    overflow: hidden;
     opacity: 0;
+    order: 4;
+    overflow: hidden;
     transform: translateY(-10px);
+    transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
   }
 
   .mobile-nav-links {
@@ -139,8 +139,8 @@ mat-form-field {
   }
 
   .nav-link {
-    margin-left: 0;
     margin-bottom: 8px;
+    margin-left: 0;
     width: 100%;
   }
 
