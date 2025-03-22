@@ -1,18 +1,16 @@
 <div class="login-page">
   <div class="page-content">
     <div class="login-container">
-      <div class="login-header">
-        <h1>Login to Teesnap</h1>
+      <div *ngIf="submitting" class="loading-overlay">
+        <div class="loading-content">
+          <mat-spinner color="primary" diameter="60"></mat-spinner>
+          <p>Logging in...</p>
+        </div>
       </div>
 
       <div class="reservation-info">
-        <h2>Tee Time Details</h2>
+        <h2>Login to {{ course.name }}</h2>
         <div *ngIf="teeTime" class="reservation-info-card">
-          <div class="course-name">
-            <mat-icon color="primary">golf_course</mat-icon>
-            <span>{{ course.name }}</span>
-          </div>
-
           <div class="tee-time-details">
             <div class="detail-row">
               <mat-icon color="primary">calendar_today</mat-icon>
@@ -34,13 +32,6 @@
               <span>{{ teeTime.holes.join(' or ') }} Holes</span>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div *ngIf="submitting" class="loading-overlay">
-        <div class="loading-content">
-          <mat-spinner color="primary" diameter="60"></mat-spinner>
-          <p>Logging in...</p>
         </div>
       </div>
 
