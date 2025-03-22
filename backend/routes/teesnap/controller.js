@@ -3,39 +3,71 @@ const teesnapService = require('../../service/courses/teesnap/reservation/reserv
 
 const router = express.Router();
 
-router.post('/reserve', async (req, res) => {
+/**
+ * Endpoint to login to Teesnap
+ */
+router.post('/login', async (req, res) => {
     try {
-        const {domain, email, password, reservationData} = req.body;
+        const {domain, email, password} = req.body;
 
         // Validate required parameters
-        if (!domain || !email || !password || !reservationData) {
+        if (!domain || !email || !password) {
             return res.status(400).json({
                 success: false,
-                error: 'Missing required parameters'
+                error: 'Missing required parameters for login'
             });
         }
 
-        // Run the complete flow
-        const result = await teesnapService.completeTeesnapFlow(
-            req.cookieClient,
-            domain,
-            email,
-            password,
-            reservationData
-        );
+        // Get CSRF token
+        const initialToken = await teesnapService.getXSRFToken(req.axiosClient, domain);
 
-        // Save the session
-        req.saveCookieJar();
+        // Login
+        const loginData = await teesnapService.login(req.axiosClient, domain, email, password, initialToken);
 
-        // Store the reservation ID and token in the session for later confirmation
-        req.session.reservationId = result.quoteData.id;
-        req.session.lastToken = result.token;
-        req.session.domain = domain;
+        req.saveCookieJar(req.axiosClient.defaults.jar);
 
         res.json({
             success: true,
-            loginData: result.loginData,
-            reservationQuote: result.quoteData
+            loginData: loginData
+        });
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message,
+            responseData: error.response ? error.response.data : null
+        });
+    }
+});
+
+/**
+ * Endpoint to reserve a tee time
+ */
+router.post('/reserve', async (req, res) => {
+    try {
+
+        const {reservationData} = req.body;
+
+        if (!reservationData) {
+            return res.status(400).json({
+                success: false,
+                error: 'Missing reservation data'
+            });
+        }
+
+
+        // Get reservation quote
+        const quoteData = await teesnapService.getReservationQuote(
+            req.axiosClient,
+            reservationData.domain,
+            reservationData
+        );
+
+        req.saveCookieJar(req.axiosClient.defaults.jar);
+
+        res.json({
+            success: true,
+            reservationQuote: quoteData
         });
     } catch (error) {
         console.error('Error processing reservation:', error);
@@ -76,14 +108,14 @@ router.post('/confirm', async (req, res) => {
 
         // Make the confirmation request
         const confirmationData = await teesnapService.confirmReservation(
-            req.cookieClient,
+            req.axiosClient,
             domain,
             finalReservationId,
             token
         );
 
         // Save the updated cookie jar
-        req.saveCookieJar();
+        req.saveCookieJar(req.axiosClient.defaults.jar);
 
         res.json({
             success: true,

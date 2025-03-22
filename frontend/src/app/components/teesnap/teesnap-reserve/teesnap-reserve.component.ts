@@ -1,25 +1,22 @@
-import {Component, Inject, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {HttpClient} from '@angular/common/http';
+import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {interval, Subscription} from 'rxjs';
 import moment from "moment-timezone";
-import {Course, DialogData, TeeTime} from "../../../model/models";
+import {DataSharingService} from "../../../service/data-sharing.service";
+import {Course, TeeTime} from "../../../model/models";
 
 @Component({
-  selector: 'app-book-with-teesnap',
-  templateUrl: './book-with-teesnap.component.html',
-  styleUrl: './book-with-teesnap.component.scss'
+  selector: 'app-teesnap-reserve',
+  templateUrl: './teesnap-reserve.component.html',
+  styleUrls: ['./teesnap-reserve.component.scss']
 })
-
-export class BookWithTeesnapComponent implements OnDestroy {
-
-  course: Course;
-  teeTime: TeeTime;
+export class TeesnapReserveComponent implements OnInit, OnDestroy {
   reservationForm!: FormGroup;
-
-  hidePassword: boolean = true;
+  teeTime!: TeeTime;
+  course!: Course;
   submitting: boolean = false;
   completingReservation: boolean = false;
   reservationSuccess: boolean = false;
@@ -35,14 +32,34 @@ export class BookWithTeesnapComponent implements OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<BookWithTeesnapComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private http: HttpClient,
-    private snackBar: MatSnackBar
+    private router: Router,
+    private snackBar: MatSnackBar,
+    private dataSharingService: DataSharingService
   ) {
-    this.course = data.course
-    this.teeTime = data.teeTime
+  }
+
+  ngOnInit(): void {
+    // Get tee time data from service
+    this.teeTime = this.dataSharingService.getSelectedTeeTime();
+    this.course = this.dataSharingService.getSelectedCourse();
+
+    if (!this.teeTime) {
+      this.snackBar.open('No tee time data found. Please start over.', 'Close', {
+        duration: 5000,
+        panelClass: 'error-snackbar'
+      });
+      this.router.navigate(['/']);
+      return;
+    }
+
     this.initForm();
+  }
+
+  ngOnDestroy(): void {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
   }
 
   initForm(): void {
@@ -52,31 +69,21 @@ export class BookWithTeesnapComponent implements OnDestroy {
     const teeTimeDate = this.teeTime.time;
     const formattedTeeTime = this.formatDateForApi(teeTimeDate);
 
-
     this.reservationForm = this.fb.group({
-      domain: [this.data.course.booking_url || '', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
       reservationData: this.fb.group({
         courseId: [this.course.request_data.course, Validators.required],
         teeTime: [formattedTeeTime, Validators.required],
         players: [Math.min(1, this.maxPlayers), [Validators.required, Validators.min(1), Validators.max(this.maxPlayers)]],
-        holes: [this.data.teeTime.holes[0], Validators.required],
-        teeOffSection: [this.data.teeTime.start || 'FRONT_NINE', Validators.required],
-        addons: ['off', Validators.required]
+        holes: [this.teeTime.holes[0], Validators.required],
+        teeOffSection: [this.teeTime.start || 'FRONT_NINE', Validators.required],
+        addons: ['off', Validators.required],
+        domain: [this.course.booking_url, Validators.required]
       })
     });
   }
 
-
-  ngOnDestroy(): void {
-    if (this.timerSubscription) {
-      this.timerSubscription.unsubscribe();
-    }
-  }
-
   onSubmit(): void {
-    if (this.reservationForm.get('email')?.invalid || this.reservationForm.get('password')?.invalid) {
+    if (this.reservationForm.invalid) {
       return;
     }
 
@@ -88,10 +95,9 @@ export class BookWithTeesnapComponent implements OnDestroy {
           this.submitting = false;
           if (response.success) {
             this.reservationData = response;
-            this.timeRemaining = response.reservationQuote.holdDuration
+            this.timeRemaining = response.reservationQuote.holdDuration || 300; // Default to 5 minutes if not provided
             this.updateTimeDisplay();
             this.startTimer();
-
             this.reservationSuccess = true;
           } else {
             this.snackBar.open(`Reservation failed: ${response.error}`, 'Close', {
@@ -101,10 +107,9 @@ export class BookWithTeesnapComponent implements OnDestroy {
           }
         },
         (error) => {
-          console.log(error);
           this.submitting = false;
           console.error('Error processing reservation:', error);
-          this.snackBar.open(`Error: ${error.error.responseData?.errors || 'Failed to process reservation'}`, 'Close', {
+          this.snackBar.open(`Error: ${error.error?.error || 'Failed to process reservation'}`, 'Close', {
             duration: 5000,
             panelClass: 'error-snackbar'
           });
@@ -123,7 +128,7 @@ export class BookWithTeesnapComponent implements OnDestroy {
         this.timeRemaining--;
         this.updateTimeDisplay();
       } else {
-        // Time's up - automatically close the dialog
+        // Time's up - automatically redirect to home
         this.cancel();
         this.timerSubscription.unsubscribe();
       }
@@ -133,7 +138,7 @@ export class BookWithTeesnapComponent implements OnDestroy {
   completeReservation(): void {
     this.completingReservation = true;
 
-    this.http.post('/api/tee-times/complete-reservation', {
+    this.http.post('/api/teesnap/confirm', {
       reservationId: this.reservationData.reservationQuote.id
     }).subscribe(
       (response: any) => {
@@ -143,7 +148,7 @@ export class BookWithTeesnapComponent implements OnDestroy {
             duration: 5000,
             panelClass: 'success-snackbar'
           });
-          this.dialogRef.close(response);
+          this.router.navigate(['/']);
         } else {
           this.snackBar.open(`Failed to complete reservation: ${response.error}`, 'Close', {
             duration: 5000,
@@ -163,7 +168,7 @@ export class BookWithTeesnapComponent implements OnDestroy {
   }
 
   cancel(): void {
-    this.dialogRef.close();
+    this.router.navigate(['/']);
   }
 
   formatDateForApi(date: string | Date): string {

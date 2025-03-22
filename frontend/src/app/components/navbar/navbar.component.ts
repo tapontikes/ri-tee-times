@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Course} from "../../model/models";
 import {formatDate} from "../../util/utils";
+import {DataSharingService} from "../../service/data-sharing.service";
 
 @Component({
   selector: 'app-navbar',
@@ -21,20 +22,13 @@ export class NavbarComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private dataSharingService: DataSharingService,
   ) {
     this.searchForm = this.fb.group({
       date: [new Date()],
       startTime: ['06:00'],
       endTime: ['18:00'],
       holes: [9]
-    });
-
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.showSearch = !event.url.includes('/course/');
-        this.showHamburger = !event.url.includes('/course/');
-        this.showMobileMenu = false;
-      }
     });
 
     this.checkScreenSize();
@@ -68,8 +62,8 @@ export class NavbarComponent implements OnInit {
 
   search(): void {
     const formValues = this.searchForm.value;
-
     const date = formatDate(formValues.date);
+    this.dataSharingService.clearSelectedData();
 
     // Navigate to the main page with query parameters
     this.router.navigate([''], {

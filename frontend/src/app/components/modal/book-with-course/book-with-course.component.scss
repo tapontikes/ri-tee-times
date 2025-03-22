@@ -1,23 +1,23 @@
 .dialog-container {
+  max-width: 100%;
   position: relative;
   width: 100%;
-  max-width: 100%;
 }
 
 .dialog-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
   background-color: #3f51b5;
   border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
 }
 
 .close-button {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 10;
   color: white;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 10;
 }
 
 .reservation-info-card {
@@ -31,14 +31,14 @@
 }
 
 .info-item {
-  display: flex;
   align-items: center;
+  display: flex;
   gap: 12px;
 }
 
 .info-label {
+  color: rgb(0 0 0 / 60%);
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.6);
 }
 
 .info-value {
@@ -46,9 +46,9 @@
 }
 
 .booking-message {
+  color: #666;
   margin: 20px 0;
   text-align: center;
-  color: #666;
 }
 
 mat-dialog-actions {
