@@ -8,7 +8,6 @@
         </div>
       </div>
 
-      <!-- Reservation form - shown when not yet successful -->
       <div *ngIf="!reservationSuccess">
         <div class="reservation-info">
           <h2>Reserve Tee Time</h2>
@@ -93,22 +92,21 @@
               Please confirm your reservation within the time limit.
             </p>
           </div>
-        </div>
+          <div class="form-actions">
+            <button (click)="cancel()" class="cancel-button" mat-button>
+              <mat-icon>arrow_back</mat-icon>
+              Back to Home
+            </button>
 
-        <div class="form-actions">
-          <button (click)="cancel()" class="cancel-button" mat-button>
-            <mat-icon>arrow_back</mat-icon>
-            Back to Home
-          </button>
-
-          <button (click)="onSubmit()"
-                  [disabled]="reservationForm.invalid || submitting || !sessionActive"
-                  class="reserve-button"
-                  color="primary"
-                  mat-raised-button>
-            <mat-icon>golf_course</mat-icon>
-            Reserve Now
-          </button>
+            <button (click)="onSubmit()"
+                    [disabled]="reservationForm.invalid || submitting || !sessionActive"
+                    class="reserve-button"
+                    color="primary"
+                    mat-raised-button>
+              <mat-icon>golf_course</mat-icon>
+              Reserve Now
+            </button>
+          </div>
         </div>
       </div>
 
