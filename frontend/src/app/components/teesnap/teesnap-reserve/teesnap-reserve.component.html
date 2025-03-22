@@ -1,0 +1,192 @@
+<div class="reservation-page">
+  <div class="page-content">
+    <div class="reservation-container">
+      <div [class.success-header]="reservationSuccess" class="reservation-header">
+        <h1>{{ reservationSuccess ? 'Reservation Successful' : 'Reserve Your Tee Time' }}</h1>
+      </div>
+
+      <div *ngIf="submitting || completingReservation" class="loading-overlay">
+        <div class="loading-content">
+          <mat-spinner color="primary" diameter="60"></mat-spinner>
+          <p>{{ completingReservation ? 'Completing your reservation...' : 'Processing your reservation...' }}</p>
+        </div>
+      </div>
+
+      <!-- Reservation form - shown when not yet successful -->
+      <div *ngIf="!reservationSuccess">
+        <div class="reservation-info">
+          <h2>Tee Time Details</h2>
+          <div class="reservation-info-card">
+            <div class="course-name">
+              <mat-icon color="primary">golf_course</mat-icon>
+              <span>{{ course.name }}</span>
+            </div>
+
+            <div class="tee-time-details">
+              <div class="detail-row">
+                <mat-icon color="primary">calendar_today</mat-icon>
+                <span>{{ teeTime.time | date:'fullDate' }}</span>
+              </div>
+
+              <div class="detail-row">
+                <mat-icon color="primary">access_time</mat-icon>
+                <span>{{ teeTime.time | date:'shortTime' }}</span>
+              </div>
+
+              <div class="detail-row">
+                <mat-icon color="primary">group</mat-icon>
+                <span>{{ teeTime.spots }} spots available</span>
+              </div>
+
+              <div class="detail-row">
+                <mat-icon color="primary">flag</mat-icon>
+                <span>{{ teeTime.holes.join(' or ') }} Holes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reservation-form-container">
+          <h2>Customize Your Reservation</h2>
+          <p class="form-description">
+            Select the number of players and number of holes for your tee time.
+          </p>
+
+          <form #form="ngForm" (ngSubmit)="onSubmit()" [formGroup]="reservationForm">
+            <div formGroupName="reservationData">
+              <div class="form-grid">
+                <div class="form-column">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Number of Players</mat-label>
+                    <mat-select formControlName="players">
+                      <ng-container *ngFor="let i of [1, 2, 3, 4]">
+                        <mat-option *ngIf="i <= maxPlayers" [value]="i">
+                          {{ i }} Player{{ i > 1 ? 's' : '' }}
+                        </mat-option>
+                      </ng-container>
+                    </mat-select>
+                    <mat-icon matSuffix>people</mat-icon>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-column">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Number of Holes</mat-label>
+                    <mat-select formControlName="holes">
+                      <mat-option *ngFor="let holes of availableHoles" [value]="holes">
+                        {{ holes }} Holes
+                      </mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix>flag</mat-icon>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- Hidden fields -->
+              <input formControlName="teeOffSection" type="hidden">
+              <input formControlName="addons" type="hidden">
+              <input formControlName="courseId" type="hidden">
+              <input formControlName="teeTime" type="hidden">
+            </div>
+          </form>
+
+          <div class="additional-info">
+            <h3>Booking Information</h3>
+            <p>
+              Your tee time will be reserved for a short time to allow you to complete the reservation.
+              Please confirm your reservation within the time limit.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button (click)="cancel()" class="cancel-button" mat-button>
+            <mat-icon>arrow_back</mat-icon>
+            Back to Home
+          </button>
+
+          <button (click)="onSubmit()"
+                  [disabled]="reservationForm.invalid || submitting"
+                  class="reserve-button"
+                  color="primary"
+                  mat-raised-button>
+            <mat-icon>golf_course</mat-icon>
+            Reserve Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Success state - shown after successful reservation -->
+      <div *ngIf="reservationSuccess" class="success-view">
+        <div class="success-content">
+          <div class="success-icon">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+
+          <h2 class="success-title">Tee Time Reserved!</h2>
+
+          <p class="success-message">
+            Your tee time has been successfully reserved at {{ course.name }}.
+          </p>
+
+          <div class="timer-container">
+            <div class="timer">
+              <span class="timer-value">{{ timeInMinutes }}:{{ timeInSeconds | number:'2.0-0' }}</span>
+              <span class="timer-label">Time Remaining</span>
+            </div>
+
+            <p class="timer-info">
+              Please complete your reservation within the time limit to secure your tee time.
+            </p>
+          </div>
+
+          <div class="reservation-summary">
+            <h3>Reservation Summary</h3>
+
+            <div class="summary-detail">
+              <span class="detail-label">Course:</span>
+              <span class="detail-value">{{ course.name }}</span>
+            </div>
+
+            <div class="summary-detail">
+              <span class="detail-label">Date:</span>
+              <span class="detail-value">{{ teeTime.time | date:'fullDate' }}</span>
+            </div>
+
+            <div class="summary-detail">
+              <span class="detail-label">Time:</span>
+              <span class="detail-value">{{ teeTime.time | date:'shortTime' }}</span>
+            </div>
+
+            <div class="summary-detail">
+              <span class="detail-label">Players:</span>
+              <span class="detail-value">{{ reservationForm.get('reservationData.players')?.value }}</span>
+            </div>
+
+            <div class="summary-detail">
+              <span class="detail-label">Holes:</span>
+              <span class="detail-value">{{ reservationForm.get('reservationData.holes')?.value }}</span>
+            </div>
+          </div>
+
+          <div class="buttons-container">
+            <button (click)="completeReservation()"
+                    [disabled]="completingReservation"
+                    class="action-button complete-button"
+                    color="primary"
+                    mat-raised-button>
+              <mat-icon>check</mat-icon>
+              Complete Reservation
+            </button>
+            <button (click)="cancel()"
+                    class="action-button cancel-button"
+                    mat-button>
+              <mat-icon>close</mat-icon>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -5,10 +5,14 @@ import {AdminComponent} from './components/admin/admin.component';
 import {CourseDetailComponent} from "./components/course-detail/course-detail.component";
 
 const routes: Routes = [
-  {path: 'teetimes', component: TeeTimeListComponent},
+  {path: '', component: TeeTimeListComponent},
   {path: 'course/:id', component: CourseDetailComponent, runGuardsAndResolvers: 'always'},
   {path: 'admin', component: AdminComponent},
-  {path: '**', redirectTo: 'teetimes'}
+  {
+    path: 'teesnap',
+    loadChildren: () => import('./components/teesnap/teesnap.module').then(m => m.TeesnapModule)
+  },
+  {path: '**', redirectTo: ''}
 ];
 
 @NgModule({

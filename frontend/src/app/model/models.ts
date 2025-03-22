@@ -12,6 +12,7 @@ export interface Course {
 
 export interface CourseRequestData {
   course: string;
+  baseUrl: string;
 
   [key: string]: any;
 }

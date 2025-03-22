@@ -1,16 +1,17 @@
-const logger = require('../../../..//utils/logger');
+const logger = require('../../../../utils/logger');
 
 /**
- * Gets CSRF token from the Teesnap website
+ * Gets XSRF token from the Teesnap website
  * @param {Object} client - Axios client with cookie jar support
  * @param {string} domain - The domain to fetch from
  * @returns {Promise<string>} The decoded XSRF token
  */
-async function getCSRFToken(client, domain) {
-    logger.info(`Fetching CSRF token from ${domain}`);
+async function getXSRFToken(client, domain) {
+    logger.info(`Fetching XSRF token from ${domain}`);
 
+    // Get the home page, this generates a XSRF token
     try {
-        const response = await client.get(domain, {
+        await client.get(domain, {
             withCredentials: true,
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
@@ -24,9 +25,7 @@ async function getCSRFToken(client, domain) {
             }
         });
 
-        logger.debug(`Initial page fetch status: ${response.status}`);
-
-        // Extract token
+        // Extract token from cookies
         const cookies = client.defaults.jar.getCookiesSync(domain);
         logger.debug(`Cookies received: ${cookies.map(c => c.key).join(', ')}`);
 
@@ -36,12 +35,9 @@ async function getCSRFToken(client, domain) {
             throw new Error('XSRF-TOKEN cookie not found');
         }
 
-        const token = decodeURIComponent(xsrfCookie.value);
-        logger.debug(`XSRF token extracted (first 20 chars): ${token.substring(0, 20)}...`);
-
-        return token;
+        return decodeURIComponent(xsrfCookie.value);
     } catch (error) {
-        logger.error(`Failed to get CSRF token: ${error.message}`);
+        logger.error(`Failed to get XSRF token: ${error.message}`);
         if (error.response) {
             logger.error(`Response status: ${error.response.status}`);
             logger.debug(`Response data: ${JSON.stringify(error.response.data).substring(0, 200)}...`);
@@ -79,16 +75,11 @@ async function login(client, domain, email, password, xsrfToken) {
             }
         );
 
-        logger.debug(`Login status: ${response.status}`);
         logger.info(`Login successful for ${email}`);
 
         return response.data;
     } catch (error) {
         logger.error(`Login failed: ${error.message}`);
-        if (error.response) {
-            logger.error(`Response status: ${error.response.status}`);
-            logger.debug(`Response data: ${JSON.stringify(error.response.data).substring(0, 200)}...`);
-        }
         throw error;
     }
 }
@@ -98,11 +89,12 @@ async function login(client, domain, email, password, xsrfToken) {
  * @param {Object} client - Axios client with cookie jar support
  * @param {string} domain - The domain to request from
  * @param {Object} reservationData - Reservation details
- * @param {string} xsrfToken - The XSRF token
  * @returns {Promise<Object>} Reservation quote data
  */
-async function getReservationQuote(client, domain, reservationData, xsrfToken) {
+async function getReservationQuote(client, domain, reservationData) {
     logger.info(`Requesting reservation quote on ${domain} for ${reservationData.teeTime}`);
+
+    const xsrfToken = getXsrfTokenFromJar(client, domain);
 
     const teeTimeParams = `addons=${reservationData.addons}&course=${reservationData.courseId}&holes=${reservationData.holes}&players=${reservationData.players}&teeOffSection=${reservationData.teeOffSection}&teeTime=${reservationData.teeTime}`;
 
@@ -124,32 +116,10 @@ async function getReservationQuote(client, domain, reservationData, xsrfToken) {
             }
         );
 
-        logger.debug(`Reservation quote status: ${response.status}`);
         logger.info(`Reservation quote successful for ${reservationData.teeTime}`);
-
         return response.data;
     } catch (error) {
         logger.error(`Reservation quote failed: ${error.message}`);
-
-        if (error.response) {
-            logger.error(`Response status: ${error.response.status}`);
-
-            if (error.response.status === 422) {
-                logger.error('Validation error (422) - likely reasons:');
-                logger.error('  - The requested tee time may not be available');
-                logger.error('  - The course could be closed on the requested date');
-                logger.error('  - The player count or holes count could be invalid');
-
-                if (error.response.data && error.response.data.errors) {
-                    logger.error(`Specific error code: ${JSON.stringify(error.response.data.errors)}`);
-                }
-            }
-
-            logger.debug(`Response data: ${JSON.stringify(error.response.data)}`);
-            logger.debug(`Request URL: ${error.config.url}`);
-            logger.debug(`Request data: ${error.config.data}`);
-        }
-
         throw error;
     }
 }
@@ -181,76 +151,38 @@ async function confirmReservation(client, domain, reservationId, xsrfToken) {
             }
         );
 
-        logger.debug(`Confirmation status: ${response.status}`);
         logger.info(`Reservation ${reservationId} confirmed successfully`);
-
         return response.data;
+
     } catch (error) {
         logger.error(`Confirmation failed: ${error.message}`);
         if (error.response) {
             logger.error(`Response status: ${error.response.status}`);
-            logger.debug(`Response data: ${JSON.stringify(error.response.data)}`);
         }
         throw error;
     }
 }
 
 /**
- * Complete Teesnap flow: Get token, login, and get reservation quote
+ * Extract XSRF token from cookie jar
  * @param {Object} client - Axios client with cookie jar support
- * @param {string} domain - The teesnap domain (e.g., 'laurellanecountryclub')
- * @param {string} email - User email
- * @param {string} password - User password
- * @param {Object} reservationData - Reservation details
- * @returns {Promise<Object>} Results of the flow
+ * @param {string} domain - The domain to extract cookies from
+ * @returns {string} The decoded XSRF token
  */
-async function completeTeesnapFlow(client, domain, email, password, reservationData) {
-    logger.info(`Starting complete Teesnap flow for ${domain}`);
+function getXsrfTokenFromJar(client, domain) {
+    const cookies = client.defaults.jar.getCookiesSync(domain);
+    const xsrfCookie = cookies.find(cookie => cookie.key === 'XSRF-TOKEN');
 
-    try {
-
-
-        // Get CSRF token
-        const initialToken = await getCSRFToken(client, domain);
-        logger.info('Initial XSRF token obtained');
-
-        // Login
-        const loginData = await login(client, domain, email, password, initialToken);
-        logger.info('Login successful');
-
-        // Get updated token after login
-        const updatedCookies = client.defaults.jar.getCookiesSync(domain);
-        logger.debug(`Cookies after login: ${updatedCookies.map(c => c.key).join(', ')}`);
-
-        const updatedXsrfCookie = updatedCookies.find(cookie => cookie.key === 'XSRF-TOKEN');
-
-        if (!updatedXsrfCookie) {
-            logger.error('Updated XSRF-TOKEN cookie not found after login');
-            throw new Error('Updated XSRF-TOKEN cookie not found after login');
-        }
-
-        const updatedToken = decodeURIComponent(updatedXsrfCookie.value);
-        logger.debug(`Updated XSRF token obtained (first 20 chars): ${updatedToken.substring(0, 20)}...`);
-
-        // Get reservation quote
-        const quoteData = await getReservationQuote(client, domain, reservationData, updatedToken);
-        logger.info('Reservation quote obtained successfully');
-
-        return {
-            loginData,
-            quoteData,
-            token: updatedToken
-        };
-    } catch (error) {
-        logger.error(`Complete Teesnap flow failed: ${error.message}`);
-        throw error;
+    if (!xsrfCookie) {
+        throw new Error('XSRF-TOKEN cookie not found in cookie jar');
     }
+
+    return decodeURIComponent(xsrfCookie.value);
 }
 
 module.exports = {
-    getCSRFToken,
+    getXSRFToken,
     login,
     getReservationQuote,
-    confirmReservation,
-    completeTeesnapFlow
+    confirmReservation
 };

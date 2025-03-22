@@ -42,13 +42,13 @@ async function getTeeSnapTeeTimes(date, booking_url, params) {
         const formattedTimes = [];
         const data = response.data;
 
-        if (!data || !data.teeTimes) {
+        if (!data || !teeTimes) {
             return formattedTimes;
         }
 
-        const bookingsArr = data.teeTimes.bookings;
+        const bookingsArr = teeTimes.bookings;
 
-        data.teeTimes.teeTimes.forEach(time => {
+        teeTimes.teeTimes.forEach(time => {
             const bookingCheck = time.teeOffSections[0];
 
             // Skip times that are in the past

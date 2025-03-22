@@ -51,38 +51,28 @@ app.use(session({
 
 app.use((req, res, next) => {
     try {
-        // Assign unique user ID if not exists
         if (!req.session.userId) {
             req.session.userId = uuidv4();
             req.session.createdAt = new Date();
         }
 
-        // Set up cookie jar for this session if not exists
-        if (!req.session.cookieClientCreated) {
-            const cookieJar = new CookieJar();
-            req.session.cookieJar = cookieJar.serializeSync();
-            req.session.cookieClientCreated = true;
+        // Initialize or restore cookie jar
+        if (req.session.cookieJar) {
+            req.session.cookieJar = CookieJar.deserializeSync(req.session.cookieJar);
+        } else {
+            req.session.cookieJar = new CookieJar();
         }
 
-        // Deserialize the cookie jar and create an axios instance with it
-        const cookieJar = CookieJar.deserializeSync(req.session.cookieJar);
-        req.cookieClient = wrapper(axios.create({jar: cookieJar}));
+        // Create axios client with the restored cookie jar
+        req.axiosClient = wrapper(axios.create({jar: req.session.cookieJar}));
 
-        // Add helper method to save updated cookie jar to session
-        req.saveCookieJar = () => {
-            req.session.cookieJar = req.cookieClient.defaults.jar.serializeSync();
+        req.saveCookieJar = (jar) => {
+            req.session.cookieJar = jar;
         };
-
         next();
     } catch (error) {
         console.error('Error setting up cookie jar:', error);
-        res.status(500).json({
-            success: false,
-            error: {
-                message: error.message,
-                status: 500
-            }
-        });
+        res.status(500).json({success: false, error: {message: error.message, status: 500}});
     }
 });
 
@@ -109,7 +99,7 @@ app.use('/api/teesnap', teesnapRouter);
         }
         if (process.env.REFRESH_ON_STARTUP === 'true') {
             logger.info('Running refresh on startup.');
-            await (refreshAllTeeTimesJob(0,6))();
+            await (refreshAllTeeTimesJob(0, 6))();
         }
 
     } catch (error) {

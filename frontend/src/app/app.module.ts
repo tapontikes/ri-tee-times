@@ -33,11 +33,11 @@ import {AdminComponent} from './components/admin/admin.component';
 import {AppRoutingModule} from './app-routing.module';
 import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
 import {CourseDetailComponent} from "./components/course-detail/course-detail.component";
-import {BookWithTeesnapComponent} from "./components/modal/book-with-teesnap/book-with-teesnap.component";
 import {MatDialogActions, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import {SessionService} from "./service/session.service";
 import {firstValueFrom} from "rxjs";
 import {SessionInterceptor} from "./interceptors/session.interceptor";
+import {DataSharingService} from "./service/data-sharing.service";
 
 export function initializeSession(sessionService: SessionService) {
   return () => firstValueFrom(sessionService.initializeSession());
@@ -49,8 +49,8 @@ export function initializeSession(sessionService: SessionService) {
     NavbarComponent,
     TeeTimeListComponent,
     CourseDetailComponent,
-    AdminComponent,
-    BookWithTeesnapComponent
+    AdminComponent
+
   ],
   imports: [
     BrowserModule,
@@ -65,6 +65,7 @@ export function initializeSession(sessionService: SessionService) {
     MatToolbarModule,
     MatButtonModule,
     MatCardModule,
+    MatChipsModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -87,6 +88,7 @@ export function initializeSession(sessionService: SessionService) {
   providers: [
     provideHttpClient(),
     SessionService,
+    DataSharingService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: SessionInterceptor,
