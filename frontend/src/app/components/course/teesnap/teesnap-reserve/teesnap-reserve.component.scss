@@ -295,10 +295,8 @@
 /* Button container for success view */
 .buttons-container {
   display: flex;
-  justify-content: center;
+  align-items: center;
   gap: 16px;
-  width: 100%;
-  flex-wrap: wrap;
 }
 
 .action-button {
