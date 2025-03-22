@@ -43,6 +43,8 @@ export class TeesnapLoginComponent implements OnInit {
           this.router.navigate(['/teesnap/reserve']);
         }
       });
+    } else {
+      this.router.navigate(['/']);
     }
 
     this.initForm();
