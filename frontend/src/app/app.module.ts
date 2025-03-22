@@ -1,7 +1,7 @@
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient} from '@angular/common/http';
+import {HttpClientModule, provideHttpClient} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 
@@ -25,23 +25,18 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 // Components
 import {AppComponent} from './app.component';
-import {NavbarComponent} from './components/navbar/navbar.component';
-import {TeeTimeListComponent} from './components/tee-time-list/tee-time-list.component';
-import {AdminComponent} from './components/admin/admin.component';
 
 // Routing
 import {AppRoutingModule} from './app-routing.module';
 import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
-import {CourseDetailComponent} from "./components/course-detail/course-detail.component";
 import {MatDialogActions, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
-import {SessionService} from "./service/session.service";
-import {firstValueFrom} from "rxjs";
-import {SessionInterceptor} from "./interceptors/session.interceptor";
 import {DataSharingService} from "./service/data-sharing.service";
+import {NavbarComponent} from "./components/main/navbar/navbar.component";
+import {TeeTimeListComponent} from "./components/main/tee-time-list/tee-time-list.component";
+import {CourseDetailComponent} from "./components/main/course-detail/course-detail.component";
+import {AdminComponent} from "./components/main/admin/admin.component";
+import {TeesnapSessionService} from "./service/teesnap/teesnap-session.service";
 
-export function initializeSession(sessionService: SessionService) {
-  return () => firstValueFrom(sessionService.initializeSession());
-}
 
 @NgModule({
   declarations: [
@@ -50,7 +45,6 @@ export function initializeSession(sessionService: SessionService) {
     TeeTimeListComponent,
     CourseDetailComponent,
     AdminComponent
-
   ],
   imports: [
     BrowserModule,
@@ -87,21 +81,8 @@ export function initializeSession(sessionService: SessionService) {
   ],
   providers: [
     provideHttpClient(),
-    SessionService,
-    DataSharingService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: SessionInterceptor,
-      multi: true
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (sessionService: SessionService) => {
-        return () => firstValueFrom(sessionService.initializeSession());
-      },
-      deps: [SessionService],
-      multi: true
-    }
+    TeesnapSessionService,
+    DataSharingService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,5 +1,7 @@
 const express = require('express');
 const teesnapService = require('../../service/courses/teesnap/reservation/reservation');
+const sessionService = require('../../service/courses/teesnap/session/session');
+const {Unauthorized} = require("http-errors");
 
 const router = express.Router();
 
@@ -24,14 +26,19 @@ router.post('/login', async (req, res) => {
         // Login
         const loginData = await teesnapService.login(req.axiosClient, domain, email, password, initialToken);
 
+        // Save the cookie jar to the session
         req.saveCookieJar(req.axiosClient.defaults.jar);
+
+        // Get session status for the domain
+        const sessionStatus = await sessionService.getSessionStatus(req.axiosClient, domain);
 
         res.json({
             success: true,
-            loginData: loginData
+            loginData: loginData,
+            session: sessionStatus
         });
+
     } catch (error) {
-        console.error('Error during login:', error);
         res.status(500).json({
             success: false,
             error: error.message,
@@ -70,12 +77,15 @@ router.post('/reserve', async (req, res) => {
             reservationQuote: quoteData
         });
     } catch (error) {
-        console.error('Error processing reservation:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message,
-            responseData: error.response ? error.response.data : null
-        });
+        if (error instanceof Unauthorized) {
+            res.status(401).send();
+        } else {
+            res.status(500).json({
+                success: false,
+                error: error.message,
+                responseData: error.response ? error.response.data : null
+            });
+        }
     }
 });
 
@@ -121,12 +131,45 @@ router.post('/confirm', async (req, res) => {
             success: true,
             confirmation: confirmationData
         });
+
     } catch (error) {
-        console.error('Error confirming reservation:', error);
+        if (error instanceof Unauthorized) {
+            res.status(401).send();
+        } else {
+            res.status(500).json({
+                success: false,
+                error: error.message,
+                responseData: error.response ? error.response.data : null
+            });
+        }
+    }
+});
+
+/**
+ * Endpoint to check session status for a domain
+ */
+router.get('/session/:domain', async (req, res) => {
+    try {
+        const domain = req.params.domain;
+
+        if (!domain) {
+            return res.status(400).json({
+                success: false,
+                error: 'Missing domain parameter'
+            });
+        }
+
+        const sessionStatus = await sessionService.getSessionStatus(req.axiosClient, domain);
+
+        res.json({
+            success: true,
+            session: sessionStatus
+        });
+
+    } catch (error) {
         res.status(500).json({
             success: false,
-            error: error.message,
-            responseData: error.response ? error.response.data : null
+            error: error.message
         });
     }
 });

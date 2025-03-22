@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {Course} from "../../model/models";
-import {formatDate} from "../../util/utils";
-import {DataSharingService} from "../../service/data-sharing.service";
+import {Course} from "../../../model/models";
+import {formatDate} from "../../../util/utils";
+import {DataSharingService} from "../../../service/data-sharing.service";
 
 @Component({
   selector: 'app-navbar',

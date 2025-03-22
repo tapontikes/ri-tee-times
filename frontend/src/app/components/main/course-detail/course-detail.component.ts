@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {formatDate} from '@angular/common';
-import {Course, TeeTime, TeeTimeSearchParams} from "../../model/models";
-import {DataSharingService} from "../../service/data-sharing.service";
-import {ReservationDialogService} from "../../service/registration-dialog.service";
+import {Course, TeeTime, TeeTimeSearchParams} from "../../../model/models";
+import {DataSharingService} from "../../../service/data-sharing.service";
+import {ReservationDialogService} from "../../../service/registration-dialog.service";
 import moment from "moment-timezone";
 
 @Component({

@@ -49,3 +49,17 @@ export interface DialogData {
   course: Course;
   teeTime: TeeTime;
 }
+
+export interface SessionStatus {
+  isActive: boolean;
+  expiresAt: string | null;
+  domain: string;
+  expiresIn?: number;
+  error?: string;
+}
+
+export interface SessionResponse {
+  success: boolean;
+  session: SessionStatus;
+  error?: string;
+}
