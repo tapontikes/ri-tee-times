@@ -3,6 +3,10 @@
     <div class="reservation-container">
       <div [class.success-header]="reservationSuccess" class="reservation-header">
         <h1>{{ reservationSuccess ? 'Reservation Successful' : 'Reserve Your Tee Time' }}</h1>
+        <div *ngIf="sessionActive" class="session-info">
+          <mat-icon color="primary">verified_user</mat-icon>
+          <span>Session active until {{ formatExpiryTime(sessionExpiresAt) }}</span>
+        </div>
       </div>
 
       <div *ngIf="submitting || completingReservation" class="loading-overlay">
@@ -106,7 +110,7 @@
           </button>
 
           <button (click)="onSubmit()"
-                  [disabled]="reservationForm.invalid || submitting"
+                  [disabled]="reservationForm.invalid || submitting || !sessionActive"
                   class="reserve-button"
                   color="primary"
                   mat-raised-button>
@@ -171,7 +175,7 @@
 
           <div class="buttons-container">
             <button (click)="completeReservation()"
-                    [disabled]="completingReservation"
+                    [disabled]="completingReservation || !sessionActive"
                     class="action-button complete-button"
                     color="primary"
                     mat-raised-button>

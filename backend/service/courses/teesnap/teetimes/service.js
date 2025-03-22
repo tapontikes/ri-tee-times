@@ -9,7 +9,7 @@ const TEESNAP_ENDPOINT = "/customer-api/teetimes-day";
  * @returns {Promise<Array>} - Formatted tee times
  * @param date
  * @param booking_url
- * @param request_data
+ * @param params
  */
 async function getTeeSnapTeeTimes(date, booking_url, params) {
     try {
@@ -40,9 +40,9 @@ async function getTeeSnapTeeTimes(date, booking_url, params) {
         });
 
         const formattedTimes = [];
-        const data = response.data;
+        const teeTimes = response.data.teeTimes;
 
-        if (!data || !teeTimes) {
+        if (!teeTimes || teeTimes.length === 0) {
             return formattedTimes;
         }
 

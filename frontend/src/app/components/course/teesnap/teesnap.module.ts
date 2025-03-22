@@ -13,6 +13,7 @@ import {TeesnapRoutingModule} from './teesnap-routing.module';
 import {TeesnapLoginComponent} from './teesnap-login/teesnap-login.component';
 import {TeesnapReserveComponent} from './teesnap-reserve/teesnap-reserve.component';
 import {MatDialogTitle} from "@angular/material/dialog";
+import {TeesnapSessionService} from "../../../service/teesnap/teesnap-session.service";
 
 @NgModule({
   declarations: [
@@ -31,6 +32,9 @@ import {MatDialogTitle} from "@angular/material/dialog";
     MatIconModule,
     MatProgressSpinnerModule,
     MatDialogTitle
+  ],
+  providers: [
+    TeesnapSessionService
   ]
 })
 export class TeesnapModule {

@@ -4,7 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
-import {DialogData} from "../../../model/models";
+import {DialogData} from "../../../../model/models";
 
 @Component({
   selector: 'app-book-with-course',

@@ -3,9 +3,10 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
 import {Course, TeeTime} from '../model/models';
-import {BookWithCourseComponent} from "../components/modal/book-with-course/book-with-course.component";
+import {BookWithCourseComponent} from "../components/main/modal/book-with-course/book-with-course.component";
 import {Router} from '@angular/router';
 import {DataSharingService} from "./data-sharing.service";
+import {TeesnapSessionService} from "./teesnap/teesnap-session.service";
 
 @Injectable({
   providedIn: 'root'
@@ -15,15 +16,15 @@ export class ReservationDialogService {
   constructor(
     private dialog: MatDialog,
     private router: Router,
-    private dataSharingService: DataSharingService
+    private dataSharingService: DataSharingService,
+    private teesnapSessionService: TeesnapSessionService
   ) {
   }
 
   book(course: Course, teeTime: TeeTime) {
     switch (course.provider) {
       case 'teesnap':
-        // Use the new two-page flow
-        this.navigateToTeesnapLogin(course, teeTime);
+        this.bookWithTeesnap(course, teeTime);
         break;
       default:
         this.openBookWithCourseDialog(course, teeTime)
@@ -31,16 +32,24 @@ export class ReservationDialogService {
   }
 
   /**
-   * Navigate to the Teesnap login page with tee time data
+   * Book with TeesNap using the session-aware flow
+   * This will check if there's a valid session and skip the login if possible
    */
-  private navigateToTeesnapLogin(course: Course, teeTime: TeeTime): void {
-
-    // Store in service
+  private bookWithTeesnap(course: Course, teeTime: TeeTime): void {
+    // Store the selected course and tee time for later use
     this.dataSharingService.setSelectedTeeTime(teeTime);
     this.dataSharingService.setSelectedCourse(course);
 
-    // Navigate to login page
-    this.router.navigate(['/teesnap/login']);
+    // Check if we have a valid session for this domain
+    this.teesnapSessionService.checkSession(course.booking_url).subscribe(session => {
+      if (session.isActive) {
+        // If we have an active session, go directly to the reservation page
+        this.router.navigate(['/teesnap/reserve']);
+      } else {
+        // Otherwise, navigate to the login page
+        this.router.navigate(['/teesnap/login']);
+      }
+    });
   }
 
 

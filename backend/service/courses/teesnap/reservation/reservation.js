@@ -1,4 +1,5 @@
 const logger = require('../../../../utils/logger');
+const {Unauthorized} = require("http-errors");
 
 /**
  * Gets XSRF token from the Teesnap website
@@ -174,7 +175,7 @@ function getXsrfTokenFromJar(client, domain) {
     const xsrfCookie = cookies.find(cookie => cookie.key === 'XSRF-TOKEN');
 
     if (!xsrfCookie) {
-        throw new Error('XSRF-TOKEN cookie not found in cookie jar');
+        throw new Unauthorized('XSRF-TOKEN cookie not found in cookie jar');
     }
 
     return decodeURIComponent(xsrfCookie.value);

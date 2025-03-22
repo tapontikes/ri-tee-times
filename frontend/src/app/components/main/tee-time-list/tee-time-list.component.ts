@@ -2,11 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {formatDate} from '@angular/common';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {Course, TeeTime, TeeTimeSearchParams} from "../../model/models";
-import {TeeTimeService} from "../../service/teetime.service";
-import {DataSharingService} from "../../service/data-sharing.service";
-import {bookWithCourse} from "../../util/utils";
-import {ReservationDialogService} from "../../service/registration-dialog.service";
+import {Course, TeeTime, TeeTimeSearchParams} from "../../../model/models";
+import {TeeTimeService} from "../../../service/teetime.service";
+import {DataSharingService} from "../../../service/data-sharing.service";
+import {bookWithCourse} from "../../../util/utils";
+import {ReservationDialogService} from "../../../service/registration-dialog.service";
 
 @Component({
   selector: 'app-tee-time-list',
