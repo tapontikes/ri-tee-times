@@ -1,14 +1,6 @@
 <div class="reservation-page">
   <div class="page-content">
     <div class="reservation-container">
-      <div [class.success-header]="reservationSuccess" class="reservation-header">
-        <h1>{{ reservationSuccess ? 'Reservation Successful' : 'Reserve Your Tee Time' }}</h1>
-        <div *ngIf="sessionActive" class="session-info">
-          <mat-icon color="primary">verified_user</mat-icon>
-          <span>Session active until {{ formatExpiryTime(sessionExpiresAt) }}</span>
-        </div>
-      </div>
-
       <div *ngIf="submitting || completingReservation" class="loading-overlay">
         <div class="loading-content">
           <mat-spinner color="primary" diameter="60"></mat-spinner>
@@ -19,7 +11,7 @@
       <!-- Reservation form - shown when not yet successful -->
       <div *ngIf="!reservationSuccess">
         <div class="reservation-info">
-          <h2>Tee Time Details</h2>
+          <h2>Reserve Tee Time</h2>
           <div class="reservation-info-card">
             <div class="course-name">
               <mat-icon color="primary">golf_course</mat-icon>
