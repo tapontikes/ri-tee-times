@@ -36,13 +36,12 @@
       </div>
 
       <div class="login-form-container">
-        <h3>Teesnap Credentials</h3>
+        <h3>ForeUp Credentials</h3>
         <form #form="ngForm" (ngSubmit)="onSubmit()" [formGroup]="loginForm">
-          <input formControlName="domain" type="hidden">
           <div class="form-row">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Email</mat-label>
-              <input formControlName="email" matInput placeholder="Enter your Teesnap email" type="email">
+              <input formControlName="email" matInput placeholder="Enter your ForeUp email" type="email">
               <mat-icon matSuffix>email</mat-icon>
               <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email is required</mat-error>
               <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email</mat-error>
@@ -53,7 +52,7 @@
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Password</mat-label>
               <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" matInput
-                     placeholder="Enter your Teesnap password">
+                     placeholder="Enter your ForeUp password">
               <button (click)="hidePassword = !hidePassword" mat-icon-button matSuffix type="button">
                 <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>

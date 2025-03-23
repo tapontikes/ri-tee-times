@@ -12,6 +12,10 @@ const routes: Routes = [
     path: 'teesnap',
     loadChildren: () => import('./components/course/teesnap/teesnap.module').then(m => m.TeesnapModule)
   },
+  {
+    path: 'foreup',
+    loadChildren: () => import('./components/course/foreup/foreup.module').then(m => m.ForeupModule)
+  },
   {path: '**', redirectTo: ''}
 ];
 

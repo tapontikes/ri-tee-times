@@ -1,49 +1,38 @@
-const logger = require('../../../../utils/logger');
 const moment = require('moment');
+const dbClient = require("../../../../database/client");
 
 /**
  * Get the session status for a TeesNap domain
  * @param {Object} client - Axios client with cookie jar support
- * @param {string} domain - The domain to check session for
+ * @param {string} id - The id of the course to check session for
  * @returns {Promise<Object>} Session status information
  */
-async function getSessionStatus(client, domain) {
-    try {
-        // Extract cookies from jar
-        const cookies = client.defaults.jar.getCookiesSync(domain);
+async function getSession(client, id) {
 
-        // Find the laravel_session cookie which indicates an active session
-        const sessionCookie = cookies.find(cookie => cookie.key === 'laravel_session');
-        const xsrfCookie = cookies.find(cookie => cookie.key === 'XSRF-TOKEN');
+    const course = await dbClient.getCourse(id);
+    const cookies = client.defaults.jar.getCookiesSync(course.booking_url);
 
-        if (!sessionCookie || !xsrfCookie) {
-            return {
-                isActive: false,
-                expiresAt: null,
-                domain
-            };
-        }
+    const sessionCookie = cookies.find(cookie => cookie.key === 'laravel_session');
+    const xsrfCookie = cookies.find(cookie => cookie.key === 'XSRF-TOKEN');
 
-        // Get expiry time from the session cookie
-        const expiryTime = moment(sessionCookie.expires);
-        const now = moment();
-
-        // Check if the session is still valid (not expired)
-        const isActive = expiryTime.isAfter(now);
-
+    if (!sessionCookie || !xsrfCookie) {
         return {
-            isActive,
-            expiresAt: expiryTime.format(),
-            domain,
-            // Include time remaining in seconds
-            expiresIn: expiryTime.diff(now, 'seconds')
+            isActive: false,
+            expiresAt: null,
+            id
         };
-    } catch (error) {
-        logger.error(`Error checking session status: ${error.message}`);
-        throw error;
     }
+
+    const expiryTime = moment(sessionCookie.expires);
+    const now = moment();
+
+    return {
+        id,
+        expiresAt: expiryTime.format(),
+        expiresIn: expiryTime.diff(now, 'seconds')
+    };
 }
 
 module.exports = {
-    getSessionStatus
+    getSession: getSession
 };

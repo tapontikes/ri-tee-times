@@ -13,6 +13,8 @@ export interface Course {
 export interface CourseRequestData {
   course: string;
   baseUrl: string;
+  booking_class: string;
+  id: string;
 
   [key: string]: any;
 }
@@ -50,16 +52,10 @@ export interface DialogData {
   teeTime: TeeTime;
 }
 
-export interface SessionStatus {
-  isActive: boolean;
-  expiresAt: string | null;
-  domain: string;
-  expiresIn?: number;
-  error?: string;
+export interface Session {
+  expiresIn: number;
+  expiresAt: string;
+  id: number;
+  jwt?: string;
 }
 
-export interface SessionResponse {
-  success: boolean;
-  session: SessionStatus;
-  error?: string;
-}

@@ -35,7 +35,6 @@ import {NavbarComponent} from "./components/main/navbar/navbar.component";
 import {TeeTimeListComponent} from "./components/main/tee-time-list/tee-time-list.component";
 import {CourseDetailComponent} from "./components/main/course-detail/course-detail.component";
 import {AdminComponent} from "./components/main/admin/admin.component";
-import {TeesnapSessionService} from "./service/teesnap/teesnap-session.service";
 
 
 @NgModule({
@@ -81,7 +80,6 @@ import {TeesnapSessionService} from "./service/teesnap/teesnap-session.service";
   ],
   providers: [
     provideHttpClient(),
-    TeesnapSessionService,
     DataSharingService
   ],
   bootstrap: [AppComponent]

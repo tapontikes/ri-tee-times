@@ -10,41 +10,31 @@ const {Unauthorized} = require("http-errors");
 async function getXSRFToken(client, domain) {
     logger.info(`Fetching XSRF token from ${domain}`);
 
-    // Get the home page, this generates a XSRF token
-    try {
-        await client.get(domain, {
-            withCredentials: true,
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.8',
-                'Sec-Fetch-Dest': 'document',
-                'Sec-Fetch-Mode': 'navigate',
-                'Sec-Fetch-Site': 'none',
-                'Sec-GPC': '1',
-                'Upgrade-Insecure-Requests': '1'
-            }
-        });
-
-        // Extract token from cookies
-        const cookies = client.defaults.jar.getCookiesSync(domain);
-        logger.debug(`Cookies received: ${cookies.map(c => c.key).join(', ')}`);
-
-        const xsrfCookie = cookies.find(cookie => cookie.key === 'XSRF-TOKEN');
-        if (!xsrfCookie) {
-            logger.error('XSRF-TOKEN cookie not found in cookies');
-            throw new Error('XSRF-TOKEN cookie not found');
+    await client.get(domain, {
+        withCredentials: true,
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.8',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-GPC': '1',
+            'Upgrade-Insecure-Requests': '1'
         }
+    });
 
-        return decodeURIComponent(xsrfCookie.value);
-    } catch (error) {
-        logger.error(`Failed to get XSRF token: ${error.message}`);
-        if (error.response) {
-            logger.error(`Response status: ${error.response.status}`);
-            logger.debug(`Response data: ${JSON.stringify(error.response.data).substring(0, 200)}...`);
-        }
-        throw error;
+    // Extract token from cookies
+    const cookies = client.defaults.jar.getCookiesSync(domain);
+    logger.debug(`Cookies received: ${cookies.map(c => c.key).join(', ')}`);
+
+    const xsrfCookie = cookies.find(cookie => cookie.key === 'XSRF-TOKEN');
+    if (!xsrfCookie) {
+        logger.error('XSRF-TOKEN cookie not found in cookies');
+        throw new Error('XSRF-TOKEN cookie not found');
     }
+
+    return decodeURIComponent(xsrfCookie.value);
 }
 
 /**
@@ -57,32 +47,23 @@ async function getXSRFToken(client, domain) {
  * @returns {Promise<Object>} Login response data
  */
 async function login(client, domain, email, password, xsrfToken) {
-    logger.info(`Logging in to ${domain} with email: ${email}`);
-
-    try {
-        const response = await client.post(`${domain}/customer-api/login`,
-            {email, password},
-            {
-                withCredentials: true,
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
-                    'Accept': 'application/json, text/plain, */*',
-                    'Accept-Language': 'en-US,en;q=0.8',
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    'Origin': `${domain}`,
-                    'Referer': `${domain}/login`,
-                    'X-XSRF-TOKEN': xsrfToken
-                }
+    const response = await client.post(`${domain}/customer-api/login`,
+        {email, password},
+        {
+            withCredentials: true,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+                'Accept': 'application/json, text/plain, */*',
+                'Accept-Language': 'en-US,en;q=0.8',
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Origin': `${domain}`,
+                'Referer': `${domain}/login`,
+                'X-XSRF-TOKEN': xsrfToken
             }
-        );
+        }
+    );
 
-        logger.info(`Login successful for ${email}`);
-
-        return response.data;
-    } catch (error) {
-        logger.error(`Login failed: ${error.message}`);
-        throw error;
-    }
+    return response.data;
 }
 
 /**
@@ -99,30 +80,25 @@ async function getReservationQuote(client, domain, reservationData) {
 
     const teeTimeParams = `addons=${reservationData.addons}&course=${reservationData.courseId}&holes=${reservationData.holes}&players=${reservationData.players}&teeOffSection=${reservationData.teeOffSection}&teeTime=${reservationData.teeTime}`;
 
-    try {
-        const response = await client.post(
-            `${domain}/customer-api/reservation-quote`,
-            reservationData,
-            {
-                withCredentials: true,
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
-                    'Accept': 'application/json, text/plain, */*',
-                    'Accept-Language': 'en-US,en;q=0.8',
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    'Origin': `${domain}`,
-                    'Referer': `${domain}/reservation?${teeTimeParams}`,
-                    'X-XSRF-TOKEN': xsrfToken
-                }
+    const response = await client.post(
+        `${domain}/customer-api/reservation-quote`,
+        reservationData,
+        {
+            withCredentials: true,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+                'Accept': 'application/json, text/plain, */*',
+                'Accept-Language': 'en-US,en;q=0.8',
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Origin': `${domain}`,
+                'Referer': `${domain}/reservation?${teeTimeParams}`,
+                'X-XSRF-TOKEN': xsrfToken
             }
-        );
+        }
+    );
 
-        logger.info(`Reservation quote successful for ${reservationData.teeTime}`);
-        return response.data;
-    } catch (error) {
-        logger.error(`Reservation quote failed: ${error.message}`);
-        throw error;
-    }
+    logger.info(`Reservation quote successful for ${reservationData.teeTime}`);
+    return response.data;
 }
 
 /**

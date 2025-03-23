@@ -8,11 +8,11 @@ import {DataSharingService} from "../../../../service/data-sharing.service";
 import {SessionService} from "../../../../service/session.service";
 
 @Component({
-  selector: 'app-teesnap-login',
-  templateUrl: './teesnap-login.component.html',
-  styleUrls: ['./teesnap-login.component.scss']
+  selector: 'app-foreup-login',
+  templateUrl: './foreup-login.component.html',
+  styleUrls: ['./foreup-login.component.scss']
 })
-export class TeesnapLoginComponent implements OnInit {
+export class ForeupLoginComponent implements OnInit {
   loginForm!: FormGroup;
   hidePassword: boolean = true;
   submitting: boolean = false;
@@ -33,20 +33,26 @@ export class TeesnapLoginComponent implements OnInit {
   ngOnInit(): void {
     this.teeTime = this.dataSharingService.getSelectedTeeTime();
     this.course = this.dataSharingService.getSelectedCourse();
-    this.sessionService.checkSession(this.course.id, this.course.provider).subscribe(session => {
-      if (session) {
-        this.router.navigate(['/teesnap/reserve']);
-      }
-    });
+
+    if (this.course) {
+      this.sessionService.checkSession(this.course.id, this.course.provider).subscribe(session => {
+        if (session) {
+          this.router.navigate(['/foreup/reserve']);
+        }
+      });
+    } else {
+      this.router.navigate(['/']);
+    }
     this.initForm();
   }
 
   initForm(): void {
     this.loginForm = this.fb.group({
-      id: [this.course.id, Validators.required],
-      domain: [this.course.booking_url || '', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
+      courseId: [this.course.request_data.id, Validators.required],
+      courseName: [this.course.name, Validators.required],
+      id: [this.course.id, Validators.required],
     });
   }
 
@@ -57,13 +63,13 @@ export class TeesnapLoginComponent implements OnInit {
 
     this.submitting = true;
 
-    this.http.post('/api/teesnap/login', this.loginForm.value)
+    this.http.post('/api/foreup/login', this.loginForm.value)
       .subscribe(
         (response: any) => {
           this.submitting = false;
           if (response) {
             this.sessionService.storeSession(response);
-            this.router.navigate(['/teesnap/reserve']);
+            this.router.navigate(['/foreup/reserve']);
           }
         },
         (error) => this.handleError(error));
@@ -82,8 +88,7 @@ export class TeesnapLoginComponent implements OnInit {
           panelClass: 'error-snackbar'
         }
       )
-      ;
-      this.router.navigate(['/teesnap/login']);
+      this.router.navigate(['/foreup/login']);
     } else {
       this.snackBar.open(`Error: ${error.error?.error || 'Unknown error occured'}`, 'Close', {
         duration: 5000,
@@ -91,4 +96,5 @@ export class TeesnapLoginComponent implements OnInit {
       });
     }
   }
+
 }

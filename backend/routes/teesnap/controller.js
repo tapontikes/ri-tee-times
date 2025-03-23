@@ -10,10 +10,10 @@ const router = express.Router();
  */
 router.post('/login', async (req, res) => {
     try {
-        const {domain, email, password} = req.body;
+        const {domain, email, password, id} = req.body;
 
         // Validate required parameters
-        if (!domain || !email || !password) {
+        if (!domain || !email || !password || !id) {
             return res.status(400).json({
                 success: false,
                 error: 'Missing required parameters for login'
@@ -29,21 +29,19 @@ router.post('/login', async (req, res) => {
         // Save the cookie jar to the session
         req.saveCookieJar(req.axiosClient.defaults.jar);
 
-        // Get session status for the domain
-        const sessionStatus = await sessionService.getSessionStatus(req.axiosClient, domain);
-
-        res.json({
-            success: true,
-            loginData: loginData,
-            session: sessionStatus
-        });
+        const session = await sessionService.getSession(req.axiosClient, id);
+        res.json(session);
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message,
-            responseData: error.response ? error.response.data : null
-        });
+        if (error.response.data.errors === "credentials_incorrect") {
+            res.status(401).send();
+        } else {
+            res.status(500).json({
+                success: false,
+                error: error.message,
+                responseData: error.response ? error.response.data : null
+            });
+        }
     }
 });
 
@@ -148,29 +146,22 @@ router.post('/confirm', async (req, res) => {
 /**
  * Endpoint to check session status for a domain
  */
-router.get('/session/:domain', async (req, res) => {
-    try {
-        const domain = req.params.domain;
+router.get('/session/:id', async (req, res) => {
+    const id = req.params.id;
 
-        if (!domain) {
-            return res.status(400).json({
-                success: false,
-                error: 'Missing domain parameter'
-            });
-        }
-
-        const sessionStatus = await sessionService.getSessionStatus(req.axiosClient, domain);
-
-        res.json({
-            success: true,
-            session: sessionStatus
-        });
-
-    } catch (error) {
-        res.status(500).json({
+    if (!id) {
+        return res.status(400).json({
             success: false,
-            error: error.message
+            error: 'Missing domain parameter'
         });
+    }
+
+    const session = await sessionService.getSession(req.axiosClient, id);
+    if (session) {
+        res.json(session);
+
+    } else {
+        res.status(200).json({});
     }
 });
 

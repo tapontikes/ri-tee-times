@@ -9,20 +9,20 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
-import {TeesnapRoutingModule} from './teesnap-routing.module';
-import {TeesnapLoginComponent} from './teesnap-login/teesnap-login.component';
-import {TeesnapReserveComponent} from './teesnap-reserve/teesnap-reserve.component';
+import {ForeupRoutingModule} from './foreup-routing.module';
+import {ForeupLoginComponent} from './foreup-login/foreup-login.component';
+import {ForeupReserveComponent} from './foreup-reserve/foreup-reserve.component';
 import {MatDialogTitle} from "@angular/material/dialog";
 import {SessionService} from "../../../service/session.service";
 
 @NgModule({
   declarations: [
-    TeesnapLoginComponent,
-    TeesnapReserveComponent
+    ForeupLoginComponent,
+    ForeupReserveComponent
   ],
   imports: [
     CommonModule,
-    TeesnapRoutingModule,
+    ForeupRoutingModule,
     ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
@@ -37,5 +37,5 @@ import {SessionService} from "../../../service/session.service";
     SessionService
   ]
 })
-export class TeesnapModule {
+export class ForeupModule {
 }

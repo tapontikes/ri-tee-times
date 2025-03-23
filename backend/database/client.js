@@ -8,7 +8,7 @@ const logger = require('../utils/logger');
 class DbClient {
     /**
      * Get a course by its ID
-     * @param {Number} id - Course ID
+     * @param {string} id - Course ID
      * @returns {Promise<Object>} - Course object
      */
     async getCourse(id) {
