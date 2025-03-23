@@ -13,7 +13,7 @@ import {ForeupRoutingModule} from './foreup-routing.module';
 import {ForeupLoginComponent} from './foreup-login/foreup-login.component';
 import {ForeupReserveComponent} from './foreup-reserve/foreup-reserve.component';
 import {MatDialogTitle} from "@angular/material/dialog";
-import {ForeupSessionService} from "../../../service/foreup/foreup-session.service";
+import {SessionService} from "../../../service/session.service";
 
 @NgModule({
   declarations: [
@@ -34,7 +34,7 @@ import {ForeupSessionService} from "../../../service/foreup/foreup-session.servi
     MatDialogTitle
   ],
   providers: [
-    ForeupSessionService
+    SessionService
   ]
 })
 export class ForeupModule {

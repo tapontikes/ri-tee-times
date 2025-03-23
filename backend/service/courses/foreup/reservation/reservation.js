@@ -1,5 +1,4 @@
 const logger = require('../../../../utils/logger');
-const moment = require('moment');
 const {Unauthorized} = require('http-errors');
 
 /**
@@ -8,44 +7,40 @@ const {Unauthorized} = require('http-errors');
  * @param {string} email - User email
  * @param {string} password - User password
  * @param bookingId
- * @param courseId
  * @returns {Promise<Object>} Login response data with JWT token
  */
-async function login(client, email, password, bookingId, courseId) {
+async function login(client, email, password, bookingId) {
+    let response;
+    try {
+        const requestData = new URLSearchParams();
 
-    const requestData = new URLSearchParams();
+        requestData.append('username', email);
+        requestData.append('password', password);
+        requestData.append('api_key', 'no_limits');
+        requestData.append('booking_class_id', " ");
+        requestData.append('course_id', bookingId);
 
-    requestData.append('username', email);
-    requestData.append('password', password);
-    requestData.append('api_key', 'no_limits');
-    requestData.append('booking_class_id', " ");
-    requestData.append('course_id', bookingId);
-
-    const response = await client.post(
-        'https://foreupsoftware.com/index.php/api/booking/users/login',
-        requestData,
-        {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                'Accept': 'application/json, text/javascript, */*; q=0.01',
-                'X-Requested-With': 'XMLHttpRequest',
-                'API-Key': 'no_limits',
-                'X-FU-Golfer-Location': 'foreup',
-                'Host': 'foreupsoftware.com'
+        response = await client.post(
+            'https://foreupsoftware.com/index.php/api/booking/users/login',
+            requestData,
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    'Accept': 'application/json, text/javascript, */*; q=0.01',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'API-Key': 'no_limits',
+                    'X-FU-Golfer-Location': 'foreup',
+                    'Host': 'foreupsoftware.com'
+                }
             }
+        );
+
+    } catch (error) {
+        if (error.response.status === 401) {
+            throw new Unauthorized('Invalid credentials or unauthorized access');
         }
-    );
-
-    if (response.status === 401) {
-        throw new Unauthorized('Invalid credentials or unauthorized access');
     }
-
-    if (!response.data || !response.data.jwt) {
-        throw new Error('No data returned from foreup');
-    }
-
     return response.data.jwt
-
 }
 
 /**

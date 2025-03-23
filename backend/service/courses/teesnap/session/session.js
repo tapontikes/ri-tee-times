@@ -1,14 +1,16 @@
-const logger = require('../../../../utils/logger');
 const moment = require('moment');
+const dbClient = require("../../../../database/client");
 
 /**
  * Get the session status for a TeesNap domain
  * @param {Object} client - Axios client with cookie jar support
- * @param {string} domain - The domain to check session for
+ * @param {string} id - The id of the course to check session for
  * @returns {Promise<Object>} Session status information
  */
-async function getSessionStatus(client, domain) {
-    const cookies = client.defaults.jar.getCookiesSync(domain);
+async function getSession(client, id) {
+
+    const course = await dbClient.getCourse(id);
+    const cookies = client.defaults.jar.getCookiesSync(course.booking_url);
 
     const sessionCookie = cookies.find(cookie => cookie.key === 'laravel_session');
     const xsrfCookie = cookies.find(cookie => cookie.key === 'XSRF-TOKEN');
@@ -17,23 +19,20 @@ async function getSessionStatus(client, domain) {
         return {
             isActive: false,
             expiresAt: null,
-            domain
+            id
         };
     }
 
     const expiryTime = moment(sessionCookie.expires);
     const now = moment();
 
-    const isActive = expiryTime.isAfter(now);
-
     return {
-        isActive,
+        id,
         expiresAt: expiryTime.format(),
-        domain,
         expiresIn: expiryTime.diff(now, 'seconds')
     };
 }
 
 module.exports = {
-    getSessionStatus
+    getSession: getSession
 };

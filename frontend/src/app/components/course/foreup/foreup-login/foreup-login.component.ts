@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Course, TeeTime} from "../../../../model/models";
 import {DataSharingService} from "../../../../service/data-sharing.service";
-import {ForeupSessionService} from "../../../../service/foreup/foreup-session.service";
+import {SessionService} from "../../../../service/session.service";
 
 @Component({
   selector: 'app-foreup-login',
@@ -24,10 +24,9 @@ export class ForeupLoginComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private dataSharingService: DataSharingService,
-    private foreupSessionService: ForeupSessionService
+    private sessionService: SessionService
   ) {
   }
 
@@ -36,16 +35,14 @@ export class ForeupLoginComponent implements OnInit {
     this.course = this.dataSharingService.getSelectedCourse();
 
     if (this.course) {
-      this.foreupSessionService.checkSession(this.course.id).subscribe(session => {
-        if (session.isActive) {
-          // If we have an active session, redirect to the reserve page
+      this.sessionService.checkSession(this.course.id, this.course.provider).subscribe(session => {
+        if (session) {
           this.router.navigate(['/foreup/reserve']);
         }
       });
     } else {
       this.router.navigate(['/']);
     }
-
     this.initForm();
   }
 
@@ -70,32 +67,34 @@ export class ForeupLoginComponent implements OnInit {
       .subscribe(
         (response: any) => {
           this.submitting = false;
-          if (response.success) {
-            // Store session info after successful login
-            if (response.session) {
-              this.foreupSessionService.storeSession(response.session);
-            }
-
+          if (response) {
+            this.sessionService.storeSession(response);
             this.router.navigate(['/foreup/reserve']);
-          } else {
-            this.snackBar.open(`Login failed: ${response.error}`, 'Close', {
-              duration: 5000,
-              panelClass: 'error-snackbar'
-            });
           }
         },
-        (error) => {
-          this.submitting = false;
-          console.error('Error during login:', error);
-          this.snackBar.open(`Error: ${error.error?.error || 'Login failed'}`, 'Close', {
-            duration: 5000,
-            panelClass: 'error-snackbar'
-          });
-        }
-      );
+        (error) => this.handleError(error));
   }
 
   cancel(): void {
     this.router.navigate(['/']);
   }
+
+  private handleError(error: any) {
+    this.submitting = false;
+    if (error.status === 401) {
+      this.sessionService.deleteSession(this.course.id);
+      this.snackBar.open("Incorrect Credentials: Please login again", 'Close', {
+          duration: 5000,
+          panelClass: 'error-snackbar'
+        }
+      )
+      this.router.navigate(['/foreup/login']);
+    } else {
+      this.snackBar.open(`Error: ${error.error?.error || 'Unknown error occured'}`, 'Close', {
+        duration: 5000,
+        panelClass: 'error-snackbar'
+      });
+    }
+  }
+
 }

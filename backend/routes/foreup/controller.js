@@ -10,43 +10,31 @@ const router = express.Router();
  * Endpoint to login to ForeUp
  */
 router.post('/login', async (req, res) => {
+    let {email, password, courseId, courseName, id} = req.body;
+    id = Number.parseInt(id);
+
+    // Validate required parameters
+    if (!email || !password || !courseId || !courseName || !id) {
+        return res.status(400).json({
+            success: false,
+            error: 'Missing required parameters for login'
+        });
+    }
+
     try {
-        let {email, password, courseId, courseName, id} = req.body;
-        id = Number.parseInt(id);
-
-        // Validate required parameters
-        if (!email || !password || !courseId || !courseName || !id) {
-            return res.status(400).json({
-                success: false,
-                error: 'Missing required parameters for login'
-            });
-        }
-
-        // Login to ForeUp
         const jwt = await foreupService.login(
             req.axiosClient,
             email,
             password,
-            courseId,
-            id
+            courseId
         );
-
-        const sessionStatus = await sessionService.createSession(req.session, jwt, id);
-
-        res.json({
-            success: true,
-            session: sessionStatus
-        });
+        const session = await sessionService.createSession(req.session, jwt, id);
+        res.json(session);
 
     } catch (error) {
-        // Check if this is an unauthorized error
         if (error instanceof Unauthorized) {
-            return res.status(401).json({
-                success: false,
-                error: 'Invalid credentials'
-            });
+            return res.status(401).send();
         }
-
         res.status(500).json({
             success: false,
             error: error.message,
@@ -183,13 +171,10 @@ router.get('/session/:id', async (req, res) => {
     }
     const id = Number.parseInt(req.params.id);
 
-    if (req.session.foreupSessionData) {
-        res.json({
-            success: true,
-            session: req.session.foreupSessionData[id]
-        });
+    if (req.session.foreupSessionData && req.session.foreupSessionData[id]) {
+        res.json(req.session.foreupSessionData[id]);
     } else {
-        res.status(401).send();
+        res.status(200).send({});
     }
 });
 

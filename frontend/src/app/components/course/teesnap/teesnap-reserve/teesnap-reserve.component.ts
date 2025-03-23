@@ -7,7 +7,7 @@ import {interval, Subscription} from 'rxjs';
 import moment from "moment-timezone";
 import {DataSharingService} from "../../../../service/data-sharing.service";
 import {Course, TeeTime} from "../../../../model/models";
-import {TeesnapSessionService} from "../../../../service/teesnap/teesnap-session.service";
+import {SessionService} from "../../../../service/session.service";
 
 @Component({
   selector: 'app-teesnap-reserve',
@@ -23,10 +23,7 @@ export class TeesnapReserveComponent implements OnInit, OnDestroy {
   reservationSuccess: boolean = false;
   maxPlayers: number = 4;
   availableHoles: number[] = [9, 18];
-  sessionActive: boolean = false;
-  sessionExpiresAt: string | null = null;
 
-  // Timer for reservation completion
   timeRemaining = 0;
   timeInMinutes = 0;
   timeInSeconds = 0;
@@ -39,7 +36,7 @@ export class TeesnapReserveComponent implements OnInit, OnDestroy {
     private router: Router,
     private snackBar: MatSnackBar,
     private dataSharingService: DataSharingService,
-    private teesnapSessionService: TeesnapSessionService
+    private sessionService: SessionService
   ) {
   }
 
@@ -56,23 +53,6 @@ export class TeesnapReserveComponent implements OnInit, OnDestroy {
       this.router.navigate(['/']);
       return;
     }
-
-    // Check if session is active
-    if (this.course.booking_url) {
-      this.teesnapSessionService.checkSession(this.course.booking_url).subscribe(session => {
-        this.sessionActive = session.isActive;
-        this.sessionExpiresAt = session.expiresAt;
-
-        if (!this.sessionActive) {
-          // Redirect to login if session is not active
-          this.snackBar.open('Your session has expired. Please login again.', 'Close', {
-            duration: 5000
-          });
-          this.router.navigate(['/teesnap/login']);
-        }
-      });
-    }
-
     this.initForm();
   }
 
@@ -107,10 +87,9 @@ export class TeesnapReserveComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Verify session is still active
     if (this.course.booking_url) {
-      this.teesnapSessionService.checkSession(this.course.booking_url).subscribe(session => {
-        if (!session.isActive) {
+      this.sessionService.checkSession(this.course.id, this.course.provider).subscribe(session => {
+        if (!session) {
           this.snackBar.open('Your session has expired. Please login again.', 'Close', {
             duration: 5000
           });
@@ -118,7 +97,6 @@ export class TeesnapReserveComponent implements OnInit, OnDestroy {
           return;
         }
 
-        // Session is active, proceed with reservation
         this.processReservation();
       });
     } else {
@@ -146,24 +124,7 @@ export class TeesnapReserveComponent implements OnInit, OnDestroy {
             });
           }
         },
-        (error) => {
-          this.submitting = false;
-          this.teesnapSessionService.deleteSession(this.course.booking_url);
-          // Check if error is due to session expiry
-          if (error.status === 401 || (error.error && error.error.message && error.error.message.includes('session'))) {
-            this.snackBar.open(`Session expired: Please login again`, 'Close', {
-              duration: 5000,
-              panelClass: 'error-snackbar'
-            });
-            this.router.navigate(['/teesnap/login']);
-          } else {
-            this.snackBar.open(`Error: ${error.error?.error || 'Failed to process reservation'}`, 'Close', {
-              duration: 5000,
-              panelClass: 'error-snackbar'
-            });
-          }
-        }
-      );
+        (error) => this.handleError(error));
   }
 
   updateTimeDisplay(): void {
@@ -177,7 +138,6 @@ export class TeesnapReserveComponent implements OnInit, OnDestroy {
         this.timeRemaining--;
         this.updateTimeDisplay();
       } else {
-        // Time's up - automatically redirect to home
         this.cancel();
         this.timerSubscription.unsubscribe();
       }
@@ -205,24 +165,7 @@ export class TeesnapReserveComponent implements OnInit, OnDestroy {
           });
         }
       },
-      (error) => {
-        this.completingReservation = false;
-        // Check if error is due to session expiry
-        if (error.status === 401 || (error.error && error.error.message && error.error.message.includes('session'))) {
-          this.teesnapSessionService.deleteSession(this.course.booking_url);
-          this.snackBar.open(`Session expired: Please login again`, 'Close', {
-            duration: 5000,
-            panelClass: 'error-snackbar'
-          });
-          this.router.navigate(['/teesnap/login']);
-        } else {
-          this.snackBar.open(`Error: ${error.error?.error || 'Failed to complete reservation'}`, 'Close', {
-            duration: 5000,
-            panelClass: 'error-snackbar'
-          });
-        }
-      }
-    );
+      (error) => this.handleError(error));
   }
 
   cancel(): void {
@@ -233,9 +176,23 @@ export class TeesnapReserveComponent implements OnInit, OnDestroy {
     return moment(date).tz('America/New_York').format('YYYY-MM-DDTHH:mm:ss');
   }
 
-  // Format session expiry time for display
-  formatExpiryTime(expiresAt: string | null): string {
-    if (!expiresAt) return 'Unknown';
-    return moment(expiresAt).format('MMMM Do YYYY, h:mm:ss a');
+  private handleError(error: any) {
+    this.submitting = false;
+    if (error.status === 401) {
+      this.sessionService.deleteSession(this.course.id);
+      this.snackBar.open("Incorrect Credentials: Please login again", 'Close', {
+          duration: 5000,
+          panelClass: 'error-snackbar'
+        }
+      )
+
+      this.router.navigate(['/teesnap/login']);
+    } else {
+      this.snackBar.open(`Error: ${error.error?.error || 'Unknown error occured'}`, 'Close', {
+        duration: 5000,
+        panelClass: 'error-snackbar'
+      });
+    }
   }
+
 }

@@ -52,17 +52,10 @@ export interface DialogData {
   teeTime: TeeTime;
 }
 
-export interface SessionStatus {
-  isActive: boolean;
-  expiresAt: string | null;
-  domain?: string | number;
-  id?: number;
-  expiresIn?: number;
-  error?: string;
+export interface Session {
+  expiresIn: number;
+  expiresAt: string;
+  id: number;
+  jwt?: string;
 }
 
-export interface SessionResponse {
-  success: boolean;
-  session: SessionStatus;
-  error?: string;
-}

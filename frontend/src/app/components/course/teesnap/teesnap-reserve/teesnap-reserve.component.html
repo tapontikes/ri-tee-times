@@ -99,7 +99,7 @@
             </button>
 
             <button (click)="onSubmit()"
-                    [disabled]="reservationForm.invalid || submitting || !sessionActive"
+                    [disabled]="reservationForm.invalid || submitting"
                     class="reserve-button"
                     color="primary"
                     mat-raised-button>
@@ -165,12 +165,12 @@
 
           <div class="buttons-container">
             <button (click)="completeReservation()"
-                    [disabled]="completingReservation || !sessionActive"
+                    [disabled]="!completingReservation || true"
                     class="action-button complete-button"
                     color="primary"
                     mat-raised-button>
               <mat-icon>check</mat-icon>
-              Finalize
+              Not Yet Implemented
             </button>
             <button (click)="cancel()"
                     class="action-button cancel-button"

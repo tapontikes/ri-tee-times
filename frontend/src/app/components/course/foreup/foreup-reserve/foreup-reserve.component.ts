@@ -7,7 +7,7 @@ import {interval, Subscription} from 'rxjs';
 import * as moment from "moment-timezone";
 import {DataSharingService} from "../../../../service/data-sharing.service";
 import {Course, TeeTime} from "../../../../model/models";
-import {ForeupSessionService} from "../../../../service/foreup/foreup-session.service";
+import {SessionService} from "../../../../service/session.service";
 
 @Component({
   selector: 'app-foreup-reserve',
@@ -39,40 +39,13 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
     private router: Router,
     private snackBar: MatSnackBar,
     private dataSharingService: DataSharingService,
-    private foreupSessionService: ForeupSessionService
+    private sessionService: SessionService
   ) {
   }
 
   ngOnInit(): void {
-    // Get tee time data from service
     this.teeTime = this.dataSharingService.getSelectedTeeTime();
     this.course = this.dataSharingService.getSelectedCourse();
-
-    if (!this.teeTime || !this.course) {
-      this.snackBar.open('No tee time data found. Please start over.', 'Close', {
-        duration: 5000,
-        panelClass: 'error-snackbar'
-      });
-      this.router.navigate(['/']);
-      return;
-    }
-
-    // Check if session is active
-    if (this.course.id) {
-      this.foreupSessionService.checkSession(this.course.id).subscribe(session => {
-        this.sessionActive = session.isActive;
-        this.sessionExpiresAt = session.expiresAt;
-
-        if (!this.sessionActive) {
-          // Redirect to login if session is not active
-          this.snackBar.open('Your session has expired. Please login again.', 'Close', {
-            duration: 5000
-          });
-          this.router.navigate(['/foreup/login']);
-        }
-      });
-    }
-
     this.initForm();
   }
 
@@ -107,23 +80,7 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
     if (this.reservationForm.invalid) {
       return;
     }
-
-    if (this.course) {
-      this.foreupSessionService.checkSession(this.course.id).subscribe(session => {
-        if (!session.isActive) {
-          this.snackBar.open('Your session has expired. Please login again.', 'Close', {
-            duration: 5000
-          });
-          this.router.navigate(['/foreup/login']);
-          return;
-        }
-
-        // Session is active, proceed with reservation
-        this.processReservation();
-      });
-    } else {
-      this.processReservation();
-    }
+    this.processReservation();
   }
 
   processReservation(): void {
@@ -133,39 +90,16 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
       .subscribe(
         (response: any) => {
           this.submitting = false;
-          if (response.success) {
+          if (response) {
             this.reservationData = response;
-            this.timeRemaining = response.reservationQuote.holdDuration || 300; // Default to 5 minutes if not provided
+            this.timeRemaining = response.reservationQuote.holdDuration || 300;
             this.updateTimeDisplay();
             this.startTimer();
             this.reservationSuccess = true;
-          } else {
-            this.snackBar.open(`Reservation failed: ${response.error}`, 'Close', {
-              duration: 5000,
-              panelClass: 'error-snackbar'
-            });
           }
         },
-        (error) => {
-          this.submitting = false;
-          if (this.course && this.course.id) {
-            this.foreupSessionService.deleteSession(this.course.id);
-          }
-          // Check if error is due to session expiry
-          if (error.status === 401 || (error.error && error.error.message && error.error.message.includes('session'))) {
-            this.snackBar.open(`Session expired: Please login again`, 'Close', {
-              duration: 5000,
-              panelClass: 'error-snackbar'
-            });
-            this.router.navigate(['/foreup/login']);
-          } else {
-            this.snackBar.open(`Error: ${error.error?.error || 'Failed to process reservation'}`, 'Close', {
-              duration: 5000,
-              panelClass: 'error-snackbar'
-            });
-          }
-        }
-      );
+        (error) => this.handleError(error));
+
   }
 
   updateTimeDisplay(): void {
@@ -208,26 +142,7 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
           });
         }
       },
-      (error) => {
-        this.completingReservation = false;
-        // Check if error is due to session expiry
-        if (error.status === 401 || (error.error && error.error.message && error.error.message.includes('session'))) {
-          if (this.course && this.course.id) {
-            this.foreupSessionService.deleteSession(this.course.id);
-          }
-          this.snackBar.open(`Session expired: Please login again`, 'Close', {
-            duration: 5000,
-            panelClass: 'error-snackbar'
-          });
-          this.router.navigate(['/foreup/login']);
-        } else {
-          this.snackBar.open(`Error: ${error.error?.error || 'Failed to complete reservation'}`, 'Close', {
-            duration: 5000,
-            panelClass: 'error-snackbar'
-          });
-        }
-      }
-    );
+      (error) => this.handleError(error));
   }
 
   cancel(): void {
@@ -238,9 +153,25 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
     return moment(date).format('MM-DD-YYYY');
   }
 
-  // Format session expiry time for display
-  formatExpiryTime(expiresAt: string | null): string {
-    if (!expiresAt) return 'Unknown';
-    return moment(expiresAt).format('MMMM Do YYYY, h:mm:ss a');
+
+  private handleError(error: any) {
+    this.submitting = false;
+    this.completingReservation = false;
+
+    if (error.status === 401) {
+      this.sessionService.deleteSession(this.course.id);
+      this.snackBar.open("Incorrect Credentials: Please login again", 'Close', {
+          duration: 5000,
+          panelClass: 'error-snackbar'
+        }
+      )
+
+      this.router.navigate(['/foreup/login']);
+    } else {
+      this.snackBar.open(`Error: ${error.error?.error || 'Unknown error occured'}`, 'Close', {
+        duration: 5000,
+        panelClass: 'error-snackbar'
+      });
+    }
   }
 }

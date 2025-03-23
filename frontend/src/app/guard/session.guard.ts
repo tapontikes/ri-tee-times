@@ -2,17 +2,17 @@ import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import {Observable, of} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
-import {DataSharingService} from "../../service/data-sharing.service";
-import {ForeupSessionService} from "../../service/foreup/foreup-session.service";
+import {DataSharingService} from "../service/data-sharing.service";
+import {SessionService} from "../service/session.service";
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class ForeupSessionGuard implements CanActivate {
+export class SessionGuard implements CanActivate {
 
   constructor(
-    private foreupSessionService: ForeupSessionService,
+    private sessionService: SessionService,
     private dataSharingService: DataSharingService,
     private router: Router
   ) {
@@ -30,20 +30,17 @@ export class ForeupSessionGuard implements CanActivate {
     }
 
     // Check if session is active for this domain
-    return this.foreupSessionService.checkSession(course.id).pipe(
+    return this.sessionService.checkSession(course.id, course.provider).pipe(
       map(session => {
-        if (session.isActive) {
-          // Session is active, allow navigation
+        if (session) {
           return true;
         } else {
-          // No active session, redirect to login
-          this.router.navigate(['/foreup/login']);
+          this.router.navigate([`/${course.provider}/login`]);
           return false;
         }
       }),
       catchError(() => {
-        // Error checking session, redirect to login
-        this.router.navigate(['/foreup/login']);
+        this.router.navigate([`/${course.provider}/login`]);
         return of(false);
       })
     );
