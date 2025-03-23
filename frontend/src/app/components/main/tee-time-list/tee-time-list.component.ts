@@ -5,7 +5,6 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {Course, TeeTime, TeeTimeSearchParams} from "../../../model/models";
 import {TeeTimeService} from "../../../service/teetime.service";
 import {DataSharingService} from "../../../service/data-sharing.service";
-import {bookWithCourse} from "../../../util/utils";
 import {ReservationDialogService} from "../../../service/registration-dialog.service";
 
 @Component({
@@ -16,10 +15,10 @@ import {ReservationDialogService} from "../../../service/registration-dialog.ser
 export class TeeTimeListComponent implements OnInit {
   courses: Course[] = [];
   teeTimes: TeeTime[] = [];
+  providers = ["teesnap", "foreup"]
   loading = true;
   error = false;
   searchParams: TeeTimeSearchParams;
-  bookWithCourse = bookWithCourse;
 
 
   constructor(
@@ -72,7 +71,6 @@ export class TeeTimeListComponent implements OnInit {
       (coursesData) => {
         this.courses = coursesData;
 
-        // Store courses in the sharing teetimes
         this.dataSharingService.setCourses(this.courses);
       },
       (error) => {
@@ -95,7 +93,6 @@ export class TeeTimeListComponent implements OnInit {
       (teeTimesData) => {
         this.teeTimes = teeTimesData;
 
-        // Sort courses by available tee times
         this.courses.sort((a, b) => {
           const aTeeTimesCount = this.getTeeTimesByCourseId(a.id).length;
           const bTeeTimesCount = this.getTeeTimesByCourseId(b.id).length;
