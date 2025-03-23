@@ -17,6 +17,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const teeTimeRouter = require('./routes/teetimes/controller'); // New tee time routes
 const teesnapRouter = require('./routes/teesnap/controller');
+const foreupRouter = require('./routes/foreup/controller');
 
 // Import database and scheduler
 const {initializeJobs, refreshAllTeeTimesJob} = require('./jobs/teetime');
@@ -79,6 +80,7 @@ app.use((req, res, next) => {
 // API routes
 app.use('/api/tee-times', teeTimeRouter);
 app.use('/api/teesnap', teesnapRouter);
+app.use('/api/foreup', foreupRouter);
 
 // Initialize database and jobs on app startup
 (async () => {

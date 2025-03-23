@@ -7,6 +7,7 @@ import {BookWithCourseComponent} from "../components/main/modal/book-with-course
 import {Router} from '@angular/router';
 import {DataSharingService} from "./data-sharing.service";
 import {TeesnapSessionService} from "./teesnap/teesnap-session.service";
+import {ForeupSessionService} from "./foreup/foreup-session.service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class ReservationDialogService {
     private dialog: MatDialog,
     private router: Router,
     private dataSharingService: DataSharingService,
-    private teesnapSessionService: TeesnapSessionService
+    private teesnapSessionService: TeesnapSessionService,
+    private foreupSessionService: ForeupSessionService
   ) {
   }
 
@@ -25,6 +27,9 @@ export class ReservationDialogService {
     switch (course.provider) {
       case 'teesnap':
         this.bookWithTeesnap(course, teeTime);
+        break;
+      case 'foreup':
+        this.bookWithForeup(course, teeTime);
         break;
       default:
         this.openBookWithCourseDialog(course, teeTime)
@@ -52,6 +57,31 @@ export class ReservationDialogService {
     });
   }
 
+  /**
+   * Book with ForeUp using the session-aware flow
+   * This will check if there's a valid session and skip the login if possible
+   */
+  private bookWithForeup(course: Course, teeTime: TeeTime): void {
+    // Store the selected course and tee time for later use
+    this.dataSharingService.setSelectedTeeTime(teeTime);
+    this.dataSharingService.setSelectedCourse(course);
+
+    // Check if we have a valid session for this course ID
+    if (course.id && course.name) {
+      this.foreupSessionService.checkSession(course.id).subscribe(session => {
+        if (session.isActive) {
+          // If we have an active session, go directly to the reservation page
+          this.router.navigate(['/foreup/reserve']);
+        } else {
+          // Otherwise, navigate to the login page
+          this.router.navigate(['/foreup/login']);
+        }
+      });
+    } else {
+      // No course ID, go to login
+      this.router.navigate(['/foreup/login']);
+    }
+  }
 
   private openBookWithCourseDialog(course: Course, teeTime: TeeTime): Observable<any> {
     const dialogRef = this.dialog.open(BookWithCourseComponent, {

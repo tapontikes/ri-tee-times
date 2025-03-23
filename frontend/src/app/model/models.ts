@@ -13,6 +13,8 @@ export interface Course {
 export interface CourseRequestData {
   course: string;
   baseUrl: string;
+  booking_class: string;
+  id: string;
 
   [key: string]: any;
 }
@@ -53,7 +55,8 @@ export interface DialogData {
 export interface SessionStatus {
   isActive: boolean;
   expiresAt: string | null;
-  domain: string;
+  domain?: string;
+  id?: number;
   expiresIn?: number;
   error?: string;
 }

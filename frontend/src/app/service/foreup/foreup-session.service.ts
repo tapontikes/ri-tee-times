@@ -2,25 +2,25 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
-import moment from 'moment';
 import {SessionResponse, SessionStatus} from "../../model/models";
+import * as moment from "moment-timezone";
 
 @Injectable({
   providedIn: 'root'
 })
-export class TeesnapSessionService {
-  private readonly STORAGE_KEY = 'teesnap_sessions';
+export class ForeupSessionService {
+  private readonly STORAGE_KEY = 'foreup_sessions';
 
   constructor(private http: HttpClient) {
   }
 
   /**
-   * Check if a session exists and is valid for a specific domain
-   * @param domain The TeesNap domain to check
+   * Check if a session exists and is valid for a specific course id
+   * @param courseId The ForeUp courseId to check
    */
-  checkSession(domain: string): Observable<SessionStatus> {
+  checkSession(courseId: number): Observable<SessionStatus> {
     // First check local storage
-    const storedSession = this.getStoredSession(domain);
+    const storedSession = this.getStoredSession(courseId);
 
     // If we have a valid session in storage, use it
     if (storedSession && this.isSessionValid(storedSession)) {
@@ -28,7 +28,7 @@ export class TeesnapSessionService {
     }
 
     // Otherwise check with the backend
-    return this.http.get<SessionResponse>(`/api/teesnap/session/${encodeURIComponent(domain)}`).pipe(
+    return this.http.get<SessionResponse>(`/api/foreup/session/${courseId}`).pipe(
       map(response => {
         if (!response.success) {
           throw new Error(response.error || 'Failed to check session');
@@ -44,7 +44,7 @@ export class TeesnapSessionService {
         return of({
           isActive: false,
           expiresAt: null,
-          domain
+          courseName: courseId
         });
       })
     );
@@ -56,33 +56,33 @@ export class TeesnapSessionService {
    */
   public storeSession(session: SessionStatus): void {
     const sessions = this.getAllStoredSessions();
-    const domain = session.domain || '';
-    sessions[domain] = session;
+    const id = session.id || 0;
+    sessions[id] = session;
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(sessions));
   }
 
-  public deleteSession(domain: string): void {
+  public deleteSession(id: number): void {
     const sessions = this.getAllStoredSessions();
 
-    if (sessions[domain]) {
-      delete sessions[domain];
+    if (sessions[id]) {
+      delete sessions[id];
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(sessions));
     }
   }
 
   /**
-   * Get a stored session for a domain
-   * @param domain The domain to get session for
+   * Get a stored session for a courseName
+   * @param id The courseName to get session for
    */
-  private getStoredSession(domain: string): SessionStatus | null {
+  private getStoredSession(id: number): SessionStatus | null {
     const sessions = this.getAllStoredSessions();
-    return sessions[domain] || null;
+    return sessions[id] || null;
   }
 
   /**
    * Get all stored sessions from local storage
    */
-  private getAllStoredSessions(): { [domain: string]: SessionStatus } {
+  private getAllStoredSessions(): { [id: number]: SessionStatus } {
     const sessionsJson = localStorage.getItem(this.STORAGE_KEY);
     return sessionsJson ? JSON.parse(sessionsJson) : {};
   }
