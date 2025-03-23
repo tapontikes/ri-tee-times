@@ -55,7 +55,7 @@ export interface DialogData {
 export interface SessionStatus {
   isActive: boolean;
   expiresAt: string | null;
-  domain?: string;
+  domain?: string | number;
   id?: number;
   expiresIn?: number;
   error?: string;

@@ -56,8 +56,10 @@ export class ForeupSessionService {
    */
   public storeSession(session: SessionStatus): void {
     const sessions = this.getAllStoredSessions();
-    const id = session.id || 0;
-    sessions[id] = session;
+    if (session.domain) {
+      let id: number = (typeof session.domain === "string") ? parseInt(session.domain, 10) : session.domain;
+      sessions[id] = session;
+    }
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(sessions));
   }
 

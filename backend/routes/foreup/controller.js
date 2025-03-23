@@ -11,7 +11,8 @@ const router = express.Router();
  */
 router.post('/login', async (req, res) => {
     try {
-        const {email, password, courseId, courseName, id} = req.body;
+        let {email, password, courseId, courseName, id} = req.body;
+        id = Number.parseInt(id);
 
         // Validate required parameters
         if (!email || !password || !courseId || !courseName || !id) {
@@ -30,12 +31,7 @@ router.post('/login', async (req, res) => {
             id
         );
 
-        req.session.foreupSessionData = {
-            [id]: {jwt: jwt}
-        };
-
-        const sessionStatus = await sessionService.getSessionStatus(id, req.session);
-
+        const sessionStatus = await sessionService.createSession(req.session, jwt, id);
 
         res.json({
             success: true,
@@ -178,31 +174,25 @@ router.post('/confirm', async (req, res) => {
  * Endpoint to check session status for a domain
  */
 router.get('/session/:id', async (req, res) => {
-    try {
-        const id = req.params.id;
 
-        if (!id) {
-            return res.status(400).json({
-                success: false,
-                error: 'Missing course name parameter'
-            });
-        }
-
-        const sessionStatus = await sessionService.getSessionStatus(id, req.session);
-
-        res.json({
-            success: true,
-            session: sessionStatus
-        });
-
-    } catch (error) {
-        console.error('Error checking session status:', error);
-        res.status(500).json({
+    if (!req.params.id) {
+        return res.status(400).json({
             success: false,
-            error: error.message
+            error: 'Missing course name parameter'
         });
     }
+    const id = Number.parseInt(req.params.id);
+
+    if (req.session.foreupSessionData) {
+        res.json({
+            success: true,
+            session: req.session.foreupSessionData[id]
+        });
+    } else {
+        res.status(401).send();
+    }
 });
+
 
 /**
  * Endpoint to get tee times
