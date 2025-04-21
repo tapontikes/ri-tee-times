@@ -23,8 +23,7 @@ export class AdminComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private teeTimeService: TeeTimeService,
-    private dataSharingService: DataSharingService,
+    private teeTimeService: TeeTimeService
   ) {
     // Initialize refresh form
     this.refreshForm = this.fb.group({
@@ -42,19 +41,9 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCourses();
-  }
-
-  loadCourses(): void {
-    this.loading = true;
-
-    const existingCourses = this.dataSharingService.getCourses();
-
-    if (existingCourses && existingCourses.length > 0) {
-      // Use existing courses data
-      this.courses = existingCourses;
-
-    }
+    this.teeTimeService.getCourses().subscribe(courses => {
+      this.courses = courses;
+    });
   }
 
   refreshTeeTimes(): void {

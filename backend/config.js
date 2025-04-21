@@ -67,7 +67,7 @@ module.exports = {
                 "id": 1457,
                 "booking_class": 1029
             },
-            "bookingUrl": "https://app.foreupsoftware.com/index.php/booking/19339/1457#teetimes",
+            "bookingUrl": "https://foreupsoftware.com/index.php/booking/index/19339#/teetimes",
             "type": "foreup"
         },
         {
@@ -152,6 +152,16 @@ module.exports = {
             },
             "bookingUrl": "https://teewire.net/midville",
             "type": "teewire"
-        }
+        },
+        {
+            "id": 15,
+            "name": "Met Links",
+            "requestData": {
+                "id": 11966,
+                "booking_class": 50955
+            },
+            "bookingUrl": "https://foreupsoftware.com/index.php/booking/22800/11966#teetimes",
+            "type": "foreup"
+        },
     ]
 }

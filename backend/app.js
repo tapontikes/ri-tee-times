@@ -85,7 +85,7 @@ app.use('/api/foreup', foreupRouter);
 // Initialize database and jobs on app startup
 (async () => {
     try {
-        if (process.env.DB_SEED === 'true') {
+        if (process.env.DB_CREATE_SCHEMA === 'true') {
             await initDatabase();
             logger.info('Database initialized successfully')
         } else {
