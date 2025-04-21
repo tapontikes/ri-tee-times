@@ -21,13 +21,16 @@ export class ReservationDialogService {
   ) {
   }
 
+  // Disable booking until code complete
   book(course: Course, teeTime: TeeTime) {
     switch (course.provider) {
       case 'teesnap':
-        this.bookWithTeesnap(course, teeTime);
+        //this.bookWithTeesnap(course, teeTime);
+        this.openBookWithCourseDialog(course, teeTime)
         break;
       case 'foreup':
-        this.bookWithForeup(course, teeTime);
+        //this.bookWithForeup(course, teeTime);
+        this.openBookWithCourseDialog(course, teeTime)
         break;
       default:
         this.openBookWithCourseDialog(course, teeTime)
