@@ -10,7 +10,7 @@ services:
       DB_PASSWORD: password
       DB_NAME: tee_times_pg
       DB_SSL: false
-      DB_SEED: false
+      DB_CREATE_SCHEMA: false
       SCHEDULER_ENABLED: false
       REFRESH_ON_STARTUP: false
     ports:
