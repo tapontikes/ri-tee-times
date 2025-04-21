@@ -25,6 +25,7 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: tee_times_pg
+      POSTGRESQL_PERFORM_RESTORE: true
     ports:
       - "5432:5432"
     volumes:
