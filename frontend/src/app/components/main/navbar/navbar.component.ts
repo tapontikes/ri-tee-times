@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Course} from "../../../model/models";
 import {formatDate} from "../../../util/utils";
 import {DataSharingService} from "../../../service/data-sharing.service";
+import moment from "moment";
 
 @Component({
   selector: 'app-navbar',
@@ -15,7 +16,8 @@ export class NavbarComponent implements OnInit {
   showSearch = true;
   searchForm: FormGroup;
   courses: Course[] = [];
-  minDate = new Date();
+  minDate = moment()
+  maxDate = moment().add(7, 'days')
   isMobile = false;
   showMobileMenu = false;
 

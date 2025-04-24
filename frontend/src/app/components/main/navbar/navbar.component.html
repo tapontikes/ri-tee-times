@@ -16,7 +16,7 @@
       <div class="form-item mobile-form-width">
         <mat-form-field appearance="outline">
           <mat-label style="color: white;">Date</mat-label>
-          <input [matDatepicker]="picker" [min]="minDate" formControlName="date" matInput style="color: white;">
+          <input [matDatepicker]="picker" [min]="minDate" [max]="maxDate" formControlName="date" matInput style="color: white;">
           <mat-datepicker-toggle [for]="picker" matSuffix style="color: white;"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
