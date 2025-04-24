@@ -16,8 +16,8 @@ export class NavbarComponent implements OnInit {
   showSearch = true;
   searchForm: FormGroup;
   courses: Course[] = [];
-  minDate = moment()
-  maxDate = moment().add(7, 'days')
+  minDate = moment().toDate();
+  maxDate = moment().add(7, 'days').toDate();
   isMobile = false;
   showMobileMenu = false;
 
