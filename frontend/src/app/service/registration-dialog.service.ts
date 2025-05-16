@@ -7,6 +7,7 @@ import {BookWithCourseComponent} from "../components/main/modal/book-with-course
 import {Router} from '@angular/router';
 import {DataSharingService} from "./data-sharing.service";
 import {SessionService} from "./session.service";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -25,12 +26,18 @@ export class ReservationDialogService {
   book(course: Course, teeTime: TeeTime) {
     switch (course.provider) {
       case 'teesnap':
-        //this.bookWithTeesnap(course, teeTime);
-        this.openBookWithCourseDialog(course, teeTime)
+        if(environment.enable_booking) {
+          this.bookWithTeesnap(course, teeTime);
+        }else {
+          this.openBookWithCourseDialog(course, teeTime)
+        }
         break;
       case 'foreup':
-        //this.bookWithForeup(course, teeTime);
-        this.openBookWithCourseDialog(course, teeTime)
+        if(environment.enable_booking) {
+          this.bookWithForeup(course, teeTime);
+        }else {
+          this.openBookWithCourseDialog(course, teeTime)
+        }
         break;
       default:
         this.openBookWithCourseDialog(course, teeTime)

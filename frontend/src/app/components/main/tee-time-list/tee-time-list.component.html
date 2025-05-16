@@ -32,10 +32,10 @@
       <div class="course-info">
         <h3 class="course-name">
           {{ course.name }}
-          <span *ngIf="providers.includes(course.provider)" class="booking-badge badge">
+          <span *ngIf="providers.includes(course.provider) && environment.enable_booking" class="booking-badge badge">
             Book in App
           </span>
-          <span *ngIf="!providers.includes(course.provider)" class="booking-badge badge">
+          <span *ngIf="!providers.includes(course.provider) || !environment.enable_booking" class="booking-badge badge">
             Book with Course
           </span>
         </h3>
