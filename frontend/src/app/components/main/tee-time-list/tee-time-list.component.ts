@@ -157,6 +157,10 @@ export class TeeTimeListComponent implements OnInit {
     return this.getFilteredTeeTimes().filter(teeTime => teeTime.courseId === courseId);
   }
 
+  goToCoursePage(url: string) {
+    window.open(url, "_blank");
+  }
+
   goToCourseDetail(courseId: number, event?: MouseEvent): void {
     // Store the current search parameters and data
     this.dataSharingService.setTeeTimes(this.teeTimes);

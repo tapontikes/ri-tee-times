@@ -172,4 +172,8 @@ export class CourseDetailComponent implements OnInit {
     }
   }
 
+  goToCoursePage(url: string) {
+    window.open(url, "_blank");
+  }
+
 }

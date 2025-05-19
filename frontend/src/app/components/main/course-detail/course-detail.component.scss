@@ -4,8 +4,10 @@
   padding: 16px;
 }
 
-.back-button {
+.nav-container {
   margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .hour-group {
