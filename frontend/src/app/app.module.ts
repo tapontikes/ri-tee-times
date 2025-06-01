@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule, provideHttpClient} from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 
@@ -37,52 +37,45 @@ import {CourseDetailComponent} from "./components/main/course-detail/course-deta
 import {AdminComponent} from "./components/main/admin/admin.component";
 
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    NavbarComponent,
-    TeeTimeListComponent,
-    CourseDetailComponent,
-    AdminComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    RouterModule,
-    AppRoutingModule,
-
-    // Angular Material
-    MatToolbarModule,
-    MatButtonModule,
-    MatCardModule,
-    MatChipsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatIconModule,
-    MatTabsModule,
-    MatTableModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-    MatChipsModule,
-    MatDividerModule,
-    MatButtonToggleModule,
-    MatMenuTrigger,
-    MatMenu,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogTitle,
-  ],
-  providers: [
-    provideHttpClient(),
-    DataSharingService
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        NavbarComponent,
+        TeeTimeListComponent,
+        CourseDetailComponent,
+        AdminComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        RouterModule,
+        AppRoutingModule,
+        // Angular Material
+        MatToolbarModule,
+        MatButtonModule,
+        MatCardModule,
+        MatChipsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatIconModule,
+        MatTabsModule,
+        MatTableModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule,
+        MatChipsModule,
+        MatDividerModule,
+        MatButtonToggleModule,
+        MatMenuTrigger,
+        MatMenu,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogTitle], providers: [
+        provideHttpClient(),
+        DataSharingService,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule {
 }

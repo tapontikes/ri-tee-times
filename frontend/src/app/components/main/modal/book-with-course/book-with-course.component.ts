@@ -7,17 +7,16 @@ import {MatCardModule} from '@angular/material/card';
 import {DialogData} from "../../../../model/models";
 
 @Component({
-  selector: 'app-book-with-course',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule
-  ],
-  templateUrl: './book-with-course.component.html',
-  styleUrl: './book-with-course.component.scss'
+    selector: 'app-book-with-course',
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule
+    ],
+    templateUrl: './book-with-course.component.html',
+    styleUrl: './book-with-course.component.scss'
 })
 export class BookWithCourseComponent {
   constructor(

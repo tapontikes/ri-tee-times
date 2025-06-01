@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Course, TeeTime} from "../../../../model/models";
@@ -8,9 +8,10 @@ import {DataSharingService} from "../../../../service/data-sharing.service";
 import {SessionService} from "../../../../service/session.service";
 
 @Component({
-  selector: 'app-teesnap-login',
-  templateUrl: './teesnap-login.component.html',
-  styleUrls: ['./teesnap-login.component.scss']
+    selector: 'app-teesnap-login',
+    templateUrl: './teesnap-login.component.html',
+    styleUrls: ['./teesnap-login.component.scss'],
+    standalone: false
 })
 export class TeesnapLoginComponent implements OnInit {
   loginForm!: FormGroup;
