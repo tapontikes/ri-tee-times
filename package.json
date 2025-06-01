@@ -3,23 +3,24 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "cd ../backend && nodemon -L --watch ./backend ./bin/www & cd frontend && ng serve --poll 1000",
-    "backend": "cd ../backend && nodemon -L ./bin/www",
-    "frontend": "cd  && ng serve --poll 1000",
-    "build": "cd  && ng build",
-    "test": "cd  && ng test",
-    "lint": "cd  && ng lint",
-    "lint:css": "stylelint \"**/*.{css,scss}\" --fix"
+    "start": "cd backend && nodemon -L --watch ./backend ./bin/www & cd frontend && ng serve --poll 1000",
+    "backend": "cd backend && nodemon -L ./bin/www",
+    "frontend": "cd  && frontend/node_modules/.bin/ng serve --poll 1000",
+    "build": "cd  && frontend/node_modules/.bin/ng build",
+    "test": "cd  && frontend/node_modules/.bin/ng test",
+    "lint": "cd  && frontend/node_modules/.bin/ng lint",
+    "lint:css": "frontend/node_modules/.bin/stylelint \"**/*.{css,scss}\" --fix"
   },
   "dependencies": {
     "@angular/animations": "^19.2.14",
     "@angular/cdk": "^19.2.14",
     "@angular/common": "^19.2.14",
     "@angular/compiler": "^19.2.14",
+
     "@angular/core": "^19.2.14",
     "@angular/forms": "^19.2.14",
-    "@angular/material": "^18.2.14",
-    "@angular/material-moment-adapter": "^18.2.14",
+    "@angular/material": "^19.2.14",
+    "@angular/material-moment-adapter": "^19.2.18",
     "@angular/platform-browser": "^19.2.14",
     "@angular/platform-browser-dynamic": "^19.2.14",
     "@angular/router": "^19.2.14",
