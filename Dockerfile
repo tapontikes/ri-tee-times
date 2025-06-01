@@ -22,7 +22,7 @@ COPY ./package*.json ./
 
 RUN npm install
 
-COPY --from=ng-builder /app/frontend/dist/client /app/public
+COPY --from=ng-builder /app/frontend/dist/client/browser /app/public
 
 COPY ./backend .
 
