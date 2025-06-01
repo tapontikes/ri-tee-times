@@ -6,6 +6,7 @@ import {Course, TeeTime, TeeTimeSearchParams} from "../../../model/models";
 import {TeeTimeService} from "../../../service/teetime.service";
 import {DataSharingService} from "../../../service/data-sharing.service";
 import {ReservationDialogService} from "../../../service/registration-dialog.service";
+import { environment } from '../../../../environments/environment';
 
 @Component({
     selector: 'app-tee-time-list',
@@ -157,6 +158,10 @@ export class TeeTimeListComponent implements OnInit {
     return this.getFilteredTeeTimes().filter(teeTime => teeTime.courseId === courseId);
   }
 
+  goToCoursePage(url: string) {
+    window.open(url, "_blank");
+  }
+
   goToCourseDetail(courseId: number, event?: MouseEvent): void {
     // Store the current search parameters and data
     this.dataSharingService.setTeeTimes(this.teeTimes);
@@ -177,4 +182,5 @@ export class TeeTimeListComponent implements OnInit {
 
   }
 
+  protected readonly environment = environment;
 }

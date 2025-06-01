@@ -1,5 +1,3 @@
-// src/app/services/tee-time.teetimes.ts
-
 import {Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {map, Observable, of} from 'rxjs';
