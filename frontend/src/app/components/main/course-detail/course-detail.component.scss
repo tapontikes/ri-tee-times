@@ -4,8 +4,12 @@
   padding: 16px;
 }
 
-.back-button {
+.nav-container {
   margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
 }
 
 .hour-group {
@@ -80,7 +84,6 @@
 
 .course-subtitle {
   color: #757575;
-  font-size: 1.2rem;
   font-weight: normal;
   margin-bottom: 16px;
 }

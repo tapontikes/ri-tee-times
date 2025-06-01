@@ -1,8 +1,12 @@
 <div class="container">
-  <div class="back-button">
+  <div class="nav-container">
     <button (click)="goBack()" color="primary" mat-stroked-button>
       <mat-icon>arrow_back</mat-icon>
-      Back to All Courses
+      Back
+    </button>
+    <button (click)="goToCoursePage(this.course.booking_url)" color="primary" mat-stroked-button>
+      <mat-icon>arrow_outward</mat-icon>
+      Course Page
     </button>
   </div>
 
@@ -15,6 +19,7 @@
     <div class="course-header">
       <h1 class="course-title">{{ course.name }}</h1>
       <h2 class="course-subtitle">Available Tee Times for {{ searchParams.date | date:'fullDate' }}</h2>
+      <h4 class="course-subtitle"><b>Note:</b> Tee times are updated every 30 minutes, availability is not guaranteed.</h4>
       <div class="filter-options">
         <div class="filter-group">
           <div class="hole-buttons">
