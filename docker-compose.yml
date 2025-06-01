@@ -1,6 +1,7 @@
 services:
   app:
-    image: tapontikes/golf-ri.com
+    build:
+      dockerfile: Dockerfile
     depends_on:
       - postgres
     environment:
