@@ -8,9 +8,10 @@ import {DataSharingService} from "../../../service/data-sharing.service";
 import {ReservationDialogService} from "../../../service/registration-dialog.service";
 
 @Component({
-  selector: 'app-tee-time-list',
-  templateUrl: './tee-time-list.component.html',
-  styleUrls: ['./tee-time-list.component.scss']
+    selector: 'app-tee-time-list',
+    templateUrl: './tee-time-list.component.html',
+    styleUrls: ['./tee-time-list.component.scss'],
+    standalone: false
 })
 export class TeeTimeListComponent implements OnInit {
   courses: Course[] = [];

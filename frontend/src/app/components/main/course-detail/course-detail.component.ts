@@ -7,9 +7,10 @@ import {ReservationDialogService} from "../../../service/registration-dialog.ser
 import moment from "moment-timezone";
 
 @Component({
-  selector: 'app-course-detail',
-  templateUrl: './course-detail.component.html',
-  styleUrls: ['./course-detail.component.scss']
+    selector: 'app-course-detail',
+    templateUrl: './course-detail.component.html',
+    styleUrls: ['./course-detail.component.scss'],
+    standalone: false
 })
 export class CourseDetailComponent implements OnInit {
   courseId: number = 0;

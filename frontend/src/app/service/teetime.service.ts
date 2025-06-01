@@ -1,7 +1,7 @@
 // src/app/services/tee-time.teetimes.ts
 
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {map, Observable, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {Course, RefreshRequest, TeeTime, TeeTimeSearchParams} from "../model/models";
