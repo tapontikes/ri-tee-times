@@ -21,20 +21,22 @@ async function initDatabase() {
         // Insert initial courses from config update if entry exists
         for (const course of config.courses) {
             await client.query(
-                `INSERT INTO golf_courses (id, name, provider, booking_url, request_data)
-                 VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO
+                `INSERT INTO golf_courses (id, name, provider, booking_url, request_data, address)
+                 VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (id) DO
                 UPDATE
                     SET name = EXCLUDED.name,
                     provider = EXCLUDED.provider,
                     booking_url = EXCLUDED.booking_url,
                     request_data = EXCLUDED.request_data,
+                    address = EXCLUDED.address,
                     updated_at = NOW()`,
                 [
                     course.id,
                     course.name,
                     course.type,
                     course.bookingUrl,
-                    JSON.stringify(course.requestData) // Store full requestData as JSONB
+                    JSON.stringify(course.requestData),
+                    course.address
                 ]
             );
             logger.info(`Ensured course exists: ${course.name}`);

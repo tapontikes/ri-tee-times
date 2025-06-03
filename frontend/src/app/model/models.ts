@@ -6,8 +6,9 @@ export interface Course {
   request_data: CourseRequestData;
   type: string;
   provider: CourseProvider;
-  teeTimes: TeeTime[];
   booking_url: string;
+  address: string;
+  driveTime: string;
 }
 
 export interface CourseRequestData {
@@ -37,9 +38,9 @@ export interface TeeTime {
 
 export interface TeeTimeSearchParams {
   date: string;
-  startTime?: string;
-  endTime?: string;
-  holes?: number
+  startTime: string;
+  endTime: string;
+  holes: number;
   players?: number;
 }
 

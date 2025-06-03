@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 
@@ -35,45 +35,53 @@ import {NavbarComponent} from "./components/main/navbar/navbar.component";
 import {TeeTimeListComponent} from "./components/main/tee-time-list/tee-time-list.component";
 import {CourseDetailComponent} from "./components/main/course-detail/course-detail.component";
 import {AdminComponent} from "./components/main/admin/admin.component";
+import {AddressInputComponent} from "./util/address-input/address-input.component";
+import {FilterTeeTimePipe} from "./util/pipe/filter-tee-time-pipe";
+import {FilterCoursePipe} from "./util/pipe/filter-course-pipe";
 
 
-@NgModule({ declarations: [
-        AppComponent,
-        NavbarComponent,
-        TeeTimeListComponent,
-        CourseDetailComponent,
-        AdminComponent
+@NgModule({
+  declarations: [
+    AppComponent,
+    NavbarComponent,
+    TeeTimeListComponent,
+    CourseDetailComponent,
+    AdminComponent,
+    AddressInputComponent
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        RouterModule,
-        AppRoutingModule,
-        // Angular Material
-        MatToolbarModule,
-        MatButtonModule,
-        MatCardModule,
-        MatChipsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatIconModule,
-        MatTabsModule,
-        MatTableModule,
-        MatProgressSpinnerModule,
-        MatSnackBarModule,
-        MatChipsModule,
-        MatDividerModule,
-        MatButtonToggleModule,
-        MatMenuTrigger,
-        MatMenu,
-        MatDialogContent,
-        MatDialogActions,
-        MatDialogTitle], providers: [
-        provideHttpClient(),
+  bootstrap: [AppComponent],
+  imports: [BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    RouterModule,
+    AppRoutingModule,
+    // Angular Material
+    MatToolbarModule,
+    MatButtonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatIconModule,
+    MatTabsModule,
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatChipsModule,
+    MatDividerModule,
+    MatButtonToggleModule,
+    MatMenuTrigger,
+    MatMenu,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogTitle,
+    FilterTeeTimePipe,
+    FilterCoursePipe],
+  providers: [
         DataSharingService,
         provideHttpClient(withInterceptorsFromDi())
     ] })

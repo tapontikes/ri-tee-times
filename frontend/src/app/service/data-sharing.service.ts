@@ -8,20 +8,11 @@ import {findCourseById} from "../util/utils";
 export class DataSharingService {
   private _teeTimes: TeeTime[] = [];
   private _courses: Course[] = [];
-  private _selectedTeeTime!: TeeTime | undefined;
-  private _selectedCourse!: Course | undefined;
-  private _teeTimeReservationData: any;
+  private _selectedTeeTime!: TeeTime;
+  private _selectedCourse!: Course;
+  private _userLocation: string = "";
 
-  constructor() {
-  }
-  
-  setTeeTimeReservationData(teeTime: TeeTime): void {
-    this._teeTimeReservationData = teeTime;
-  }
-
-  getTeeTimeReservationData(): any {
-    return this._teeTimeReservationData;
-  }
+  constructor() {}
 
   setSelectedTeeTime(selectedTeeTime: TeeTime): void {
     this._selectedTeeTime = selectedTeeTime;
@@ -63,8 +54,16 @@ export class DataSharingService {
     return this._teeTimes.filter(teeTime => teeTime.courseId === courseId);
   }
 
+  getUserLocation(): string {
+    return this._userLocation;
+  }
+
+  setUserLocation(location: string){
+    this._userLocation = location;
+  }
+
   clearSelectedData() {
-    this._selectedTeeTime = undefined;
-    this._selectedCourse = undefined;
+    this._selectedTeeTime = {} as TeeTime;
+    this._selectedCourse = {} as Course;
   }
 }

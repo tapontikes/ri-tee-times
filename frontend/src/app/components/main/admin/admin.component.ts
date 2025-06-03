@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Course, RefreshRequest} from "../../../model/models";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {TeeTimeService} from "../../../service/teetime.service";
-import {DataSharingService} from "../../../service/data-sharing.service";
 import {findCourseById, formatDate} from "../../../util/utils";
 
 
