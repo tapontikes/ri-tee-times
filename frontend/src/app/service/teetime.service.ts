@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {map, Observable, of} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
+import {map, Observable} from 'rxjs';
 import {Course, RefreshRequest, TeeTime, TeeTimeSearchParams} from "../model/models";
+import {DistanceService} from "./distance.service";
+import {DataSharingService} from "./data-sharing.service";
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +12,31 @@ export class TeeTimeService {
 
   private readonly apiUrl = window.location.protocol + '//' + window.location.host + "/api/tee-times";
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient, private distanceService: DistanceService, private dataSharingService: DataSharingService) { }
 
-  // Get all available courses
   getCourses(): Observable<Course[]> {
     return this.http.get<Course[]>(`${this.apiUrl}/courses`);
+  }
+
+  async mapCourseDrivingTime(courses: Course[], location: string): Promise<Course[]> {
+    if (!location) return courses;
+    localStorage.setItem('selectedAddress', location);
+    return await Promise.all(
+      courses.map(async course => {
+        const locationCacheKey = `${location}-${course.address}`;
+        if (course.address) {
+          const cachedDriveTime = localStorage.getItem(locationCacheKey);
+          if (cachedDriveTime) {
+            course.driveTime = cachedDriveTime;
+          } else {
+            const driveTime = await this.distanceService.getDistance(location, course.address);
+            localStorage.setItem(locationCacheKey, driveTime);
+            course.driveTime = driveTime;
+          }
+        }
+        return course;
+      })
+    );
   }
 
   getAllTeeTimes(params: TeeTimeSearchParams): Observable<TeeTime[]> {
@@ -25,26 +45,7 @@ export class TeeTimeService {
       params: {date}
     }).pipe(
       map(teeTimes => this.filterPastTeeTimes(teeTimes))
-    );
-  }
-
-// Update the getCourseTeeTimes method
-  getCourseTeeTimes(courseId: number, params: TeeTimeSearchParams): Observable<TeeTime[]> {
-    const {date, players, holes} = params;
-    let url = `${this.apiUrl}/${courseId}/${date}`;
-
-    // Add query parameters if provided
-    const queryParams: any = {};
-    if (players) queryParams.players = players;
-    if (holes) queryParams.holes = holes;
-
-    return this.http.get<TeeTime[]>(url, {params: queryParams}).pipe(
-      map(teeTimes => this.filterPastTeeTimes(teeTimes)),
-      catchError(error => {
-        console.error('Error fetching course tee times:', error);
-        return of([] as TeeTime[]); // Return empty array on error
-      })
-    );
+    )
   }
 
   refreshAllTeeTimes(request: RefreshRequest): Observable<any> {
@@ -67,4 +68,5 @@ export class TeeTimeService {
       return teeTimeDate > now;
     });
   }
+
 }

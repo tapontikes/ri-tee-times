@@ -1,4 +1,5 @@
 <div class="container">
+  <div class="title-container">
   <h1 class="page-title">Available Tee Times</h1>
   <h2 class="date-subtitle">
     {{ searchParams.date | date:'fullDate' }}
@@ -9,8 +10,13 @@
       | {{ searchParams.holes }} Holes
     </span>
   </h2>
-  <h3 class="date-subtitle"><b>Note:</b> Tee times are updated every 30 minutes, availability is not guaranteed.</h3>
-
+  <div class="location-container">
+    <h4 class="date-subtitle" *ngIf="!selectedAddress">Enter an address to view distance to each course:</h4>
+    <app-address-input *ngIf="!selectedAddress" (placeSelected)="
+    onLocationSelected($event)"></app-address-input>
+    <h3 class="date-subtitle" *ngIf="selectedAddress"><b (click)="clearAddress()" style="cursor: pointer">Edit:</b> {{selectedAddress}}</h3>
+  </div>
+  </div>
   <div *ngIf="loading" class="loading-container">
     <mat-spinner diameter="50"></mat-spinner>
     <p>Loading tee times...</p>
@@ -26,17 +32,22 @@
     <p>No tee times available for the selected criteria.</p>
   </div>
 
-  <div *ngIf="!loading && !error && teeTimes.length > 0" class="courses-container">
-    <!-- Filter courses directly in the ngFor -->
-    <div *ngFor="let course of getFilteredCourses()" class="course-row">
+
+  <ng-container *ngIf="!loading && !error">
+    <ng-container *ngFor="let course of courses | courseFilter:teeTimes:searchParams">
+    <div class="courses-container">
+    <div class="course-row">
       <div class="course-info">
         <h3 class="course-name">
           {{ course.name }}
           <span *ngIf="providers.includes(course.provider) && environment.enable_booking" class="booking-badge badge">
             Book in App
           </span>
-          <span *ngIf="!providers.includes(course.provider) || !environment.enable_booking" class="booking-badge badge">
+          <span *ngIf="!providers.includes(course.provider) && environment.enable_booking" class="booking-badge badge">
             Book with Course
+          </span>
+          <span *ngIf="course.driveTime" class="booking-badge drive-badge">
+            Distance: {{course.driveTime}}
           </span>
         </h3>
         <div class="course-actions">
@@ -48,7 +59,7 @@
       <div class="tee-times-wrapper">
         <div class="tee-times-scroll">
           <div class="tee-times-row">
-            <div *ngFor="let teeTime of getTeeTimesByCourseId(course.id)" class="tee-time-wrapper">
+            <div *ngFor="let teeTime of teeTimes | teeTimeFilter:searchParams:course" class="tee-time-wrapper">
               <div (click)="this.reservationDialogService.book(course, teeTime)" class="tee-time-box">
                 <div class="time">{{ teeTime.time | date:'shortTime' }}</div>
                 <div class="spots">{{ teeTime.spots }} spots</div>
@@ -67,5 +78,7 @@
         </div>
       </div>
     </div>
-  </div>
+    </div>
+    </ng-container>
+  </ng-container>
 </div>

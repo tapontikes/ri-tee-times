@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, mergeApplicationConfig, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {formatDate} from '@angular/common';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -7,6 +7,7 @@ import {TeeTimeService} from "../../../service/teetime.service";
 import {DataSharingService} from "../../../service/data-sharing.service";
 import {ReservationDialogService} from "../../../service/registration-dialog.service";
 import { environment } from '../../../../environments/environment';
+import moment from "moment";
 
 @Component({
     selector: 'app-tee-time-list',
@@ -15,13 +16,14 @@ import { environment } from '../../../../environments/environment';
     standalone: false
 })
 export class TeeTimeListComponent implements OnInit {
+  protected readonly environment = environment;
   courses: Course[] = [];
   teeTimes: TeeTime[] = [];
   providers = ["teesnap", "foreup"]
   loading = true;
   error = false;
+  selectedAddress?: string;
   searchParams: TeeTimeSearchParams;
-
 
   constructor(
     private teeTimeService: TeeTimeService,
@@ -30,6 +32,7 @@ export class TeeTimeListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
+    private cdk: ChangeDetectorRef
   ) {
     // Default search parameters
     const now = new Date();
@@ -49,7 +52,10 @@ export class TeeTimeListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true
+    this.selectedAddress = localStorage.getItem("selectedAddress") || "";
+    this.dataSharingService.setUserLocation(this.selectedAddress);
     this.loadCourses();
+
     this.route.queryParams.subscribe(params => {
       if (params['date']) this.searchParams.date = params['date'];
       if (params['startTime']) this.searchParams.startTime = params['startTime'];
@@ -60,19 +66,14 @@ export class TeeTimeListComponent implements OnInit {
   }
 
   loadCourses(): void {
-    const existingCourses = this.dataSharingService.getCourses();
-
-    if (existingCourses && existingCourses.length > 0) {
-      // Use existing courses data
-      this.courses = existingCourses;
-      return;
-    }
-
-    // Otherwise make the API call
     this.teeTimeService.getCourses().subscribe(
-      (coursesData) => {
-        this.courses = coursesData;
-
+      async (coursesData) => {
+        if (this.selectedAddress) {
+          this.courses = await this.teeTimeService.mapCourseDrivingTime(coursesData, this.selectedAddress);
+          this.cdk.detectChanges();
+        } else {
+          this.courses = coursesData;
+        }
         this.dataSharingService.setCourses(this.courses);
       },
       (error) => {
@@ -87,26 +88,15 @@ export class TeeTimeListComponent implements OnInit {
   }
 
   loadTeeTimes(): void {
-    this.loading = true;
-    this.error = false;
-
-    // Load tee times based on search parameters
     this.teeTimeService.getAllTeeTimes(this.searchParams).subscribe(
-      (teeTimesData) => {
+      teeTimesData => {
         this.teeTimes = teeTimesData;
-
-        this.courses.sort((a, b) => {
-          const aTeeTimesCount = this.getTeeTimesByCourseId(a.id).length;
-          const bTeeTimesCount = this.getTeeTimesByCourseId(b.id).length;
-          return bTeeTimesCount - aTeeTimesCount;
-        });
-
         this.dataSharingService.setTeeTimes(this.teeTimes);
         setTimeout(() => {
           this.loading = false;
         }, 750)
       },
-      (error) => {
+      error => {
         console.error('Error loading tee times:', error);
         this.error = true;
         this.loading = false;
@@ -117,53 +107,11 @@ export class TeeTimeListComponent implements OnInit {
     );
   }
 
-  isTimeInRange(timeString: string): boolean {
-    if (!this.searchParams.startTime || !this.searchParams.endTime) return true;
-
-    const time = new Date(timeString);
-    const hours = time.getHours();
-    const minutes = time.getMinutes();
-    const teeTimeMinutes = hours * 60 + minutes;
-
-    const startTime = this.convertTimeToMinutes(this.searchParams.startTime);
-    const endTime = this.convertTimeToMinutes(this.searchParams.endTime);
-
-    return teeTimeMinutes >= startTime && teeTimeMinutes <= endTime;
-  }
-
-  convertTimeToMinutes(time: string): number {
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours * 60 + minutes;
-  }
-
-  isAvailableForHoles(teeTime: TeeTime): boolean {
-    return !this.searchParams.holes || teeTime.holes.includes(this.searchParams.holes);
-  }
-
-  getFilteredCourses(): Course[] {
-    return this.courses.filter(course =>
-      this.getTeeTimesByCourseId(course.id).length > 0
-    );
-  }
-
-  getFilteredTeeTimes(): TeeTime[] {
-    return this.teeTimes.filter(teeTime =>
-      this.isTimeInRange(teeTime.time) &&
-      this.isAvailableForHoles(teeTime)
-    );
-  }
-
-  // Group tee times by course ID
-  getTeeTimesByCourseId(courseId: number): TeeTime[] {
-    return this.getFilteredTeeTimes().filter(teeTime => teeTime.courseId === courseId);
-  }
-
   goToCoursePage(url: string) {
     window.open(url, "_blank");
   }
 
   goToCourseDetail(courseId: number, event?: MouseEvent): void {
-    // Store the current search parameters and data
     this.dataSharingService.setTeeTimes(this.teeTimes);
     this.dataSharingService.setCourses(this.courses);
 
@@ -178,9 +126,16 @@ export class TeeTimeListComponent implements OnInit {
     });
   }
 
-  handleTeeTimeClick(course: Course, teeTime: TeeTime): void {
-
+  async onLocationSelected(place: google.maps.places.PlaceResult) {
+    this.selectedAddress = place.formatted_address || "";
+    this.loadCourses();
+    this.cdk.detectChanges();
   }
 
-  protected readonly environment = environment;
+  clearAddress(){
+    this.selectedAddress = "";
+    this.cdk.detectChanges();
+  }
+
+  protected readonly moment = moment;
 }

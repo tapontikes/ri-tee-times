@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS golf_courses
     booking_url  TEXT,
     request_data JSONB,
     created_at   TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at   TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    updated_at   TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    address      TEXT
 );
 
 -- Create tee_times table only if it doesn't exist

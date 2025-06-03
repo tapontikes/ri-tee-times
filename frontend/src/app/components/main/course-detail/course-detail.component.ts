@@ -26,12 +26,11 @@ export class CourseDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
   ) {
-    // Default search parameters
     this.searchParams = {
       date: formatDate(new Date(), 'yyyy-MM-dd', 'en-US'),
       startTime: '06:00',
       endTime: '18:00',
-      holes: undefined
+      holes: 10
     };
   }
 
@@ -40,13 +39,11 @@ export class CourseDetailComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.courseId = +params['id'];
 
-      // Get query parameters if available
       this.route.queryParams.subscribe(queryParams => {
         if (queryParams['date']) this.searchParams.date = queryParams['date'];
         if (queryParams['startTime']) this.searchParams.startTime = queryParams['startTime'];
         if (queryParams['endTime']) this.searchParams.endTime = queryParams['endTime'];
 
-        // Check if we already have the data
         const cachedCourses = this.dataSharingService.getCourses();
         const cachedTeeTimes = this.dataSharingService.getTeeTimes();
 
@@ -85,16 +82,17 @@ export class CourseDetailComponent implements OnInit {
       return [];
     }
 
-    // Start with all tee times for this course
     let filteredTimes = this.teeTimes;
 
-    // Apply holes filter if selected
-    if (this.searchParams.holes) {
-      filteredTimes = filteredTimes.filter(teeTime =>
-        teeTime.holes.includes(this.searchParams.holes as number)
-      );
+    if(this.searchParams.holes === 10){
+      return filteredTimes;
     }
 
+    if (this.searchParams.holes) {
+      filteredTimes = filteredTimes.filter(teeTime =>
+        teeTime.holes.includes(this.searchParams.holes)
+      );
+    }
     return filteredTimes;
   }
 
@@ -136,7 +134,6 @@ export class CourseDetailComponent implements OnInit {
     const groupedTimes = this.getGroupedTeeTimesByHour();
     const result = [];
 
-    // Convert the groupedTimes object to an array
     for (const label in groupedTimes) {
       if (Object.prototype.hasOwnProperty.call(groupedTimes, label)) {
         result.push({
@@ -146,7 +143,6 @@ export class CourseDetailComponent implements OnInit {
       }
     }
 
-    // Sort by the first hour in each label
     return result.sort((a, b) => {
       const hourA = this.getHourFromLabel(a.label);
       const hourB = this.getHourFromLabel(b.label);
@@ -154,22 +150,19 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
-
   getHourFromLabel(label: string): number {
     const match = label.match(/(\d+)(am|pm)/);
     if (!match) return 0;
-    const timeStr = match[1] + match[2]; // e.g., "7am"
-    const time = moment(timeStr, 'ha'); // 'ha' format handles "7am", "3pm", etc.
+    const timeStr = match[1] + match[2];
+    const time = moment(timeStr, 'ha');
     return time.hour();
   }
 
-
-  filterByHoles(holes: number | null): void {
-    // If same value is clicked again, toggle it off (set to null)
+  filterByHoles(holes: number): void {
     if (this.searchParams.holes === holes) {
-      this.searchParams.holes = undefined; // Use undefined instead of null
+      this.searchParams.holes = 10;
     } else {
-      this.searchParams.holes = holes === null ? undefined : holes; // Convert null to undefined
+      this.searchParams.holes =  holes;
     }
   }
 
