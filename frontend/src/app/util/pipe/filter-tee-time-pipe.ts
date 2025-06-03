@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 import {Course, TeeTime, TeeTimeSearchParams} from '../../model/models';
 import {isTimeInRange, matchesHoles} from "../utils";
 

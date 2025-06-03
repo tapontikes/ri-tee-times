@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Course, TeeTime} from "../model/models";
 import {findCourseById} from "../util/utils";
-import PlaceResult = google.maps.places.PlaceResult;
 
 @Injectable({
   providedIn: 'root'

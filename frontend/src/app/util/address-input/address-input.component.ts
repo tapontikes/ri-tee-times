@@ -1,4 +1,4 @@
-import {Component, ElementRef, AfterViewInit, ViewChild, Output, EventEmitter} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
 import PlaceResult = google.maps.places.PlaceResult;
 import Autocomplete = google.maps.places.Autocomplete;
 
