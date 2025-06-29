@@ -46,6 +46,9 @@
           <span *ngIf="!providers.includes(course.provider) && environment.enable_booking" class="booking-badge badge">
             Book with Course
           </span>
+          <span class="booking-badge city-badge">
+          Location: {{getCity(course.address)}}
+          </span>
           <span *ngIf="course.driveTime" class="booking-badge drive-badge">
             Distance: {{course.driveTime}}
           </span>

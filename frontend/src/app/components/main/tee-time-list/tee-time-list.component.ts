@@ -137,5 +137,14 @@ export class TeeTimeListComponent implements OnInit {
     this.cdk.detectChanges();
   }
 
+  getCity(address: string){
+    const parts = address.split(',');
+    let city = '';
+    if (parts.length >= 2) {
+      return parts[1].trim();
+    }
+    return city;
+  }
+
   protected readonly moment = moment;
 }
