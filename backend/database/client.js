@@ -75,22 +75,19 @@ class DbClient {
 
     /**
      * Deletes all tee times for the current day across all courses
-     *
-     * @param {Object} client - Database client for executing queries
      * @returns {Promise<Object[]>} Array of deleted tee time records
-     * @throws {Error} If database operation fails
      */
-    async deleteAllTeeTimesForCurrentDay(client) {
+    async deleteAllTeeTimesForCurrentDay() {
         try {
             const startOfDay = moment().startOf('day').toISOString();
             const endOfDay = moment().endOf('day').toISOString();
 
             const result = await client.query('DELETE FROM tee_times WHERE tee_time BETWEEN $1 AND $2 RETURNING *', [startOfDay, endOfDay]);
 
-            console.log(`Deleted ${result.rowCount} tee times for today ${moment().format('YYYY-MM-DD')}`);
+            logger.info(`Deleted ${result.rowCount} tee times for today ${moment().format('YYYY-MM-DD')}`);
             return result.rows;
         } catch (error) {
-            console.error('Error deleting tee times for today:', error);
+            logger.error('Error deleting tee times for today:', error);
             throw error;
         }
     }

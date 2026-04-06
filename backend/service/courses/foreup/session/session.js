@@ -11,7 +11,7 @@ const jwt = require("jsonwebtoken");
 async function createSession(session, _jwt, id) {
     const decodedToken = jwt.decode(_jwt);
     const expiryTime = moment.unix(Number.parseInt(decodedToken.exp));
-    const now = moment.now();
+    const now = moment();
 
 
     const oldSession = session.foreupSessionData || {};

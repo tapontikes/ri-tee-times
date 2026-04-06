@@ -26,7 +26,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -39,7 +38,7 @@ app.use(morgan(':method :url :status - :response-time ms', {
 }));
 
 app.use(session({
-    secret: 'session-tom',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {

@@ -1,5 +1,5 @@
 const axios = require('axios');
-const moment = require('moment');
+const logger = require('../../../../utils/logger');
 
 // Constants
 const TEESNAP_ENDPOINT = "/customer-api/teetimes-day";
@@ -52,7 +52,7 @@ async function getTeeSnapTeeTimes(date, booking_url, params) {
             const bookingCheck = time.teeOffSections[0];
 
             // Skip times that are in the past
-            if (moment(time.teeTime).isBefore(moment.now())) {
+            if (new Date(time.teeTime) < new Date()) {
                 return;
             }
 
@@ -109,7 +109,7 @@ async function getTeeSnapTeeTimes(date, booking_url, params) {
 
         return formattedTimes;
     } catch (error) {
-        console.error("Error fetching TeeSnap tee times:", error.message);
+        logger.error("Error fetching TeeSnap tee times:", error.message);
         return [];
     }
 }
