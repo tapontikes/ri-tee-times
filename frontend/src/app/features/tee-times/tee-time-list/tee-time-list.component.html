@@ -1,6 +1,7 @@
 <div class="container">
   <div class="title-container">
     <h1 class="page-title">Available Tee Times</h1>
+    <p class="page-tagline">Rhode Island courses &mdash; updated every 30 minutes</p>
     <h2 class="date-subtitle">
       {{ searchParams.date | date:'fullDate' }}
       <span *ngIf="searchParams.startTime && searchParams.endTime">
@@ -10,7 +11,7 @@
       | {{ searchParams.holes }} Holes
     </span>
     </h2>
-    <div class="location-container">
+    <div *ngif="environment.mapsDistanceEnabled" class="location-container">
       <h4 *ngIf="!selectedAddress" class="date-subtitle">Enter an address to view distance to each course:</h4>
       <app-address-input (placeSelected)="
     onLocationSelected($event)" *ngIf="!selectedAddress"></app-address-input>

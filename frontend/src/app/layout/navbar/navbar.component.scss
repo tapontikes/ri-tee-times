@@ -1,6 +1,7 @@
 // navbar.component.scss
 .navbar {
   align-items: center;
+  background-color: #1b5e20 !important;
   display: flex;
   height: 5em;
   position: sticky;
@@ -9,11 +10,20 @@
 }
 
 .logo {
+  align-items: center;
   cursor: pointer;
+  display: flex;
   font-size: 1.5rem;
-  font-weight: 500;
+  font-weight: 600;
+  gap: 8px;
+  letter-spacing: 0.02em;
   margin-right: 24px;
   white-space: nowrap;
+}
+
+.logo-icon {
+  font-size: 1.4rem;
+  line-height: 1;
 }
 
 .search-form {
@@ -58,6 +68,18 @@ mat-form-field {
   display: none;
 }
 
+.search-button {
+  background-color: #2e7d32 !important;
+  border: 1px solid #81c784 !important;
+  color: white !important;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.search-button:hover {
+  background-color: #388e3c !important;
+}
+
 /* Mobile styles */
 @media (width <= 1050px) {
   .navbar {
@@ -91,7 +113,7 @@ mat-form-field {
 
   .search-form.mobile-expanded {
     display: block;
-    max-height: 600px; /* Adjust as needed to accommodate your form */
+    max-height: 600px;
     opacity: 1;
     padding-top: 0.5em;
     transform: translateY(0);
@@ -132,7 +154,7 @@ mat-form-field {
 
   .mobile-nav-links {
     display: flex;
-    max-height: 200px; /* Adjust based on your navigation height */
+    max-height: 200px;
     opacity: 1;
     transform: translateY(0);
   }
