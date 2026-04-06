@@ -1,6 +1,7 @@
 const axios = require('axios');
 const moment = require('moment');
 const cheerio = require('cheerio');
+const logger = require('../../../../utils/logger');
 
 // Constants
 const TEEWIRE_BASE_URL = "https://teewire.net";
@@ -71,8 +72,8 @@ async function getTeeWireTeeTime(date, params) {
                 holes = holesMatch[0];
 
                 formattedTimes.push({
-                    "time": moment(time, 'h:mm A'),
-                    "holes": parseInt(holes, 10),
+                    "time": moment(time, 'h:mm A').toISOString(),
+                    "holes": [parseInt(holes, 10)],
                     "spots": parseInt(spots, 10)
                 });
             } catch (ex) {
@@ -83,7 +84,7 @@ async function getTeeWireTeeTime(date, params) {
 
         return formattedTimes;
     } catch (error) {
-        console.error("Error fetching TeeWire tee times:", error.message);
+        logger.error("Error fetching TeeWire tee times:", error.message);
         return [];
     }
 }

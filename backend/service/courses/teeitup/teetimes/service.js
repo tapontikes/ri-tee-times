@@ -1,5 +1,5 @@
 const axios = require('axios');
-const moment = require('moment');
+const logger = require('../../../../utils/logger');
 
 // Constants
 const TEEITUP_BASE_URL = "https://phx-api-be-east-1b.kenna.io/v2/tee-times";
@@ -48,7 +48,7 @@ async function getTeeItUpTeeTimes(date, params) {
 
         return formattedTimes;
     } catch (error) {
-        console.error("Error fetching TeeItUp tee times:", error.message);
+        logger.error("Error fetching TeeItUp tee times:", error.message);
         return [];
     }
 }

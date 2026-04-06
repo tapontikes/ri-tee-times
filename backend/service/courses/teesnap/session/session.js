@@ -33,6 +33,4 @@ async function getSession(client, id) {
     };
 }
 
-module.exports = {
-    getSession: getSession
-};
+module.exports = {getSession};

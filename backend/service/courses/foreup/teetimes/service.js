@@ -1,5 +1,5 @@
 const axios = require('axios');
-const moment = require('moment');
+const logger = require('../../../../utils/logger');
 
 // Constants
 const FOREUP_BASE_URL = "https://app.foreupsoftware.com/index.php/api/booking/times";
@@ -49,7 +49,7 @@ async function getForeUpTeeTimes(date, params) {
 
         return formattedTimes;
     } catch (error) {
-        console.error("Error fetching ForeUp tee times:", error.message);
+        logger.error("Error fetching ForeUp tee times:", error.message);
         return [];
     }
 }

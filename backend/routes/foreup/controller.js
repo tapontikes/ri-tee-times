@@ -58,7 +58,7 @@ router.post('/reserve', async (req, res) => {
         }
 
         // Check if we have a session for this domain
-        if (!req.session.foreupSessionData[id] || !req.session.foreupSessionData[id].jwt) {
+        if (!req.session.foreupSessionData || !req.session.foreupSessionData[id] || !req.session.foreupSessionData[id].jwt) {
             return res.status(401).json({
                 success: false,
                 error: 'No active session found for this domain'
@@ -66,7 +66,7 @@ router.post('/reserve', async (req, res) => {
         }
 
         // Get the JWT token from the session
-        const jwtToken = req.session[id].jwt;
+        const jwtToken = req.session.foreupSessionData[id].jwt;
 
         // Create the reservation
         const reservationResponse = await foreupService.createReservation(
@@ -77,7 +77,7 @@ router.post('/reserve', async (req, res) => {
         );
 
         // Store the reservation ID in the session
-        req.session[domain].reservationId = reservationResponse.id || reservationResponse.reservation_id;
+        req.session.foreupSessionData[id].reservationId = reservationResponse.id || reservationResponse.reservation_id;
 
         res.json({
             success: true,
