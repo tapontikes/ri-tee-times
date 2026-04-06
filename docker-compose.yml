@@ -17,8 +17,6 @@ services:
       - pg
 
   app:
-    build:
-      dockerfile: Dockerfile
     image: tapontikes/golf-ri.com:latest
     environment:
       DB_HOST: ${DB_HOST}

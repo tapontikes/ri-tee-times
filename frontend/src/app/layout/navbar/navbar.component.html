@@ -1,5 +1,7 @@
 <mat-toolbar class="navbar" color="primary">
-  <span class="logo" routerLink="/">Golf Rhode Island</span>
+  <span class="logo" routerLink="/">
+    <span class="logo-icon">&#9971;</span> Golf Rhode Island
+  </span>
 
   <!-- Hamburger icon for mobile -->
   <button (click)="toggleMobileMenu()"
@@ -44,8 +46,7 @@
           <mat-button-toggle [value]="18">18 Holes</mat-button-toggle>
         </mat-button-toggle-group>
       </div>
-      <button class="mobile-form-width" mat-raised-button style="color: white; background-color: #9c27b0;"
-              type="submit">
+      <button class="mobile-form-width search-button" mat-raised-button type="submit">
         Search
       </button>
     </div>
