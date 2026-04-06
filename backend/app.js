@@ -21,7 +21,6 @@ const foreupRouter = require('./routes/foreup/controller');
 
 // Import database and scheduler
 const {initializeJobs, refreshAllTeeTimesJob} = require('./jobs/teetime');
-const {initDatabase} = require('./database/init')
 
 const app = express();
 
@@ -82,15 +81,9 @@ app.use('/api/tee-times', teeTimeRouter);
 app.use('/api/teesnap', teesnapRouter);
 app.use('/api/foreup', foreupRouter);
 
-// Initialize database and jobs on app startup
+// Initialize jobs on app startup
 (async () => {
     try {
-        if (process.env.DB_CREATE_SCHEMA === 'true') {
-            await initDatabase();
-            logger.info('Database initialized successfully')
-        } else {
-            logger.info('Skipping database initialization.');
-        }
         if (process.env.SCHEDULER_ENABLED === 'true') {
             await initializeJobs();
             logger.info('Tee time jobs initialized successfully');
