@@ -42,20 +42,16 @@ jobs:
       - name: Deploy the Docker Compose stack
         run: |
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SERVER_IP }} << 'EOF'
-          set -e
           cd /home/tom/ri-tee-times/
 
-          # Get latest compose file and config changes
-          git pull origin master
-
-          # Pull the latest app image
+          # Pull the latest image
           docker pull tapontikes/golf-ri.com:latest
 
           # Run migrations to completion before touching the app
           docker compose run --rm migrate
 
-          # Restart the app container with the new image
-          docker compose up -d --no-deps --force-recreate app
+          # Restart the app with the new image
+          docker compose up -d --no-deps app
 
           # Clean up dangling images
           docker image prune -f
