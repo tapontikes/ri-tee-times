@@ -27,7 +27,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       DB_SSL: ${DB_SSL}
-      SESSION_SECRET: ${SESSION_SECRET}
       SCHEDULER_ENABLED: ${SCHEDULER_ENABLED}
       REFRESH_ON_STARTUP: ${REFRESH_ON_STARTUP}
     depends_on:
@@ -47,11 +46,10 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-      POSTGRESQL_PERFORM_RESTORE: true
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/bitnami/postgresql
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
       interval: 5s
