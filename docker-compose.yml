@@ -1,19 +1,39 @@
 services:
+  migrate:
+    image: tapontikes/golf-ri.com:latest
+    command: node ./database/migrate.js
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_SSL: ${DB_SSL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - pg
+
   app:
     build:
       dockerfile: Dockerfile
-    depends_on:
-      - postgres
+    image: tapontikes/golf-ri.com:latest
     environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: user
-      DB_PASSWORD: password
-      DB_NAME: tee_times_pg
-      DB_SSL: false
-      DB_CREATE_SCHEMA: true
-      SCHEDULER_ENABLED: false
-      REFRESH_ON_STARTUP: false
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_SSL: ${DB_SSL}
+      SCHEDULER_ENABLED: ${SCHEDULER_ENABLED}
+      REFRESH_ON_STARTUP: ${REFRESH_ON_STARTUP}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     ports:
       - "3000:3000"
     networks:
@@ -23,16 +43,15 @@ services:
     image: bitnami/postgresql
     container_name: golf-tee-times-db
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: tee_times_pg
-      POSTGRESQL_PERFORM_RESTORE: true
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/bitnami/postgresql
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
       interval: 5s
       timeout: 5s
       retries: 5

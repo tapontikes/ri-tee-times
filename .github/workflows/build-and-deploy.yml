@@ -43,13 +43,17 @@ jobs:
         run: |
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SERVER_IP }} << 'EOF'
           cd /home/tom/ri-tee-times/
-                    
-          # Stop and remove the old app container (but keep the PostgreSQL container running)
-          docker stop ri-tee-times-app-1          
-          docker rm ri-tee-times-app-1
-          docker image rm tapontikes/golf-ri.com:latest
 
-          # Restart the application container with the new image
-          docker compose up -d app
-          
+          # Pull the latest image
+          docker pull tapontikes/golf-ri.com:latest
+
+          # Run migrations to completion before touching the app
+          docker compose run --rm migrate
+
+          # Restart the app with the new image
+          docker compose up -d --no-deps app
+
+          # Clean up dangling images
+          docker image prune -f
+
           EOF
