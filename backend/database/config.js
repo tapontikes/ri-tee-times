@@ -1,4 +1,5 @@
 const {Pool} = require('pg');
+const logger = require('../utils/logger');
 
 const pool = new Pool({
     host: process.env.DB_HOST,
@@ -10,6 +11,11 @@ const pool = new Pool({
     max: 10,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 5000
+});
+
+// Prevent unhandled 'error' events from crashing the process
+pool.on('error', (err) => {
+    logger.error('Unexpected database pool error:', err.message);
 });
 
 module.exports = pool;

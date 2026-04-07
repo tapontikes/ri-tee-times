@@ -1,9 +1,9 @@
 <header class="navbar">
-  <span class="logo" routerLink="/">
+  <span class="logo" routerLink="/teetimes">
     <span class="logo-flag">&#9971;</span> Golf Rhode Island
   </span>
 
-  <button (click)="toggleMobileMenu()" *ngIf="isMobile" aria-label="Menu" class="mobile-toggle">
+  <button (click)="toggleMobileMenu()" *ngIf="isMobile && !isCoursePage" aria-label="Menu" class="mobile-toggle">
     <span [class.open]="showMobileMenu" class="hamburger">
       <span></span>
       <span></span>
@@ -13,7 +13,7 @@
 
   <form (ngSubmit)="search()"
         [formGroup]="searchForm"
-        *ngIf="!isMobile || showMobileMenu"
+        *ngIf="!isCoursePage && (!isMobile || showMobileMenu)"
         [class.mobile-expanded]="showMobileMenu"
         class="search-form">
 
@@ -22,6 +22,7 @@
                     [minDate]="minDate"
                     [showButtonBar]="false"
                     [showIcon]="true"
+                    appendTo="body"
                     formControlName="date"
                     placeholder="Date"
                     styleClass="navbar-field">

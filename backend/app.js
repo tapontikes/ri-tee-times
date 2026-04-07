@@ -12,7 +12,11 @@ const {v4: uuidv4} = require('uuid');
 
 
 if (process.env.NODE_ENV !== 'production') {
-    require("dotenv").config({path: path.join(__dirname, '.env')})
+    // Try backend/.env first, fall back to project root .env
+    const localEnv = path.join(__dirname, '.env');
+    const rootEnv = path.join(__dirname, '..', '.env');
+    const fs = require('fs');
+    require("dotenv").config({path: fs.existsSync(localEnv) ? localEnv : rootEnv});
 }
 
 const teeTimeRouter = require('./routes/teetimes/controller'); // New tee time routes
@@ -37,8 +41,13 @@ app.use(morgan(':method :url :status - :response-time ms', {
     }
 }));
 
+const SESSION_SECRET = process.env.SESSION_SECRET;
+if (!SESSION_SECRET) {
+    logger.error('SESSION_SECRET environment variable is not set. Using a temporary insecure default — set this in .env for production.');
+}
+
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: SESSION_SECRET || 'fallback-insecure-secret-set-SESSION_SECRET-in-env',
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -69,8 +78,7 @@ app.use((req, res, next) => {
         };
         next();
     } catch (error) {
-        console.error('Error setting up cookie jar:', error);
-        res.status(500).json({success: false, error: {message: error.message, status: 500}});
+        next(error);
     }
 });
 
@@ -101,23 +109,48 @@ app.use('/api/foreup', foreupRouter);
 })();
 
 
+// SPA fallback — serve index.html for all non-API routes so Angular can handle routing
+app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // catch 404 and forward to error handler
 app.use((req, res) => {
-    res.status(404).send("Not Found");
+    res.status(404).json({error: {message: 'Not Found', status: 404}});
 });
+
+// Detect database connection errors from pg
+function isDbConnectionError(err) {
+    return err.code === 'ECONNREFUSED' ||
+        err.code === 'ENOTFOUND' ||
+        err.code === '57P03' || // pg: cannot connect now
+        err.code === '3D000' || // pg: database does not exist
+        err.code === '28P01' || // pg: invalid password
+        (err.message && err.message.includes('connect ECONNREFUSED'));
+}
 
 // error handler
 app.use((err, req, res, next) => {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    const isDev = req.app.get('env') === 'development';
 
-    // render the error page
-    res.status(err.status || 500);
-    res.json({
+    if (isDbConnectionError(err)) {
+        logger.error(`DB connection error on ${req.method} ${req.path}:`, err.message);
+        return res.status(503).json({
+            error: {
+                message: 'Database unavailable. Please try again shortly.',
+                status: 503
+            }
+        });
+    }
+
+    const status = err.status || 500;
+    logger.error(`${status} on ${req.method} ${req.path}:`, err.message);
+
+    res.status(status).json({
         error: {
-            message: err.message,
-            status: err.status || 500
+            message: isDev ? err.message : 'An unexpected error occurred.',
+            status
         }
     });
 });

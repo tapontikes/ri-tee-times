@@ -8,10 +8,8 @@ export function formatDate(date: Date): string {
   return `${d.getFullYear()}-${month}-${day}`;
 }
 
-export function findCourseById(courses: Course[], id: number): Course {
-  const course = courses.find(course => course.id === id);
-  if (!course) throw new Error(`Course not found: ${id}`);
-  return course;
+export function findCourseById(courses: Course[], id: number): Course | undefined {
+  return courses.find(course => course.id === id);
 }
 
 export function matchesHoles(teeTimeHoles: number[], searchHoles: number): boolean {
@@ -30,4 +28,8 @@ export function isTimeInRange(teeTimeUtc: string, startTime: string, endTime: st
     return false;
   }
   return t.isSameOrAfter(start) && t.isSameOrBefore(end);
+}
+
+export function randomDelay(): number {
+  return Math.floor(Math.random() * (300 - 200 + 1)) + 200;
 }

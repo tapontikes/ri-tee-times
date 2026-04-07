@@ -118,7 +118,7 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
         this.completingReservation = false;
         if (response.success) {
           this.messageService.add({severity: 'success', summary: 'Reservation completed successfully!', life: 5000});
-          this.router.navigate(['/']);
+          this.router.navigate(['/teetimes']);
         } else {
           this.messageService.add({
             severity: 'error',
@@ -132,7 +132,7 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/teetimes']);
   }
 
   updateTimeDisplay(): void {

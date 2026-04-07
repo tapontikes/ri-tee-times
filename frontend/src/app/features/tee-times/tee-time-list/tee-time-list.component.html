@@ -4,15 +4,14 @@
   <div class="page-header">
     <div class="page-header-left">
       <h1 class="page-title">Available Tee Times</h1>
-      <p class="page-tagline">Rhode Island &mdash; updated every 30 minutes</p>
-    </div>
-    <div class="page-header-right">
+      <div class="date-info">
       <div class="date-display">{{ searchParams.date | date:'EEE, MMM d' }}</div>
       <div class="date-meta">
         <span *ngIf="searchParams.holes">{{ searchParams.holes }} Holes</span>
         <span *ngIf="searchParams.startTime && searchParams.endTime">
           &nbsp;&middot; {{ searchParams.startTime }}–{{ searchParams.endTime }}
         </span>
+      </div>
       </div>
     </div>
   </div>

@@ -74,7 +74,7 @@ export class TeesnapLoginComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/teetimes']);
   }
 
   private handleError(error: any): void {

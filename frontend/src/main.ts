@@ -1,7 +1,8 @@
 import {bootstrapApplication} from '@angular/platform-browser';
 import {provideRouter} from '@angular/router';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
+import {ErrorInterceptor} from './app/core/interceptors/error.interceptor';
 import {providePrimeNG} from 'primeng/config';
 import {definePreset} from '@primeng/themes';
 import Aura from '@primeng/themes/aura';
@@ -41,5 +42,6 @@ bootstrapApplication(AppComponent, {
     }),
     MessageService,
     DialogService,
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
   ],
 }).catch(err => console.error(err));

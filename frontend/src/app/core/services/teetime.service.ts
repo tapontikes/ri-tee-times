@@ -43,6 +43,19 @@ export class TeeTimeService {
     );
   }
 
+  getCourseTeeTimes(courseId: number, date: string): Observable<TeeTime[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${courseId}/${date}`).pipe(
+      map(rows => rows.map(r => ({
+        id: r.id,
+        courseId: r.courseId ?? r.course_id,
+        time: r.time ?? r.tee_time,
+        holes: r.holes,
+        spots: r.spots,
+        start: r.start,
+      })).filter(t => new Date(t.time) > new Date()))
+    );
+  }
+
   refreshAllTeeTimes(request: RefreshRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/refresh/all`, request);
   }

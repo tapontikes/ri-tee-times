@@ -1,100 +1,175 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonModule, formatDate} from '@angular/common';
 import {ButtonModule} from 'primeng/button';
 import {TagModule} from 'primeng/tag';
 import {SelectModule} from 'primeng/select';
+import {DatePickerModule} from 'primeng/datepicker';
 import {FormsModule} from '@angular/forms';
+import {skip} from 'rxjs/operators';
 import {Course, TeeTime, TeeTimeSearchParams} from '../../../shared/models/models';
 import {DataSharingService} from '../../../core/services/data-sharing.service';
+import {TeeTimeService} from '../../../core/services/teetime.service';
 import {ReservationDialogService} from '../../booking/reservation-dialog.service';
+import {randomDelay} from "../../../shared/utils";
 
 @Component({
   selector: 'app-course-detail',
   templateUrl: './course-detail.component.html',
   styleUrls: ['./course-detail.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ButtonModule,
-    TagModule,
-    SelectModule,
-    FormsModule,
-  ]
+  imports: [CommonModule, ButtonModule, TagModule, SelectModule, DatePickerModule, FormsModule],
 })
 export class CourseDetailComponent implements OnInit {
+  course: Course | undefined;
+
   courseId = 0;
   allCourses: Course[] = [];
-  course!: Course;
+  loading = false;
   teeTimes: TeeTime[] = [];
   filteredTeeTimes: TeeTime[] = [];
   hourGroups: { label: string; teeTimes: TeeTime[] }[] = [];
+  readonly skeletonGroups = Array(3);
   error = false;
+  readonly skeletonRows = Array(4);
+  selectedDate: Date;
   searchParams: TeeTimeSearchParams;
+  minDate = (() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  })();
+  maxDate = (() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + 7);
+    return d;
+  })();
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     public reservationDialogService: ReservationDialogService,
     private dataSharingService: DataSharingService,
+    private teeTimeService: TeeTimeService,
     private route: ActivatedRoute,
     private router: Router,
   ) {
+    // Read initial values synchronously from snapshot — runs before any render
+    const snap = this.route.snapshot;
+    this.courseId = +snap.params['id'];
+
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const isAfter5PM = new Date().getHours() >= 17;
+    const defaultDate = isAfter5PM ? new Date(now.setDate(now.getDate() + 1)) : now;
+
+    if (snap.queryParams['date']) {
+      const [y, m, d] = snap.queryParams['date'].split('-').map(Number);
+      this.selectedDate = new Date(y, m - 1, d);
+    } else {
+      this.selectedDate = defaultDate;
+    }
+
     this.searchParams = {
-      date: formatDate(new Date(), 'yyyy-MM-dd', 'en-US'),
+      date: formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US'),
       startTime: '06:00',
       endTime: '18:00',
-      holes: 10
+      holes: 10,
     };
   }
 
   ngOnInit(): void {
-    this.allCourses = this.dataSharingService.getCourses();
-    this.route.params.subscribe(params => {
-      this.courseId = +params['id'];
-      this.route.queryParams.subscribe(queryParams => {
-        if (queryParams['date']) this.searchParams.date = queryParams['date'];
-        if (queryParams['startTime']) this.searchParams.startTime = queryParams['startTime'];
-        if (queryParams['endTime']) this.searchParams.endTime = queryParams['endTime'];
-
-        const cachedCourses = this.dataSharingService.getCourses();
-        const cachedTeeTimes = this.dataSharingService.getTeeTimes();
-
-        if (cachedCourses.length > 0 && cachedTeeTimes.length > 0) {
-          this.course = this.dataSharingService.getCourseById(this.courseId);
-          this.teeTimes = this.dataSharingService.getTeeTimesByCourseId(this.courseId);
-          this.refreshGroups();
-        } else {
-          this.router.navigate(['/']);
-        }
+    // Load courses for the switcher — use cache or fetch from API
+    const cached = this.dataSharingService.getCourses();
+    if (cached.length > 0) {
+      this.allCourses = cached;
+      this.resolveCourse();
+    } else {
+      this.teeTimeService.getCourses().pipe(
+        takeUntilDestroyed(this.destroyRef),
+      ).subscribe(courses => {
+        this.allCourses = courses;
+        this.dataSharingService.setCourses(courses);
+        this.resolveCourse();
       });
+    }
+
+    // Initial tee time load
+    this.loadTeeTimes();
+
+    // Re-run when the course ID changes (course switcher navigation)
+    this.route.params.pipe(
+      skip(1), // skip the initial emission — already handled in constructor
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(params => {
+      this.courseId = +params['id'];
+      this.resolveCourse();
+      this.loadTeeTimes();
     });
   }
 
   changeCourse(newCourseId: number): void {
     if (newCourseId === this.courseId) return;
-    this.courseId = newCourseId;
-    this.course = this.dataSharingService.getCourseById(this.courseId);
-    this.teeTimes = this.dataSharingService.getTeeTimesByCourseId(this.courseId);
-    this.refreshGroups();
-  }
-
-  goBack(): void {
-    this.router.navigate(['/'], {
-      queryParams: {
-        date: this.searchParams.date,
-        startTime: this.searchParams.startTime,
-        endTime: this.searchParams.endTime,
-        holes: this.searchParams.holes
-      }
+    this.router.navigate(['/course', newCourseId], {
+      queryParams: {date: this.searchParams.date},
     });
   }
 
-  goToCoursePage(url: string): void {
-    window.open(url, '_blank');
+  onDateChange(date: Date): void {
+    if (!date) return;
+    this.searchParams.date = formatDate(date, 'yyyy-MM-dd', 'en-US');
+    this.loadTeeTimes();
+  }
+
+  goBack(): void {
+    this.router.navigate(['/teetimes'], {
+      queryParams: {date: this.searchParams.date},
+    });
+  }
+
+  bookTeeTime(teeTime: TeeTime): void {
+    if (this.course) this.reservationDialogService.book(this.course, teeTime);
+  }
+
+  goToCoursePage(): void {
+    if (this.course?.booking_url) window.open(this.course.booking_url, '_blank');
+  }
+
+  filterByHoles(holes: number): void {
+    this.searchParams.holes = this.searchParams.holes === holes ? 10 : holes;
+    this.refreshGroups();
   }
 
   getHourRangeLabel(hour: number): string {
     const fmt = (h: number) => h === 0 ? '12am' : h < 12 ? `${h}am` : h === 12 ? '12pm' : `${h - 12}pm`;
-    return `${fmt(hour)} - ${fmt((hour + 1) % 24)}`;
+    return `${fmt(hour)} — ${fmt((hour + 1) % 24)}`;
+  }
+
+  private resolveCourse(): void {
+    this.course = this.dataSharingService.getCourseById(this.courseId)
+      ?? this.allCourses.find(c => c.id === this.courseId);
+  }
+
+  private loadTeeTimes(): void {
+    this.loading = true;
+    this.error = false;
+    this.teeTimeService.getCourseTeeTimes(this.courseId, this.searchParams.date).pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe({
+      next: (times) => {
+        this.teeTimes = times;
+        setTimeout(() => {
+          this.loading = false;
+          this.refreshGroups();
+        }, randomDelay())
+
+      },
+      error: () => {
+        this.error = true;
+        this.loading = false;
+      },
+    });
   }
 
   getHourFromLabel(label: string): number {
@@ -104,11 +179,6 @@ export class CourseDetailComponent implements OnInit {
     if (match[2] === 'pm' && hour !== 12) hour += 12;
     if (match[2] === 'am' && hour === 12) hour = 0;
     return hour;
-  }
-
-  filterByHoles(holes: number): void {
-    this.searchParams.holes = this.searchParams.holes === holes ? 10 : holes;
-    this.refreshGroups();
   }
 
   private refreshGroups(): void {

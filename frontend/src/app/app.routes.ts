@@ -4,7 +4,8 @@ import {CourseDetailComponent} from './features/tee-times/course-detail/course-d
 import {AdminComponent} from './features/admin/admin.component';
 
 export const appRoutes: Routes = [
-  {path: '', component: TeeTimeListComponent},
+  {path: '', redirectTo: 'teetimes', pathMatch: 'full'},
+  {path: 'teetimes', component: TeeTimeListComponent},
   {path: 'course/:id', component: CourseDetailComponent, runGuardsAndResolvers: 'always'},
   {path: 'admin', component: AdminComponent},
   {
@@ -15,5 +16,5 @@ export const appRoutes: Routes = [
     path: 'teesnap',
     loadChildren: () => import('./features/booking/teesnap/teesnap.routes').then(m => m.teesnapRoutes)
   },
-  {path: '**', redirectTo: ''}
+  {path: '**', redirectTo: 'teetimes'}
 ];

@@ -3,7 +3,6 @@
 .container {
   margin: 0 auto;
   max-width: 92vw;
-  padding: 28px 16px;
 }
 
 /* ─── Page header ────────────────────────────────────────────────────────── */
@@ -13,7 +12,7 @@
   animation: slideUpFade 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin: 2.5em 0;
 }
 
 .page-title {
@@ -38,14 +37,18 @@
   font-size: 1.35rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  text-align: right;
 }
 
 .date-meta {
   color: #8a9e87;
   font-size: 0.85rem;
   margin-top: 2px;
-  text-align: right;
+}
+
+.date-info {
+  display: flex;
+  gap: 1em;
+  align-items: center;
 }
 
 /* ─── Location bar ───────────────────────────────────────────────────────── */
@@ -75,7 +78,7 @@
 /* ─── Course list ────────────────────────────────────────────────────────── */
 
 .course-list {
-  animation: fadeIn 0.3s ease both;
+  animation: fadeIn 0.7s ease both;
 }
 
 @keyframes fadeIn {
@@ -95,7 +98,6 @@
   box-shadow: 0 1px 3px rgb(0 0 0 / 6%),
   0 4px 16px rgb(0 0 0 / 5%);
   margin-bottom: 20px;
-  overflow: hidden;
   transition: box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
   transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
@@ -112,6 +114,7 @@
 .course-header {
   align-items: center;
   background: linear-gradient(130deg, #1a5220 0%, #2d7533 100%);
+  border-radius: 18px 18px 0 0;
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
@@ -212,6 +215,7 @@
 
 .tee-times-wrapper {
   padding: 14px 20px 0;
+  padding-top: 18px;
   position: relative;
 }
 
@@ -229,8 +233,10 @@
 .tee-times-scroll {
   -webkit-overflow-scrolling: touch;
   overflow-x: auto;
-  padding-bottom: 16px;
+  overflow-y: visible;
+  padding-bottom: 20px;
   padding-right: 80px;
+  padding-top: 14px;
   scrollbar-color: #a5d6a7 #e8f5e9;
   scrollbar-width: thin;
 }
@@ -382,6 +388,7 @@
 /* ─── Course footer ──────────────────────────────────────────────────────── */
 
 .course-footer {
+  border-radius: 0 0 18px 18px;
   border-top: 1px solid #f0f7f0;
   display: flex;
   gap: 16px;
@@ -487,4 +494,87 @@
 .sk-footer-line {
   height: 11px;
   width: 22%;
+}
+
+/* ─── Responsive tile sizing ─────────────────────────────────────────────── */
+
+@media (width <= 768px) {
+  .container {
+    padding-bottom: 36px;
+    padding-top: 44px;
+  }
+
+  .tee-time-tile {
+    padding: 12px 10px 10px;
+    width: 145px;
+  }
+
+  .tile-time {
+    font-size: 1.15rem;
+  }
+
+  .tile-spots {
+    font-size: 0.74rem;
+  }
+
+  .view-all-tile {
+    padding: 12px 14px;
+    width: 110px;
+  }
+}
+
+@media (width <= 540px) {
+  .container {
+    padding-bottom: 28px;
+    padding-top: 36px;
+  }
+
+  .tee-time-tile {
+    padding: 10px 8px 8px;
+    width: 120px;
+  }
+
+  .tile-time {
+    font-size: 1rem;
+    margin-bottom: 4px;
+    margin-top: 2px;
+  }
+
+  .tile-spots {
+    font-size: 0.7rem;
+    margin-bottom: 6px;
+  }
+
+  .view-all-tile {
+    padding: 10px 10px;
+    width: 90px;
+  }
+
+  .view-all-label {
+    font-size: 0.68rem;
+  }
+
+  .view-all-icon {
+    font-size: 1.4rem;
+  }
+}
+
+@media (width <= 400px) {
+  .tee-time-tile {
+    padding: 8px 6px 7px;
+    width: 100px;
+  }
+
+  .tile-time {
+    font-size: 0.9rem;
+  }
+
+  .tile-spots {
+    font-size: 0.65rem;
+    margin-bottom: 5px;
+  }
+
+  .view-all-tile {
+    width: 78px;
+  }
 }

@@ -1,9 +1,10 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonModule, formatDate} from '@angular/common';
 import {TagModule} from 'primeng/tag';
 import {ButtonModule} from 'primeng/button';
-import {MessageService} from 'primeng/api';
+import {distinctUntilChanged, map} from 'rxjs/operators';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Course, TeeTime, TeeTimeSearchParams} from '../../../shared/models/models';
 import {TeeTimeService} from '../../../core/services/teetime.service';
 import {DataSharingService} from '../../../core/services/data-sharing.service';
@@ -12,6 +13,7 @@ import {FilterTeeTimePipe} from '../../../shared/pipes/filter-tee-time.pipe';
 import {FilterCoursePipe} from '../../../shared/pipes/filter-course.pipe';
 import {AddressInputComponent} from '../../../shared/components/address-input/address-input.component';
 import {environment} from '../../../../environments/environment';
+import {randomDelay} from "../../../shared/utils";
 
 @Component({
   selector: 'app-tee-time-list',
@@ -39,13 +41,14 @@ export class TeeTimeListComponent implements OnInit {
   searchParams: TeeTimeSearchParams;
   protected readonly environment = environment;
 
+  private readonly destroyRef = inject(DestroyRef);
+
   constructor(
     private teeTimeService: TeeTimeService,
     private dataSharingService: DataSharingService,
     public reservationDialogService: ReservationDialogService,
     private route: ActivatedRoute,
     private router: Router,
-    private messageService: MessageService,
     private cdk: ChangeDetectorRef,
   ) {
     const now = new Date();
@@ -67,17 +70,30 @@ export class TeeTimeListComponent implements OnInit {
     this.dataSharingService.setUserLocation(this.selectedAddress);
     this.loadCourses();
 
-    this.route.queryParams.subscribe(params => {
-      if (params['date']) this.searchParams.date = params['date'];
-      if (params['startTime']) this.searchParams.startTime = params['startTime'];
-      if (params['endTime']) this.searchParams.endTime = params['endTime'];
-      if (params['holes']) this.searchParams.holes = parseInt(params['holes'], 10);
+    // Serialize params to a string so distinctUntilChanged can compare them
+    this.route.queryParams.pipe(
+      map(params => JSON.stringify({
+        date: params['date'] ?? this.searchParams.date,
+        startTime: params['startTime'] ?? this.searchParams.startTime,
+        endTime: params['endTime'] ?? this.searchParams.endTime,
+        holes: params['holes'] ?? this.searchParams.holes,
+      })),
+      distinctUntilChanged(),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(paramsJson => {
+      const params = JSON.parse(paramsJson);
+      this.searchParams.date = params.date;
+      this.searchParams.startTime = params.startTime;
+      this.searchParams.endTime = params.endTime;
+      this.searchParams.holes = parseInt(params.holes, 10);
       this.loadTeeTimes();
     });
   }
 
   loadCourses(): void {
-    this.teeTimeService.getCourses().subscribe({
+    this.teeTimeService.getCourses().pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe({
       next: async (coursesData) => {
         if (this.selectedAddress) {
           this.courses = await this.teeTimeService.mapCourseDrivingTime(coursesData, this.selectedAddress);
@@ -90,22 +106,26 @@ export class TeeTimeListComponent implements OnInit {
       error: () => {
         this.loading = false;
         this.error = true;
-        this.messageService.add({severity: 'error', summary: 'Error loading courses. Please try again.', life: 5000});
       },
     });
   }
 
   loadTeeTimes(): void {
-    this.teeTimeService.getAllTeeTimes(this.searchParams).subscribe({
+    this.loading = true;
+    this.error = false;
+    this.teeTimeService.getAllTeeTimes(this.searchParams).pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe({
       next: (teeTimesData) => {
         this.teeTimes = teeTimesData;
         this.dataSharingService.setTeeTimes(this.teeTimes);
-        this.loading = false;
+        setTimeout(() => {
+          this.loading = false;
+        }, randomDelay())
       },
       error: () => {
         this.error = true;
         this.loading = false;
-        this.messageService.add({severity: 'error', summary: 'Error loading tee times. Please try again.', life: 5000});
       },
     });
   }
@@ -118,12 +138,7 @@ export class TeeTimeListComponent implements OnInit {
     this.dataSharingService.setTeeTimes(this.teeTimes);
     this.dataSharingService.setCourses(this.courses);
     this.router.navigate(['/course', courseId], {
-      queryParams: {
-        date: this.searchParams.date,
-        startTime: this.searchParams.startTime,
-        endTime: this.searchParams.endTime,
-        holes: this.searchParams.holes,
-      },
+      queryParams: {date: this.searchParams.date, holes: this.searchParams.holes},
     });
   }
 

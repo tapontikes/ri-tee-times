@@ -1,6 +1,8 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, DestroyRef, HostListener, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {Router, RouterModule} from '@angular/router';
+import {NavigationEnd, Router, RouterModule} from '@angular/router';
+import {filter} from 'rxjs/operators';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {CommonModule} from '@angular/common';
 import {DatePickerModule} from 'primeng/datepicker';
 import {SelectButtonModule} from 'primeng/selectbutton';
@@ -32,6 +34,9 @@ export class NavbarComponent implements OnInit {
   maxDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   isMobile = false;
   showMobileMenu = false;
+  isCoursePage = false;
+
+  private readonly destroyRef = inject(DestroyRef);
 
   holesOptions = [
     {label: '9', value: 9},
@@ -69,12 +74,21 @@ export class NavbarComponent implements OnInit {
       tomorrow.setDate(tomorrow.getDate() + 1);
       this.searchForm.get('date')?.setValue(tomorrow);
     }
+
+    this.isCoursePage = this.router.url.startsWith('/course');
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((e: NavigationEnd) => {
+      this.isCoursePage = e.urlAfterRedirects.startsWith('/course');
+      if (this.isCoursePage) this.showMobileMenu = false;
+    });
   }
 
   search(): void {
     const {date, startTime, endTime, holes} = this.searchForm.value;
     this.dataSharingService.clearSelectedData();
-    this.router.navigate([''], {
+    this.router.navigate(['/teetimes'], {
       queryParams: {date: formatDate(date), startTime, endTime, holes},
     });
   }

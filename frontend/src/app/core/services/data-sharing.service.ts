@@ -42,7 +42,7 @@ export class DataSharingService {
     return this._courses;
   }
 
-  getCourseById(id: number): Course {
+  getCourseById(id: number): Course | undefined {
     return findCourseById(this._courses, id);
   }
 

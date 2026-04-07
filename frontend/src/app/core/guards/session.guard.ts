@@ -12,7 +12,7 @@ export const sessionGuard: CanActivateFn = () => {
 
   const course = dataSharingService.getSelectedCourse();
   if (!course) {
-    router.navigate(['/']);
+    router.navigate(['/teetimes']);
     return of(false);
   }
 

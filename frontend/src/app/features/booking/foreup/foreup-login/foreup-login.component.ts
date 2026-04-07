@@ -47,7 +47,7 @@ export class ForeupLoginComponent implements OnInit {
     this.course = this.dataSharingService.getSelectedCourse();
 
     if (!this.course) {
-      this.router.navigate(['/']);
+      this.router.navigate(['/teetimes']);
       return;
     }
 
@@ -80,7 +80,7 @@ export class ForeupLoginComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/teetimes']);
   }
 
   private handleError(error: any): void {
