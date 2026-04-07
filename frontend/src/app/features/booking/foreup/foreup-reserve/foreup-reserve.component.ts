@@ -3,14 +3,10 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {CommonModule} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatCardModule} from '@angular/material/card';
+import {MessageService} from 'primeng/api';
+import {SelectModule} from 'primeng/select';
+import {ButtonModule} from 'primeng/button';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {interval, Subscription} from 'rxjs';
 import {Course, TeeTime} from '../../../../shared/models/models';
 import {DataSharingService} from '../../../../core/services/data-sharing.service';
@@ -24,13 +20,9 @@ import {SessionService} from '../../../../core/services/session.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatCardModule,
+    SelectModule,
+    ButtonModule,
+    ProgressSpinnerModule,
   ]
 })
 export class ForeupReserveComponent implements OnInit, OnDestroy {
@@ -52,7 +44,7 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private snackBar: MatSnackBar,
+    private messageService: MessageService,
     private dataSharingService: DataSharingService,
     private sessionService: SessionService
   ) {
@@ -66,6 +58,17 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.timerSubscription?.unsubscribe();
+  }
+
+  get playerOptions() {
+    return Array.from({length: this.maxPlayers}, (_, i) => ({
+      label: `${i + 1} Player${i > 0 ? 's' : ''}`,
+      value: i + 1
+    }));
+  }
+
+  get holeOptions() {
+    return this.availableHoles.map(h => ({label: `${h} Holes`, value: h}));
   }
 
   initForm(): void {
@@ -114,15 +117,13 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         this.completingReservation = false;
         if (response.success) {
-          this.snackBar.open('Reservation completed successfully!', 'Close', {
-            duration: 5000,
-            panelClass: 'success-snackbar'
-          });
+          this.messageService.add({severity: 'success', summary: 'Reservation completed successfully!', life: 5000});
           this.router.navigate(['/']);
         } else {
-          this.snackBar.open(`Failed to complete reservation: ${response.error}`, 'Close', {
-            duration: 5000,
-            panelClass: 'error-snackbar'
+          this.messageService.add({
+            severity: 'error',
+            summary: `Failed to complete reservation: ${response.error}`,
+            life: 5000
           });
         }
       },
@@ -163,15 +164,13 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
     this.completingReservation = false;
     if (error.status === 401) {
       this.sessionService.deleteSession(this.course.id);
-      this.snackBar.open('Incorrect Credentials: Please login again', 'Close', {
-        duration: 5000,
-        panelClass: 'error-snackbar'
-      });
+      this.messageService.add({severity: 'error', summary: 'Incorrect Credentials: Please login again', life: 5000});
       this.router.navigate(['/foreup/login']);
     } else {
-      this.snackBar.open(`Error: ${error.error?.error || 'Unknown error occurred'}`, 'Close', {
-        duration: 5000,
-        panelClass: 'error-snackbar'
+      this.messageService.add({
+        severity: 'error',
+        summary: `Error: ${error.error?.error || 'Unknown error occurred'}`,
+        life: 5000
       });
     }
   }

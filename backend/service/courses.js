@@ -1,7 +1,7 @@
-const foreUpService = require('./courses/foreup/teetimes/service');
-const teeItUpService = require('./courses/teeitup/teetimes/service');
-const teeSnapService = require('./courses/teesnap/teetimes/service');
-const teeWireService = require('./courses/teewire/teetimes/service');
+const foreUpService = require('./foreup/teetimes/service');
+const teeItUpService = require('./teeitup/teetimes/service');
+const teeSnapService = require('./teesnap/teetimes/service');
+const teeWireService = require('./teewire/teetimes/service');
 
 module.exports = {
     // ForeUp API

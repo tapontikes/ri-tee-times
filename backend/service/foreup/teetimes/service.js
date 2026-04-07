@@ -1,5 +1,5 @@
 const axios = require('axios');
-const logger = require('../../../../utils/logger');
+const logger = require('../../../utils/logger');
 
 // Constants
 const FOREUP_BASE_URL = "https://app.foreupsoftware.com/index.php/api/booking/times";

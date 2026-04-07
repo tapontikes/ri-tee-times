@@ -1,5 +1,5 @@
 const moment = require('moment');
-const dbClient = require("../../../../database/client");
+const dbClient = require("../../../database/client");
 
 /**
  * Get the session status for a TeesNap domain

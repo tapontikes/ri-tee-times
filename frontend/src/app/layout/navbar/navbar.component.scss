@@ -1,9 +1,12 @@
-// navbar.component.scss
 .navbar {
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   align-items: center;
-  background-color: #1b5e20 !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  background: rgb(24 72 26 / 93%);
   display: flex;
+  gap: 16px;
   height: 5em;
+  padding: 0 20px;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -11,162 +14,181 @@
 
 .logo {
   align-items: center;
+  color: white;
   cursor: pointer;
   display: flex;
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.4rem;
+  font-weight: 700;
   gap: 8px;
-  letter-spacing: 0.02em;
-  margin-right: 24px;
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 
-.logo-icon {
-  font-size: 1.4rem;
-  line-height: 1;
+.logo-flag {
+  font-size: 1.3rem;
 }
 
 .search-form {
+  align-items: center;
   display: flex;
-  max-width: 1000px;
-  transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+  flex: 1;
 }
 
 .form-row {
   align-items: center;
   display: flex;
+  flex: 1;
   flex-wrap: nowrap;
-  gap: 8px;
-  width: 100%;
+  gap: 10px;
 }
 
-.form-item {
-  margin-right: 8px;
+/* PrimeNG field overrides inside dark navbar */
+.navbar-field {
+  --p-inputtext-background: rgb(255 255 255 / 12%);
+  --p-inputtext-color: white;
+  --p-inputtext-border-color: rgb(255 255 255 / 25%);
+  --p-inputtext-placeholder-color: rgb(255 255 255 / 55%);
 }
 
-mat-form-field {
-  font-size: 20px;
-  margin-bottom: -1em;
-  width: 150px;
+:host ::ng-deep {
+  /* DatePicker */
+  .navbar-field .p-datepicker-input {
+    background: rgb(255 255 255 / 12%);
+    border-color: rgb(255 255 255 / 25%);
+    color: white;
+    width: 130px;
+  }
+
+  .navbar-field .p-datepicker-input::placeholder {
+    color: rgb(255 255 255 / 55%);
+  }
+
+  .navbar-field .p-datepicker-input-icon-container .p-icon {
+    color: rgb(255 255 255 / 70%);
+  }
+
+  /* Time inputs */
+  .time-input {
+    background: rgb(255 255 255 / 12%) !important;
+    border-color: rgb(255 255 255 / 25%) !important;
+    color: white !important;
+    color-scheme: dark;
+    min-width: 132px;
+  }
+
+  /* SelectButton (holes) */
+  .p-selectbutton .p-button {
+    background: rgb(255 255 255 / 12%);
+    border-color: rgb(255 255 255 / 25%);
+    color: rgb(255 255 255 / 80%);
+    font-weight: 600;
+    padding: 6px 14px;
+  }
+
+  .p-selectbutton .p-button.p-highlight {
+    background: rgb(255 255 255 / 30%);
+    border-color: rgb(255 255 255 / 55%);
+    color: white;
+    font-weight: 700;
+  }
+
+  /* Search button */
+  .search-btn {
+    background: #2e7d32 !important;
+    border: 1px solid #4caf50 !important;
+    font-weight: 700;
+    white-space: nowrap;
+  }
 }
 
-/* Make date input wider */
-.form-item:first-child mat-form-field {
-  width: 180px;
+.mobile-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 8px;
 }
 
-.spacer {
-  flex: 1 1 auto;
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 22px;
+
+  span {
+    background: white;
+    border-radius: 2px;
+    display: block;
+    height: 2px;
+    transition: transform 0.28s ease, opacity 0.28s ease;
+    width: 100%;
+  }
+
+  &.open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  &.open span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  &.open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
 }
 
-.nav-link {
-  margin-left: 8px;
-  white-space: nowrap;
-}
-
-.mobile-menu-toggle {
-  display: none;
-}
-
-.search-button {
-  background-color: #2e7d32 !important;
-  border: 1px solid #81c784 !important;
-  color: white !important;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-}
-
-.search-button:hover {
-  background-color: #388e3c !important;
-}
-
-/* Mobile styles */
-@media (width <= 1050px) {
+@media (width <= 960px) {
   .navbar {
     flex-wrap: wrap;
     height: auto;
-    justify-content: space-between;
-    min-height: 64px;
-    padding: 8px 16px;
-  }
-
-  .mobile-menu-toggle {
-    display: block;
-    order: 2;
+    min-height: 56px;
+    padding: 10px 16px;
   }
 
   .logo {
-    margin-right: 0;
-    order: 1;
+    flex: 1;
   }
 
   .search-form {
     flex-basis: 100%;
-    margin-top: 16px;
     max-height: 0;
-    max-width: 100%;
     opacity: 0;
-    order: 3;
     overflow: hidden;
-    transform: translateY(-20px);
+    transition: max-height 0.3s ease, opacity 0.3s ease;
   }
 
   .search-form.mobile-expanded {
-    display: block;
-    max-height: 600px;
+    max-height: 400px;
     opacity: 1;
-    padding-top: 0.5em;
-    transform: translateY(0);
+    padding-top: 8px;
   }
 
   .form-row {
+    flex-direction: column;
     align-items: stretch;
-    flex-direction: column;
-  }
-
-  .form-item {
-    margin-bottom: 12px;
-    margin-right: 0;
+    gap: 8px;
     width: 100%;
   }
 
-  .mobile-form-width {
-    width: 85vw;
-  }
+  :host ::ng-deep {
+    .navbar-field .p-datepicker-input,
+    .time-input {
+      width: 100%;
+    }
 
-  .form-item:first-child mat-form-field,
-  mat-form-field {
-    width: 100%;
-  }
+    .p-selectbutton {
+      width: 100%;
+    }
 
-  .nav-links {
-    display: flex;
-    flex-basis: 100%;
-    flex-direction: column;
-    margin-top: 16px;
-    max-height: 0;
-    opacity: 0;
-    order: 4;
-    overflow: hidden;
-    transform: translateY(-10px);
-    transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
-  }
+    .p-selectbutton .p-button {
+      flex: 1;
+      justify-content: center;
+    }
 
-  .mobile-nav-links {
-    display: flex;
-    max-height: 200px;
-    opacity: 1;
-    transform: translateY(0);
+    .search-btn {
+      width: 100%;
+      justify-content: center;
+    }
   }
-
-  .nav-link {
-    margin-bottom: 8px;
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .spacer {
-    display: none;
-  }
-
 }

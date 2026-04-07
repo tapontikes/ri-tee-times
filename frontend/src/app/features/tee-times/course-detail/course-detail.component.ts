@@ -1,12 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonModule, formatDate} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatSelectModule} from '@angular/material/select';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatChipsModule} from '@angular/material/chips';
+import {ButtonModule} from 'primeng/button';
+import {TagModule} from 'primeng/tag';
+import {SelectModule} from 'primeng/select';
+import {FormsModule} from '@angular/forms';
 import {Course, TeeTime, TeeTimeSearchParams} from '../../../shared/models/models';
 import {DataSharingService} from '../../../core/services/data-sharing.service';
 import {ReservationDialogService} from '../../booking/reservation-dialog.service';
@@ -18,12 +16,10 @@ import {ReservationDialogService} from '../../booking/reservation-dialog.service
   standalone: true,
   imports: [
     CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDividerModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatChipsModule,
+    ButtonModule,
+    TagModule,
+    SelectModule,
+    FormsModule,
   ]
 })
 export class CourseDetailComponent implements OnInit {
@@ -31,6 +27,8 @@ export class CourseDetailComponent implements OnInit {
   allCourses: Course[] = [];
   course!: Course;
   teeTimes: TeeTime[] = [];
+  filteredTeeTimes: TeeTime[] = [];
+  hourGroups: { label: string; teeTimes: TeeTime[] }[] = [];
   error = false;
   searchParams: TeeTimeSearchParams;
 
@@ -63,6 +61,7 @@ export class CourseDetailComponent implements OnInit {
         if (cachedCourses.length > 0 && cachedTeeTimes.length > 0) {
           this.course = this.dataSharingService.getCourseById(this.courseId);
           this.teeTimes = this.dataSharingService.getTeeTimesByCourseId(this.courseId);
+          this.refreshGroups();
         } else {
           this.router.navigate(['/']);
         }
@@ -75,6 +74,7 @@ export class CourseDetailComponent implements OnInit {
     this.courseId = newCourseId;
     this.course = this.dataSharingService.getCourseById(this.courseId);
     this.teeTimes = this.dataSharingService.getTeeTimesByCourseId(this.courseId);
+    this.refreshGroups();
   }
 
   goBack(): void {
@@ -90,28 +90,6 @@ export class CourseDetailComponent implements OnInit {
 
   goToCoursePage(url: string): void {
     window.open(url, '_blank');
-  }
-
-  getFilteredTeeTimes(): TeeTime[] {
-    if (this.searchParams.holes === 10) return this.teeTimes;
-    return this.teeTimes.filter(t => t.holes.includes(this.searchParams.holes));
-  }
-
-  getGroupedTeeTimesByHour(): { [key: string]: TeeTime[] } {
-    const groups: { [key: string]: TeeTime[] } = {};
-    [...this.getFilteredTeeTimes()]
-      .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
-      .forEach(t => {
-        const key = this.getHourRangeLabel(new Date(t.time).getHours());
-        (groups[key] ??= []).push(t);
-      });
-    return groups;
-  }
-
-  getSortedHourGroups(): { label: string; teeTimes: TeeTime[] }[] {
-    return Object.entries(this.getGroupedTeeTimesByHour())
-      .map(([label, teeTimes]) => ({label, teeTimes}))
-      .sort((a, b) => this.getHourFromLabel(a.label) - this.getHourFromLabel(b.label));
   }
 
   getHourRangeLabel(hour: number): string {
@@ -130,5 +108,24 @@ export class CourseDetailComponent implements OnInit {
 
   filterByHoles(holes: number): void {
     this.searchParams.holes = this.searchParams.holes === holes ? 10 : holes;
+    this.refreshGroups();
+  }
+
+  private refreshGroups(): void {
+    this.filteredTeeTimes = this.searchParams.holes === 10
+      ? this.teeTimes
+      : this.teeTimes.filter(t => t.holes.includes(this.searchParams.holes));
+
+    const groups: { [key: string]: TeeTime[] } = {};
+    [...this.filteredTeeTimes]
+      .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
+      .forEach(t => {
+        const key = this.getHourRangeLabel(new Date(t.time).getHours());
+        (groups[key] ??= []).push(t);
+      });
+
+    this.hourGroups = Object.entries(groups)
+      .map(([label, teeTimes]) => ({label, teeTimes}))
+      .sort((a, b) => this.getHourFromLabel(a.label) - this.getHourFromLabel(b.label));
   }
 }

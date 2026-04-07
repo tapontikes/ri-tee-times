@@ -1,7 +1,7 @@
 const axios = require('axios');
 const moment = require('moment');
 const cheerio = require('cheerio');
-const logger = require('../../../../utils/logger');
+const logger = require('../../../utils/logger');
 
 // Constants
 const TEEWIRE_BASE_URL = "https://teewire.net";

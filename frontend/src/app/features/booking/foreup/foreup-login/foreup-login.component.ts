@@ -3,12 +3,11 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {CommonModule} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MessageService} from 'primeng/api';
+import {InputTextModule} from 'primeng/inputtext';
+import {ButtonModule} from 'primeng/button';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {PasswordModule} from 'primeng/password';
 import {Course, TeeTime} from '../../../../shared/models/models';
 import {DataSharingService} from '../../../../core/services/data-sharing.service';
 import {SessionService} from '../../../../core/services/session.service';
@@ -21,16 +20,14 @@ import {SessionService} from '../../../../core/services/session.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
+    InputTextModule,
+    ButtonModule,
+    ProgressSpinnerModule,
+    PasswordModule,
   ]
 })
 export class ForeupLoginComponent implements OnInit {
   loginForm!: FormGroup;
-  hidePassword = true;
   submitting = false;
   teeTime!: TeeTime;
   course!: Course;
@@ -39,7 +36,7 @@ export class ForeupLoginComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private snackBar: MatSnackBar,
+    private messageService: MessageService,
     private dataSharingService: DataSharingService,
     private sessionService: SessionService
   ) {
@@ -90,15 +87,13 @@ export class ForeupLoginComponent implements OnInit {
     this.submitting = false;
     if (error.status === 401) {
       this.sessionService.deleteSession(this.course.id);
-      this.snackBar.open('Incorrect Credentials: Please login again', 'Close', {
-        duration: 5000,
-        panelClass: 'error-snackbar'
-      });
+      this.messageService.add({severity: 'error', summary: 'Incorrect Credentials: Please login again', life: 5000});
       this.router.navigate(['/foreup/login']);
     } else {
-      this.snackBar.open(`Error: ${error.error?.error || 'Unknown error occurred'}`, 'Close', {
-        duration: 5000,
-        panelClass: 'error-snackbar'
+      this.messageService.add({
+        severity: 'error',
+        summary: `Error: ${error.error?.error || 'Unknown error occurred'}`,
+        life: 5000
       });
     }
   }

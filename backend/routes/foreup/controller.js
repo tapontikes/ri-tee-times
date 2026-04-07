@@ -1,7 +1,7 @@
 const express = require('express');
 const {Unauthorized} = require("http-errors");
-const foreupService = require('../../service/courses/foreup/reservation/reservation');
-const sessionService = require('../../service/courses/foreup/session/session');
+const foreupService = require('../../service/foreup/reservation/reservation');
+const sessionService = require('../../service/foreup/session/session');
 const moment = require('moment');
 
 const router = express.Router();

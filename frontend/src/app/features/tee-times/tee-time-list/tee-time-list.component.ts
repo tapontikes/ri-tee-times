@@ -1,11 +1,9 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonModule, formatDate} from '@angular/common';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatChipsModule} from '@angular/material/chips';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {TagModule} from 'primeng/tag';
+import {ButtonModule} from 'primeng/button';
+import {MessageService} from 'primeng/api';
 import {Course, TeeTime, TeeTimeSearchParams} from '../../../shared/models/models';
 import {TeeTimeService} from '../../../core/services/teetime.service';
 import {DataSharingService} from '../../../core/services/data-sharing.service';
@@ -22,18 +20,18 @@ import {environment} from '../../../../environments/environment';
   standalone: true,
   imports: [
     CommonModule,
-    MatProgressSpinnerModule,
-    MatIconModule,
-    MatButtonModule,
-    MatChipsModule,
+    TagModule,
+    ButtonModule,
     FilterTeeTimePipe,
     FilterCoursePipe,
     AddressInputComponent,
-  ]
+  ],
 })
 export class TeeTimeListComponent implements OnInit {
   courses: Course[] = [];
   teeTimes: TeeTime[] = [];
+  readonly skeletonCards = Array(5);
+  readonly skeletonTiles = Array(4);
   providers = ['teesnap', 'foreup'];
   loading = true;
   error = false;
@@ -47,19 +45,19 @@ export class TeeTimeListComponent implements OnInit {
     public reservationDialogService: ReservationDialogService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar,
-    private cdk: ChangeDetectorRef
+    private messageService: MessageService,
+    private cdk: ChangeDetectorRef,
   ) {
     const now = new Date();
     const isAfter5PM = now.getHours() >= 17;
     this.searchParams = {
       date: formatDate(
         isAfter5PM ? new Date(now.setDate(now.getDate() + 1)) : now,
-        'yyyy-MM-dd', 'en-US'
+        'yyyy-MM-dd', 'en-US',
       ),
       startTime: '06:00',
       endTime: '18:00',
-      holes: 9
+      holes: 9,
     };
   }
 
@@ -92,8 +90,8 @@ export class TeeTimeListComponent implements OnInit {
       error: () => {
         this.loading = false;
         this.error = true;
-        this.snackBar.open('Error loading courses. Please try again.', 'Close', {duration: 5000});
-      }
+        this.messageService.add({severity: 'error', summary: 'Error loading courses. Please try again.', life: 5000});
+      },
     });
   }
 
@@ -107,8 +105,8 @@ export class TeeTimeListComponent implements OnInit {
       error: () => {
         this.error = true;
         this.loading = false;
-        this.snackBar.open('Error loading tee times. Please try again.', 'Close', {duration: 5000});
-      }
+        this.messageService.add({severity: 'error', summary: 'Error loading tee times. Please try again.', life: 5000});
+      },
     });
   }
 
@@ -124,8 +122,8 @@ export class TeeTimeListComponent implements OnInit {
         date: this.searchParams.date,
         startTime: this.searchParams.startTime,
         endTime: this.searchParams.endTime,
-        holes: this.searchParams.holes
-      }
+        holes: this.searchParams.holes,
+      },
     });
   }
 

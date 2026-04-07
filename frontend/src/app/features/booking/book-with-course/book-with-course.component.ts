@@ -1,9 +1,7 @@
-import {Component, Inject} from '@angular/core';
+import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatCardModule} from '@angular/material/card';
+import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {ButtonModule} from 'primeng/button';
 import {DialogData} from '../../../shared/models/models';
 
 @Component({
@@ -11,23 +9,26 @@ import {DialogData} from '../../../shared/models/models';
   templateUrl: './book-with-course.component.html',
   styleUrl: './book-with-course.component.scss',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatCardModule]
+  imports: [CommonModule, ButtonModule]
 })
 export class BookWithCourseComponent {
+  data: DialogData;
+
   constructor(
-    public dialogRef: MatDialogRef<BookWithCourseComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    public ref: DynamicDialogRef,
+    public config: DynamicDialogConfig
   ) {
+    this.data = config.data;
   }
 
   cancel(): void {
-    this.dialogRef.close();
+    this.ref.close();
   }
 
   bookWithCourse(): void {
     if (this.data.course.booking_url) {
       window.open(this.data.course.booking_url, '_blank');
-      this.dialogRef.close({success: true});
+      this.ref.close({success: true});
     }
   }
 }

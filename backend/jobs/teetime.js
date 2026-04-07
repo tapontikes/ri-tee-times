@@ -4,10 +4,10 @@ const logger = require('../utils/logger');
 const Scheduler = require('./scheduler');
 
 // Import API services
-const foreUpService = require('../service/courses/foreup/teetimes/service');
-const teeItUpService = require('../service/courses/teeitup/teetimes/service');
-const teeSnapService = require('../service/courses/teesnap/teetimes/service');
-const teeWireService = require('../service/courses/teewire/teetimes/service');
+const foreUpService = require('../service/foreup/teetimes/service');
+const teeItUpService = require('../service/teeitup/teetimes/service');
+const teeSnapService = require('../service/teesnap/teetimes/service');
+const teeWireService = require('../service/teewire/teetimes/service');
 
 // Create a scheduler instance
 const scheduler = new Scheduler();

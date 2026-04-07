@@ -1,5 +1,5 @@
 const axios = require('axios');
-const logger = require('../../../../utils/logger');
+const logger = require('../../../utils/logger');
 
 // Constants
 const TEEITUP_BASE_URL = "https://phx-api-be-east-1b.kenna.io/v2/tee-times";

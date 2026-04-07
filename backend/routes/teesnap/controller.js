@@ -1,6 +1,6 @@
 const express = require('express');
-const teesnapService = require('../../service/courses/teesnap/reservation/reservation');
-const sessionService = require('../../service/courses/teesnap/session/session');
+const teesnapService = require('../../service/teesnap/reservation/reservation');
+const sessionService = require('../../service/teesnap/session/session');
 const {Unauthorized} = require("http-errors");
 
 const router = express.Router();

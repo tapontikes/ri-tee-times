@@ -2,13 +2,10 @@ import {Component, HostListener, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {Router, RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {DatePickerModule} from 'primeng/datepicker';
+import {SelectButtonModule} from 'primeng/selectbutton';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
 import {Course} from '../../shared/models/models';
 import {formatDate} from '../../shared/utils';
 import {DataSharingService} from '../../core/services/data-sharing.service';
@@ -22,14 +19,11 @@ import {DataSharingService} from '../../core/services/data-sharing.service';
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatIconModule,
-    MatButtonToggleModule,
-  ]
+    DatePickerModule,
+    SelectButtonModule,
+    ButtonModule,
+    InputTextModule,
+  ],
 })
 export class NavbarComponent implements OnInit {
   searchForm: FormGroup;
@@ -38,6 +32,11 @@ export class NavbarComponent implements OnInit {
   maxDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   isMobile = false;
   showMobileMenu = false;
+
+  holesOptions = [
+    {label: '9', value: 9},
+    {label: '18', value: 18},
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -48,7 +47,7 @@ export class NavbarComponent implements OnInit {
       date: [new Date()],
       startTime: ['06:00'],
       endTime: ['18:00'],
-      holes: [9]
+      holes: [9],
     });
     this.checkScreenSize();
   }
@@ -76,7 +75,7 @@ export class NavbarComponent implements OnInit {
     const {date, startTime, endTime, holes} = this.searchForm.value;
     this.dataSharingService.clearSelectedData();
     this.router.navigate([''], {
-      queryParams: {date: formatDate(date), startTime, endTime, holes}
+      queryParams: {date: formatDate(date), startTime, endTime, holes},
     });
   }
 }

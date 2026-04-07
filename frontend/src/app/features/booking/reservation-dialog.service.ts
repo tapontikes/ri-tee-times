@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {MatDialog} from '@angular/material/dialog';
+import {DialogService} from 'primeng/dynamicdialog';
 import {Router} from '@angular/router';
 import {Course, TeeTime} from '../../shared/models/models';
 import {BookWithCourseComponent} from './book-with-course/book-with-course.component';
@@ -12,7 +11,7 @@ import {environment} from '../../../environments/environment';
 export class ReservationDialogService {
 
   constructor(
-    private dialog: MatDialog,
+    private dialog: DialogService,
     private router: Router,
     private dataSharingService: DataSharingService,
     private sessionService: SessionService
@@ -48,12 +47,12 @@ export class ReservationDialogService {
     );
   }
 
-  private openBookWithCourseDialog(course: Course, teeTime: TeeTime): Observable<any> {
-    return this.dialog.open(BookWithCourseComponent, {
+  private openBookWithCourseDialog(course: Course, teeTime: TeeTime): void {
+    this.dialog.open(BookWithCourseComponent, {
+      header: 'Book Tee Time',
       width: '30em',
-      maxHeight: '100vh',
-      disableClose: true,
+      closable: true,
       data: {course, teeTime}
-    }).afterClosed();
+    });
   }
 }

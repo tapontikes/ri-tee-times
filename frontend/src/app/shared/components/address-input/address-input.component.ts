@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
+import {InputTextModule} from 'primeng/inputtext';
 import PlaceResult = google.maps.places.PlaceResult;
 import Autocomplete = google.maps.places.Autocomplete;
 
@@ -8,7 +7,7 @@ import Autocomplete = google.maps.places.Autocomplete;
   selector: 'app-address-input',
   templateUrl: './address-input.component.html',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule]
+  imports: [InputTextModule]
 })
 export class AddressInputComponent implements AfterViewInit {
   @ViewChild('searchInput', {static: true}) searchInput!: ElementRef;

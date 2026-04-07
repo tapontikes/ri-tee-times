@@ -1,56 +1,46 @@
-<mat-toolbar class="navbar" color="primary">
+<header class="navbar">
   <span class="logo" routerLink="/">
-    <span class="logo-icon">&#9971;</span> Golf Rhode Island
+    <span class="logo-flag">&#9971;</span> Golf Rhode Island
   </span>
 
-  <!-- Hamburger icon for mobile -->
-  <button (click)="toggleMobileMenu()"
-          *ngIf="isMobile"
-          class="mobile-menu-toggle"
-          mat-icon-button>
-    <mat-icon>{{ showMobileMenu ? 'close' : 'menu' }}</mat-icon>
+  <button (click)="toggleMobileMenu()" *ngIf="isMobile" aria-label="Menu" class="mobile-toggle">
+    <span [class.open]="showMobileMenu" class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
   </button>
 
-  <!-- Desktop search form -->
-  <form (ngSubmit)="search()" *ngIf="!isMobile || showMobileMenu" [class.mobile-expanded]="showMobileMenu"
+  <form (ngSubmit)="search()"
         [formGroup]="searchForm"
+        *ngIf="!isMobile || showMobileMenu"
+        [class.mobile-expanded]="showMobileMenu"
         class="search-form">
+
     <div class="form-row">
-      <div class="form-item mobile-form-width">
-        <mat-form-field appearance="outline">
-          <mat-label style="color: white;">Date</mat-label>
-          <input [matDatepicker]="picker" [max]="maxDate" [min]="minDate" formControlName="date" matInput
-                 style="color: white;">
-          <mat-datepicker-toggle [for]="picker" matSuffix style="color: white;"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </div>
+      <p-datepicker [maxDate]="maxDate"
+                    [minDate]="minDate"
+                    [showButtonBar]="false"
+                    [showIcon]="true"
+                    formControlName="date"
+                    placeholder="Date"
+                    styleClass="navbar-field">
+      </p-datepicker>
 
-      <div class="form-item mobile-form-width">
-        <mat-form-field appearance="outline">
-          <mat-label style="color: white;">Start Time</mat-label>
-          <input formControlName="startTime" matInput style="color: white;" type="time">
-        </mat-form-field>
-      </div>
+      <input aria-label="Start time" class="navbar-field time-input" formControlName="startTime"
+             pInputText type="time"/>
 
-      <div class="form-item mobile-form-width">
-        <mat-form-field appearance="outline">
-          <mat-label style="color: white;">End Time</mat-label>
-          <input formControlName="endTime" matInput style="color: white;" type="time">
-        </mat-form-field>
-      </div>
+      <input aria-label="End time" class="navbar-field time-input" formControlName="endTime"
+             pInputText type="time"/>
 
-      <div class="form-item mobile-form-width">
-        <mat-button-toggle-group formControlName="holes">
-          <mat-button-toggle [value]="9">9 Holes</mat-button-toggle>
-          <mat-button-toggle [value]="18">18 Holes</mat-button-toggle>
-        </mat-button-toggle-group>
-      </div>
-      <button class="mobile-form-width search-button" mat-raised-button type="submit">
-        Search
-      </button>
+      <p-selectbutton [options]="holesOptions"
+                      formControlName="holes"
+                      optionLabel="label"
+                      optionValue="value">
+      </p-selectbutton>
+
+      <p-button icon="pi pi-search" label="Search" styleClass="search-btn" type="submit"></p-button>
     </div>
-    <div class="form-row">
-    </div>
+
   </form>
-</mat-toolbar>
+</header>

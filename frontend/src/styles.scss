@@ -1,66 +1,151 @@
-/* src/styles.scss */
-
-/* Angular Material Theme Import */
+/* ─── Angular Material Theme ─────────────────────────────────────────────── */
 @import url('@angular/material/prebuilt-themes/indigo-pink.css');
 
-/* Golf-themed Material color overrides */
-:root {
-  --mat-sys-primary: #2e7d32;
-  --mat-sys-on-primary: #ffffff;
-  --mat-sys-primary-container: #a5d6a7;
-  --mat-sys-on-primary-container: #1b5e20;
-  --mat-app-background-color: #f0f4ed;
+/* ─── Golf green overrides for Material components ──────────────────────── */
+
+/* Icons with color="primary" */
+.mat-icon.mat-primary {
+  color: #2e7d32 !important;
 }
 
-/* Reset and base styles */
+/* Raised / filled buttons */
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-unelevated-button.mat-primary {
+  --mdc-protected-button-container-color: #2e7d32;
+  --mdc-protected-button-label-text-color: #ffffff;
+  --mdc-filled-button-container-color: #2e7d32;
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+/* Outlined / stroked buttons */
+.mat-mdc-outlined-button.mat-primary {
+  --mdc-outlined-button-label-text-color: #2e7d32;
+  --mdc-outlined-button-outline-color: #2e7d32;
+}
+
+/* Text buttons */
+.mat-mdc-button.mat-primary {
+  --mdc-text-button-label-text-color: #2e7d32;
+}
+
+/* Button toggle (9 / 18 holes) */
+.mat-button-toggle-checked {
+  background-color: #2e7d32 !important;
+  color: #ffffff !important;
+}
+
+/* Chips */
+.mat-mdc-chip.mat-mdc-standard-chip {
+  --mdc-chip-elevated-container-color: #d4edda;
+  --mdc-chip-label-text-color: #1b5e20;
+  --mdc-chip-elevated-disabled-container-color: #d4edda;
+  --mdc-chip-disabled-label-text-color: #1b5e20;
+}
+
+/* Spinner */
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: #2e7d32;
+}
+
+/* Date picker */
+.mat-calendar-body-selected {
+  background-color: #2e7d32 !important;
+  color: white !important;
+}
+
+/* ─── Keyframe animations ────────────────────────────────────────────────── */
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tileAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.88) translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes rowSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ─── Reset ──────────────────────────────────────────────────────────────── */
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: Baskerville Semibold, sans-serif;
 }
 
 html, body {
-  background-color: #f0f4ed;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f2f5f1;
+  /* Apple-style system font */
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto,
+  'Helvetica Neue', sans-serif;
   height: 100%;
 }
 
-/* Scrollbar styling for better horizontal scrolling */
-/* For Webkit browsers like Chrome/Safari */
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+
 .tee-times-horizontal-scroll::-webkit-scrollbar {
-  height: 8px;
+  height: 6px;
 }
 
 .tee-times-horizontal-scroll::-webkit-scrollbar-track {
-  background: #dcedc8;
-  border-radius: 4px;
+  background: #e4ede2;
+  border-radius: 3px;
 }
 
 .tee-times-horizontal-scroll::-webkit-scrollbar-thumb {
   background: #81c784;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 .tee-times-horizontal-scroll::-webkit-scrollbar-thumb:hover {
   background: #4caf50;
 }
 
-/* For Firefox */
 .tee-times-horizontal-scroll {
-  scrollbar-color: #81c784 #dcedc8;
+  scrollbar-color: #81c784 #e4ede2;
   scrollbar-width: thin;
 }
 
+/* ─── State containers ───────────────────────────────────────────────────── */
+
 .loading-container, .error-container, .no-results {
   align-items: center;
+  color: #6e6e73;
   display: flex;
   flex-direction: column;
   gap: 16px;
   justify-content: center;
-  padding: 48px;
+  padding: 56px 32px;
   text-align: center;
 }
+
+/* ─── Utilities ──────────────────────────────────────────────────────────── */
 
 .mobile-form-width {
   width: 100%;
@@ -102,29 +187,25 @@ html, body {
   margin-bottom: 32px;
 }
 
-/* Custom SnackBar styles */
+/* ─── Snackbars ──────────────────────────────────────────────────────────── */
+
 .success-snackbar {
-  background-color: #4caf50;
+  background-color: #2e7d32;
   color: white;
 }
 
 .error-snackbar {
-  background-color: #f44336;
+  background-color: #c62828;
   color: white;
 }
 
-/* Date picker styles */
-.mat-calendar-body-cell.selected {
-  background-color: #2e7d32 !important;
-  color: white !important;
-}
+/* ─── Responsive container ───────────────────────────────────────────────── */
 
-/* Responsive container */
 .container {
   margin-left: auto;
   margin-right: auto;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 16px;
+  padding-right: 16px;
   width: 100%;
 }
 

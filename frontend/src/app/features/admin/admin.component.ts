@@ -1,14 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatCardModule} from '@angular/material/card';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatSelectModule} from '@angular/material/select';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MessageService} from 'primeng/api';
+import {SelectModule} from 'primeng/select';
+import {ButtonModule} from 'primeng/button';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {DatePickerModule} from 'primeng/datepicker';
 import {Course, RefreshRequest} from '../../shared/models/models';
 import {TeeTimeService} from '../../core/services/teetime.service';
 import {formatDate} from '../../shared/utils';
@@ -21,13 +18,10 @@ import {formatDate} from '../../shared/utils';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    MatDatepickerModule,
+    SelectModule,
+    ButtonModule,
+    ProgressSpinnerModule,
+    DatePickerModule,
   ]
 })
 export class AdminComponent implements OnInit {
@@ -36,9 +30,13 @@ export class AdminComponent implements OnInit {
   refreshing = false;
   minDate = new Date();
 
+  get courseOptions() {
+    return [{label: 'All Courses', value: 'all'}, ...this.courses.map(c => ({label: c.name, value: c.id}))];
+  }
+
   constructor(
     private fb: FormBuilder,
-    private snackBar: MatSnackBar,
+    private messageService: MessageService,
     private teeTimeService: TeeTimeService
   ) {
     this.refreshForm = this.fb.group({
@@ -50,7 +48,7 @@ export class AdminComponent implements OnInit {
   ngOnInit(): void {
     this.teeTimeService.getCourses().subscribe({
       next: (courses) => this.courses = courses,
-      error: () => this.snackBar.open('Error loading courses.', 'Close', {duration: 3000})
+      error: () => this.messageService.add({severity: 'error', summary: 'Error loading courses.', life: 3000})
     });
   }
 
@@ -78,17 +76,15 @@ export class AdminComponent implements OnInit {
 
   private handleRefreshSuccess(courseName: string): void {
     this.refreshing = false;
-    this.snackBar.open(`${courseName} tee times refreshed successfully!`, 'Close', {
-      duration: 5000,
-      panelClass: 'success-snackbar'
+    this.messageService.add({
+      severity: 'success',
+      summary: `${courseName} tee times refreshed successfully!`,
+      life: 5000
     });
   }
 
-  private handleRefreshError(error: any): void {
+  private handleRefreshError(_error: any): void {
     this.refreshing = false;
-    this.snackBar.open('Error refreshing tee times. Please try again.', 'Close', {
-      duration: 5000,
-      panelClass: 'error-snackbar'
-    });
+    this.messageService.add({severity: 'error', summary: 'Error refreshing tee times. Please try again.', life: 5000});
   }
 }

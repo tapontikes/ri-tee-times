@@ -1,85 +1,78 @@
-<div class="container">
-  <div class="nav-container">
-    <button (click)="goBack()" color="primary" mat-stroked-button>
-      <mat-icon>arrow_back</mat-icon>
-      Back
-    </button>
-    <button (click)="goToCoursePage(course.booking_url)" color="primary" mat-stroked-button>
-      <mat-icon>arrow_outward</mat-icon>
-      Course Page
-    </button>
+<div class="page-wrapper">
+
+  <!-- Top nav strip -->
+  <div class="nav-strip">
+    <p-button (onClick)="goBack()" [text]="true" icon="pi pi-arrow-left" label="Back"></p-button>
+    <p-button (onClick)="goToCoursePage(course.booking_url)" [text]="true" icon="pi pi-external-link"
+              iconPos="right" label="Course Page"></p-button>
   </div>
 
+  <!-- Error -->
   <div *ngIf="error" class="error-container">
-    <mat-icon color="warn">error</mat-icon>
+    <i class="pi pi-exclamation-triangle" style="font-size:2rem;color:#d32f2f"></i>
     <p>Failed to load course information. Please try again later.</p>
   </div>
 
-  <div *ngIf="!error && course" class="course-detail">
-    <div class="course-header">
-      <h1 class="course-title">{{ course.name }}</h1>
-      <h2 class="course-subtitle">Available Tee Times for {{ searchParams.date | date:'fullDate' }}</h2>
-      <h4 class="course-subtitle"><b>Note:</b> Tee times are updated every 30 minutes, availability is not guaranteed.
-      </h4>
-      <div class="filter-options">
-        <div class="filter-group">
-          <div class="hole-buttons">
-            <button (click)="filterByHoles(9)"
-                    [class.active]="searchParams.holes === 9"
-                    mat-raised-button>
-              9 Holes
-            </button>
-            <button (click)="filterByHoles(18)"
-                    [class.active]="searchParams.holes === 18"
-                    mat-raised-button>
-              18 Holes
-            </button>
-            <button (click)="filterByHoles(10)"
-                    [class.active]="searchParams.holes === 10"
-                    mat-raised-button>
-              All
-            </button>
-          </div>
-          <mat-divider [vertical]="true"></mat-divider>
-          <mat-form-field appearance="outline">
-            <mat-label>Select Course</mat-label>
-            <mat-select (selectionChange)="changeCourse($event.value)" [value]="courseId">
-              <mat-option *ngFor="let c of allCourses" [value]="c.id">
-                {{ c.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+  <ng-container *ngIf="!error && course">
+
+    <!-- Course banner: title + controls on one row -->
+    <div class="course-banner">
+      <h1 class="banner-title">{{ course.name }}</h1>
+      <div class="banner-controls">
+        <div class="hole-toggle">
+          <button (click)="filterByHoles(9)" [class.active]="searchParams.holes === 9" class="toggle-btn">9 Holes
+          </button>
+          <button (click)="filterByHoles(18)" [class.active]="searchParams.holes === 18" class="toggle-btn">18 Holes
+          </button>
+          <button (click)="filterByHoles(10)" [class.active]="searchParams.holes === 10" class="toggle-btn">All</button>
         </div>
+        <p-select (onChange)="changeCourse($event.value)"
+                  [(ngModel)]="courseId"
+                  [options]="allCourses"
+                  optionLabel="name"
+                  optionValue="id"
+                  placeholder="Switch Course"
+                  styleClass="course-select">
+        </p-select>
       </div>
     </div>
-    <div *ngIf="getFilteredTeeTimes().length === 0 && !error" class="no-results">
+
+    <!-- No results -->
+    <div *ngIf="filteredTeeTimes.length === 0" class="no-results">
+      <i class="pi pi-flag" style="font-size:2rem"></i>
       <p>No tee times available for the selected criteria.</p>
     </div>
 
-    <div *ngIf="!error && getFilteredTeeTimes().length > 0" class="tee-times-container">
-      <div *ngFor="let hourGroup of getSortedHourGroups()" class="hour-group">
-        <div class="hour-group-header">{{ hourGroup.label }}</div>
-        <div class="tee-times-grid">
-          <div (click)="reservationDialogService.book(course, teeTime)" *ngFor="let teeTime of hourGroup.teeTimes"
-               class="tee-time-card">
-            <div class="tee-time-content">
-              <div class="tee-time-time">{{ teeTime.time | date:'shortTime' }}</div>
-              <div class="tee-time-info">
-                <div class="tee-time-spots">{{ teeTime.spots }} spots available</div>
-                <div class="tee-time-holes">
-                  <mat-chip-set>
-                    <mat-chip *ngFor="let hole of teeTime.holes"
-                              [highlighted]="false"
-                              disabled="true">
-                      {{ hole }} Holes
-                    </mat-chip>
-                  </mat-chip-set>
-                </div>
-              </div>
+    <!-- Tee times grouped by hour — list row style -->
+    <div *ngIf="filteredTeeTimes.length > 0" class="tee-times-section">
+      <div *ngFor="let hourGroup of hourGroups" class="hour-group">
+
+        <div class="hour-label">
+          <i class="pi pi-clock hour-icon"></i>
+          {{ hourGroup.label }}
+        </div>
+
+        <div class="tee-list">
+          <div (click)="reservationDialogService.book(course, teeTime)"
+               *ngFor="let teeTime of hourGroup.teeTimes; let i = index"
+               [style.--row-index]="i"
+               class="tee-row">
+            <div class="tee-row-time">{{ teeTime.time | date:'shortTime' }}</div>
+            <div class="tee-row-spots">{{ teeTime.spots }} spots</div>
+            <div class="tee-row-holes">
+              <p-tag *ngFor="let hole of teeTime.holes"
+                     [value]="hole + 'H'"
+                     severity="secondary"
+                     styleClass="hole-tag">
+              </p-tag>
             </div>
+            <i class="pi pi-chevron-right tee-row-chevron"></i>
           </div>
         </div>
+
       </div>
     </div>
-  </div>
+
+  </ng-container>
+
 </div>

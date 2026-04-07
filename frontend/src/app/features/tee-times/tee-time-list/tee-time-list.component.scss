@@ -1,262 +1,490 @@
+/* ─── Page container ─────────────────────────────────────────────────────── */
+
 .container {
   margin: 0 auto;
-  max-width: 90vw;
-  padding: 16px;
+  max-width: 92vw;
+  padding: 28px 16px;
 }
 
-.booking-badge {
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: normal;
-  margin-left: 8px;
-  padding: 3px 8px;
-  vertical-align: middle;
-}
+/* ─── Page header ────────────────────────────────────────────────────────── */
 
-.badge {
-  background-color: #00695c;
-  color: white;
-}
-
-.drive-badge {
-  background-color: #c62828;
-  color: white;
-}
-
-.city-badge {
-  background-color: #33691e;
-  color: white;
-}
-
-.page-title {
-  color: #1b5e20;
-  font-size: 2rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+.page-header {
+  align-items: flex-start;
+  animation: slideUpFade 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 8px;
 }
 
+.page-title {
+  color: #1d2e1e;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 5px;
+}
+
 .page-tagline {
-  color: #5a7a57;
-  font-size: 0.95rem;
-  letter-spacing: 0.02em;
-  margin-bottom: 6px;
+  color: #8a9e87;
+  font-size: 0.88rem;
+  letter-spacing: 0.01em;
 }
 
-.date-subtitle {
-  color: #4a6741;
-  font-weight: normal;
-  margin-bottom: 24px;
+.date-display {
+  color: #1b5e20;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: right;
 }
 
-.courses-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.date-meta {
+  color: #8a9e87;
+  font-size: 0.85rem;
+  margin-top: 2px;
+  text-align: right;
 }
 
-.course-row {
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgb(0 0 0 / 8%);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  transition: box-shadow 0.2s;
-}
+/* ─── Location bar ───────────────────────────────────────────────────────── */
 
-.course-row:hover {
-  box-shadow: 0 4px 16px rgb(27 94 32 / 15%);
-}
-
-.course-type {
-  cursor: pointer;
-}
-
-.course-info {
+.location-bar {
   align-items: center;
-  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-  color: white;
+  animation: slideUpFade 0.5s 0.06s cubic-bezier(0.23, 1, 0.32, 1) both;
   display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+  margin-top: 14px;
+}
+
+.location-label {
+  color: #5a7a57;
+  font-size: 0.92rem;
+}
+
+.location-clear {
+  color: #2e7d32;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* ─── Course list ────────────────────────────────────────────────────────── */
+
+.course-list {
+  animation: fadeIn 0.3s ease both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ─── Course card ────────────────────────────────────────────────────────── */
+
+.course-card {
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 6%),
+  0 4px 16px rgb(0 0 0 / 5%);
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+  transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.course-card:hover {
+  box-shadow: 0 2px 8px rgb(0 0 0 / 7%),
+  0 12px 32px rgb(27 94 32 / 12%);
+  transform: translateY(-2px);
+}
+
+/* ─── Course header bar ──────────────────────────────────────────────────── */
+
+.course-header {
+  align-items: center;
+  background: linear-gradient(130deg, #1a5220 0%, #2d7533 100%);
+  display: flex;
+  flex-wrap: nowrap;
   justify-content: space-between;
-  padding: 14px 20px;
+  padding: 16px 22px;
+}
+
+.course-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
 }
 
 .course-name {
-  font-size: 1.3rem;
-  font-weight: 600;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.course-actions {
+.course-meta {
+  align-items: center;
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
-.mat-icon-arrow {
-  font-size: 1em;
-  height: auto;
-  margin-left: 0.4em;
-  margin-right: -1em;
-  overflow: visible;
-  padding: 0;
+.meta-city {
+  color: rgb(255 255 255 / 72%);
+  font-size: 0.83rem;
 }
 
-.course-button {
-  background-color: rgb(255 255 255 / 18%);
-  border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: 4px;
-  cursor: pointer;
+.meta-sep {
+  color: rgb(255 255 255 / 35%);
+  font-size: 0.83rem;
+}
+
+.meta-distance {
+  color: #b9dfbb;
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.meta-badge {
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-left: 4px;
+  padding: 2px 8px;
+}
+
+.badge-inapp {
+  background: rgb(255 255 255 / 18%);
+  color: white;
+}
+
+.badge-course {
+  background: rgb(255 255 255 / 10%);
+  color: rgb(255 255 255 / 70%);
+}
+
+/* ─── Header right: count + range ───────────────────────────────────────── */
+
+.course-header-right {
+  flex-shrink: 0;
+  margin-left: 20px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.times-count {
+  color: white;
+  display: block;
   font-size: 0.9rem;
-  padding: 4px 12px;
-  transition: background-color 0.2s;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
-.course-button:hover {
-  background-color: rgb(255 255 255 / 30%);
+.times-range {
+  color: rgb(255 255 255 / 55%);
+  font-feature-settings: 'tnum';
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+  white-space: nowrap;
 }
 
-.course-type {
-  background-color: rgb(255 255 255 / 18%);
-  border-radius: 4px;
-  font-size: 0.9rem;
-  opacity: 0.9;
-  padding: 4px 10px;
+.range-dash {
+  margin: 0 3px;
 }
+
+/* ─── Scroll area ────────────────────────────────────────────────────────── */
 
 .tee-times-wrapper {
-  cursor: pointer;
-  padding: 10px 16px 16px;
+  padding: 14px 20px 0;
+  position: relative;
+}
+
+.scroll-fade {
+  background: linear-gradient(to right, transparent 60%, white 100%);
+  bottom: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 90px;
+  z-index: 1;
 }
 
 .tee-times-scroll {
   -webkit-overflow-scrolling: touch;
   overflow-x: auto;
-  padding-bottom: 12px;
-  padding-top: 6px;
+  padding-bottom: 16px;
+  padding-right: 80px;
+  scrollbar-color: #a5d6a7 #e8f5e9;
+  scrollbar-width: thin;
+}
+
+.tee-times-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.tee-times-scroll::-webkit-scrollbar-track {
+  background: #e8f5e9;
+  border-radius: 2px;
+}
+
+.tee-times-scroll::-webkit-scrollbar-thumb {
+  background: #a5d6a7;
+  border-radius: 2px;
+}
+
+.tee-times-scroll::-webkit-scrollbar-thumb:hover {
+  background: #66bb6a;
 }
 
 .tee-times-row {
   display: flex;
   gap: 10px;
   min-width: min-content;
+  padding-top: 2px;
 }
 
-.tee-time-box {
-  background: linear-gradient(to bottom, #e8f5e9 0%, #f5f9f3 45%, white 100%);
-  border: 1.5px solid #81c784;
-  border-radius: 8px;
-  border-top: 3px solid #2e7d32;
+/* ─── Tee time tile ──────────────────────────────────────────────────────── */
+
+.tee-time-tile {
+  background: white;
+  border: 1px solid #e0ede0;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 5%);
+  cursor: pointer;
   flex: 0 0 auto;
-  margin-left: 2px;
-  margin-top: 3px;
-  padding: 10px 12px;
+  padding: 14px 12px 12px;
+  position: relative;
   text-align: center;
-  transform-origin: center bottom;
-  transition: all 0.2s ease;
-  width: 120px;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+  box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+  border-color 0.2s ease;
+  width: 175px;
+  will-change: transform;
 }
 
-.tee-time-box:hover {
-  background: linear-gradient(to bottom, #c8e6c9 0%, #e8f5e9 45%, #f5f9f3 100%);
-  border-color: #2e7d32;
-  border-top-color: #1b5e20;
-  box-shadow: 0 5px 12px rgb(46 125 50 / 20%);
-  margin-top: 0;
-  transform: translateY(-3px) scale(1.02);
+/* Green top accent line */
+.tee-time-tile::before {
+  background: linear-gradient(90deg, #2e7d32, #66bb6a);
+  border-radius: 14px 14px 0 0;
+  content: '';
+  height: 3px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
-.time {
-  color: #1b5e20;
-  font-size: 1.2rem;
+.tee-time-tile:hover {
+  border-color: #a5d6a7;
+  box-shadow: 0 10px 28px rgb(46 125 50 / 18%),
+  0 4px 10px rgb(0 0 0 / 7%);
+  transform: translateY(-10px) scale(1.03);
+}
+
+.tile-time {
+  color: #1d2e1e;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-feature-settings: 'tnum';
+  font-size: 1.35rem;
+  font-variant-numeric: tabular-nums;
   font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.spots {
-  color: #2e7d32;
-  font-size: 0.85rem;
-  font-weight: 500;
+  letter-spacing: -0.02em;
   margin-bottom: 6px;
+  margin-top: 4px;
 }
 
-.holes-container {
+.tile-spots {
+  color: #2e7d32;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.tile-holes {
   display: flex;
   justify-content: center;
 }
 
-.holes-container mat-chip {
-  margin: 0 2px !important;
+.tile-holes mat-chip {
+  font-weight: 700 !important;
 }
 
-.no-tee-times {
-  color: #5a7a57;
-  font-style: italic;
-  padding: 16px 0;
-  text-align: center;
-}
-
-.tee-times-scroll::-webkit-scrollbar {
-  height: 6px;
-}
-
-.tee-times-scroll::-webkit-scrollbar-track {
-  background: #dcedc8;
-  border-radius: 3px;
-}
-
-.tee-times-scroll::-webkit-scrollbar-thumb {
-  background: #81c784;
-  border-radius: 3px;
-}
-
-.tee-times-scroll::-webkit-scrollbar-thumb:hover {
-  background: #4caf50;
-}
-
-.holes-container mat-chip {
-  font-weight: bold !important;
-}
-
-.holes-container mat-chip.mdc-evolution-chip--disabled {
-  font-weight: bold !important;
+.tile-holes mat-chip.mdc-evolution-chip--disabled {
+  font-weight: 700 !important;
   opacity: 1 !important;
 }
 
-.tee-times-scroll {
-  scrollbar-color: #81c784 #dcedc8;
+/* ─── View all tile ──────────────────────────────────────────────────────── */
+
+.view-all-tile {
+  align-items: center;
+  background: linear-gradient(145deg, #1a5220 0%, #2d7533 100%);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgb(27 94 32 / 25%);
+  cursor: pointer;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+  padding: 14px 18px;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+  box-shadow 0.3s ease;
+  width: 130px;
+  will-change: transform;
 }
 
-@media (width <= 1050px) {
-  .container {
-    margin: 0 auto;
-    max-width: 98vw;
-    padding: 16px 0;
-  }
+.view-all-tile:hover {
+  box-shadow: 0 12px 28px rgb(27 94 32 / 40%);
+  transform: translateY(-10px) scale(1.04);
+}
 
-  .course-type {
-    align-self: flex-start;
-  }
+.view-all-icon {
+  color: white;
+  font-size: 1.8rem;
+  height: auto;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  width: auto;
+}
 
-  .content-container {
-    padding: 16px 0;
-  }
+.view-all-tile:hover .view-all-icon {
+  transform: translateX(4px);
+}
 
-  .course-name {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
+.view-all-label {
+  color: rgb(255 255 255 / 90%);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-transform: uppercase;
+}
 
-  .booking-badge {
-    margin-left: 0 !important;
-    margin-top: 5px;
-  }
+/* ─── Course footer ──────────────────────────────────────────────────────── */
 
-  .course-actions {
-    flex-wrap: wrap;
-    justify-content: end;
-  }
+.course-footer {
+  border-top: 1px solid #f0f7f0;
+  display: flex;
+  gap: 16px;
+  padding: 10px 20px;
+}
 
+.footer-link {
+  align-items: center;
+  background: none;
+  border: none;
+  color: #8a9e87;
+  cursor: pointer;
+  display: flex;
+  font-size: 0.8rem;
+  gap: 3px;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: #1b5e20;
+}
+
+.icon-xs {
+  font-size: 0.82rem;
+  height: auto;
+  overflow: visible;
+  width: auto;
+}
+
+/* ─── Skeleton loading ───────────────────────────────────────────────────── */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-card {
+  pointer-events: none;
+}
+
+.skeleton-header {
+  background: linear-gradient(130deg, #1a5220 0%, #2d7533 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 22px;
+}
+
+.skeleton-line {
+  animation: shimmer 1.5s infinite linear;
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 10%) 25%,
+    rgb(255 255 255 / 24%) 50%,
+    rgb(255 255 255 / 10%) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: 6px;
+  height: 15px;
+}
+
+.sk-title {
+  width: 52%;
+}
+
+.sk-meta {
+  height: 11px;
+  width: 32%;
+}
+
+.skeleton-tiles-row {
+  display: flex;
+  gap: 10px;
+  padding: 14px 20px 16px;
+}
+
+.skeleton-tile {
+  animation: shimmer 1.5s infinite linear;
+  background: linear-gradient(90deg, #f0f7f0 25%, #dceede 50%, #f0f7f0 75%);
+  background-size: 200% 100%;
+  border-radius: 14px;
+  flex: 0 0 auto;
+  height: 92px;
+  width: 100px;
+}
+
+@for $i from 1 through 4 {
+  .skeleton-tile:nth-child(#{$i}) {
+    animation-delay: #{($i - 1) * 0.12}s;
+  }
+}
+
+.skeleton-footer {
+  border-top: 1px solid #f0f7f0;
+  padding: 10px 20px;
+}
+
+.sk-footer-line {
+  height: 11px;
+  width: 22%;
 }

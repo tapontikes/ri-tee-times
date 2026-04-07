@@ -1,83 +1,53 @@
 <div class="login-page">
-  <div class="page-content">
-    <div class="login-container">
-      <div *ngIf="submitting" class="loading-overlay">
-        <div class="loading-content">
-          <mat-spinner color="primary" diameter="60"></mat-spinner>
-          <p>Logging in...</p>
-        </div>
-      </div>
+  <div class="login-container">
 
-      <div class="reservation-info">
-        <h2>{{ course.name }}</h2>
-        <div *ngIf="teeTime" class="reservation-info-card">
-          <div class="tee-time-details">
-            <div class="detail-row">
-              <mat-icon color="primary">calendar_today</mat-icon>
-              <span>{{ teeTime.time | date:'shortDate' }}</span>
-            </div>
+    <div *ngIf="submitting" class="loading-overlay">
+      <p-progressspinner strokeWidth="4"></p-progressspinner>
+      <p>Logging in...</p>
+    </div>
 
-            <div class="detail-row">
-              <mat-icon color="primary">access_time</mat-icon>
-              <span>{{ teeTime.time | date:'shortTime' }}</span>
-            </div>
-
-            <div class="detail-row">
-              <mat-icon color="primary">group</mat-icon>
-              <span>{{ teeTime.spots }}</span>
-            </div>
-
-            <div class="detail-row">
-              <mat-icon color="primary">flag</mat-icon>
-              <span>{{ teeTime.holes.join(' or ') }} Holes</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="login-form-container">
-        <h3>Teesnap Credentials</h3>
-        <form #form="ngForm" (ngSubmit)="onSubmit()" [formGroup]="loginForm">
-          <input formControlName="domain" type="hidden">
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Email</mat-label>
-              <input formControlName="email" matInput placeholder="Enter your Teesnap email" type="email">
-              <mat-icon matSuffix>email</mat-icon>
-              <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email is required</mat-error>
-              <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email</mat-error>
-            </mat-form-field>
-          </div>
-
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Password</mat-label>
-              <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" matInput
-                     placeholder="Enter your Teesnap password">
-              <button (click)="hidePassword = !hidePassword" mat-icon-button matSuffix type="button">
-                <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-              </button>
-              <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required</mat-error>
-            </mat-form-field>
-          </div>
-
-          <div class="form-actions">
-            <button (click)="cancel()" class="cancel-button" mat-button>
-              <mat-icon>arrow_back</mat-icon>
-              Back
-            </button>
-
-            <button (click)="onSubmit()"
-                    [disabled]="loginForm.invalid || submitting"
-                    class="login-button"
-                    color="primary"
-                    mat-raised-button type="submit">
-              <mat-icon>login</mat-icon>
-              Login
-            </button>
-          </div>
-        </form>
+    <div class="reservation-info">
+      <h2>{{ course.name }}</h2>
+      <div *ngIf="teeTime" class="reservation-info-card">
+        <div class="detail-row"><i class="pi pi-calendar"></i><span>{{ teeTime.time | date:'shortDate' }}</span></div>
+        <div class="detail-row"><i class="pi pi-clock"></i><span>{{ teeTime.time | date:'shortTime' }}</span></div>
+        <div class="detail-row"><i class="pi pi-users"></i><span>{{ teeTime.spots }}</span></div>
+        <div class="detail-row"><i class="pi pi-flag"></i><span>{{ teeTime.holes.join(' or ') }} Holes</span></div>
       </div>
     </div>
+
+    <div class="login-form-container">
+      <h3>Teesnap Credentials</h3>
+      <form (ngSubmit)="onSubmit()" [formGroup]="loginForm" class="login-form">
+        <input formControlName="domain" type="hidden">
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input class="w-full" formControlName="email" id="email" pInputText placeholder="Enter your Teesnap email"
+                 type="email"/>
+          <small *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')"
+                 class="field-error">Email is required</small>
+          <small *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('email')"
+                 class="field-error">Please enter a valid email</small>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <p-password [feedback]="false" [toggleMask]="true" formControlName="password" id="password"
+                      inputStyleClass="w-full" placeholder="Enter your Teesnap password"
+                      styleClass="w-full"></p-password>
+          <small *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')"
+                 class="field-error">Password is required</small>
+        </div>
+
+        <div class="form-actions">
+          <p-button (onClick)="cancel()" [text]="true" icon="pi pi-arrow-left" label="Back" severity="secondary"
+                    type="button"></p-button>
+          <p-button (onClick)="onSubmit()" [disabled]="loginForm.invalid || submitting" icon="pi pi-sign-in"
+                    label="Login" type="submit"></p-button>
+        </div>
+      </form>
+    </div>
+
   </div>
 </div>
