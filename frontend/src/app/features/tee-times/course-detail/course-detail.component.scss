@@ -2,7 +2,7 @@
 
 .page-wrapper {
   margin: 0 auto;
-  max-width: 92vw;
+  max-width: 75vw;
   padding: 24px 16px;
 }
 
@@ -356,7 +356,7 @@
 
 @media (width <= 1050px) {
   .page-wrapper {
-    max-width: 100%;
+    max-width: 100vh;
     padding: 12px 8px;
   }
 
