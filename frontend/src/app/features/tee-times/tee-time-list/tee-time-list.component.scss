@@ -263,7 +263,6 @@
   display: flex;
   gap: 10px;
   min-width: min-content;
-  padding-top: 2px;
 }
 
 /* ─── Tee time tile ──────────────────────────────────────────────────────── */
@@ -287,14 +286,16 @@
 
 /* Green top accent line */
 .tee-time-tile::before {
-  background: linear-gradient(90deg, #2e7d32, #66bb6a);
-  border-radius: 14px 14px 0 0;
-  content: '';
-  height: 3px;
-  left: 0;
+  content: "";
   position: absolute;
-  right: 0;
-  top: 0;
+  top: -0.5px;
+  left: 4px;
+  right: 4px;
+  height: 3px;
+
+  background: linear-gradient(90deg, #2e7d32, #66bb6a);
+  border-radius: 13px 13px 0 0;
+  z-index: 1;
 }
 
 .tee-time-tile:hover {
