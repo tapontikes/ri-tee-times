@@ -4,24 +4,30 @@ on:
   push:
     branches:
       - "master"
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Branch'
+        required: true
+        default: 'master'
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.target_branch || 'master' }}
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build the Docker image with latest tag
+      - name: Build and Push Docker image
         run: |
           IMAGE_TAG="tapontikes/golf-ri.com:latest"
           docker build . --file Dockerfile --tag $IMAGE_TAG
-
-      - name: Push the Docker image
-        run: |
-          IMAGE_TAG="tapontikes/golf-ri.com:latest"
           docker push $IMAGE_TAG
 
   deploy:
@@ -37,18 +43,13 @@ jobs:
           script: |
             set -e
             cd /home/tom/ri-tee-times/
+            
+            # Pull the specific branch entered in the manual trigger
+            git fetch origin
+            git checkout ${{ github.event.inputs.target_branch || 'master' }}
+            git pull origin ${{ github.event.inputs.target_branch || 'master' }}
 
-            # Get latest compose file and config changes
-            git pull origin master
-
-            # Pull the latest app image
             docker pull tapontikes/golf-ri.com:latest
-
-            # Run migrations to completion before touching the app
             docker compose run --rm migrate
-
-            # Restart the app container with the new image
             docker compose up -d --no-deps --force-recreate app
-
-            # Clean up dangling images
             docker image prune -f
