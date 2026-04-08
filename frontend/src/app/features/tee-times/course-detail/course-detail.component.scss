@@ -16,6 +16,15 @@
   margin-bottom: 20px;
 }
 
+:host ::ng-deep .nav-strip .p-button-text {
+  color: #2e7d32;
+}
+
+:host ::ng-deep .nav-strip .p-button-text:hover {
+  background: rgb(46 125 50 / 8%) !important;
+  color: #1b5e20 !important;
+}
+
 .nav-btn {
   align-items: center;
   background: white;

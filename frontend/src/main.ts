@@ -1,5 +1,5 @@
 import {bootstrapApplication} from '@angular/platform-browser';
-import {provideRouter} from '@angular/router';
+import {provideRouter, withInMemoryScrolling} from '@angular/router';
 import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {ErrorInterceptor} from './app/core/interceptors/error.interceptor';
@@ -31,7 +31,7 @@ const GolfPreset = definePreset(Aura, {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(appRoutes),
+    provideRouter(appRoutes, withInMemoryScrolling({scrollPositionRestoration: 'top'})),
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimationsAsync(),
     providePrimeNG({

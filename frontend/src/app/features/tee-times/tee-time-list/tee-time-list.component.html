@@ -3,9 +3,8 @@
   <!-- Page header -->
   <div class="page-header">
     <div class="page-header-left">
-      <h1 class="page-title">Available Tee Times</h1>
       <div class="date-info">
-      <div class="date-display">{{ searchParams.date | date:'EEE, MMM d' }}</div>
+        <h1 class="date-display">{{ searchParams.date | date:'EEE, MMM d' }}</h1>
       <div class="date-meta">
         <span *ngIf="searchParams.holes">{{ searchParams.holes }} Holes</span>
         <span *ngIf="searchParams.startTime && searchParams.endTime">
@@ -39,6 +38,7 @@
       </div>
       <div class="skeleton-tiles-row">
         <div *ngFor="let __ of skeletonTiles" class="skeleton-tile"></div>
+        <div class="scroll-fade"></div>
       </div>
       <div class="skeleton-footer">
         <div class="skeleton-line sk-footer-line"></div>
@@ -124,12 +124,16 @@
 
           <!-- Course footer -->
           <div class="course-footer">
-            <button (click)="goToCourseDetail(course.id)" class="footer-link">
-              View all times <i class="pi pi-arrow-right icon-xs"></i>
-            </button>
-            <button (click)="goToCoursePage(course.booking_url)" class="footer-link">
-              Visit course website <i class="pi pi-external-link icon-xs"></i>
-            </button>
+            <p-button (onClick)="goToCourseDetail(course.id)"
+                      icon="pi pi-arrow-right" iconPos="right" label="View all times"
+                      severity="secondary" size="small"
+                      variant="text">
+            </p-button>
+            <p-button (onClick)="goToCoursePage(course.booking_url)"
+                      icon="pi pi-external-link" iconPos="right" label="Visit course website"
+                      severity="secondary" size="small"
+                      variant="text">
+            </p-button>
           </div>
 
         </div>

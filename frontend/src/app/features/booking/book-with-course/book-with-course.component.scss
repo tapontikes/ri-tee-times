@@ -1,65 +1,58 @@
 .dialog-container {
-  max-width: 100%;
-  position: relative;
   width: 100%;
 }
 
-.dialog-header {
-  align-items: center;
-  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-  border-bottom: 1px solid #a5d6a7;
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 16px 4px 0;
-}
-
-.close-button {
-  color: white;
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  z-index: 10;
-}
-
-.reservation-info-card {
-  background: linear-gradient(to bottom, #f0f7f0, white);
-  border: 1px solid #c8e6c9;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
-
 .reservation-info-list {
+  background: #f7fdf7;
+  border: 1px solid #e0f0e0;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  overflow: hidden;
 }
 
 .info-item {
   align-items: center;
+  border-bottom: 1px solid #edf6ed;
   display: flex;
-  gap: 12px;
+  gap: 14px;
+  padding: 11px 16px;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-icon {
+  color: #2e7d32;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  opacity: 0.75;
+  width: 16px;
 }
 
 .info-label {
   color: #4a6741;
+  font-size: 0.85rem;
   font-weight: 600;
+  margin-right: 2px;
 }
 
 .info-value {
-  color: #1a1a1a;
-  font-weight: 400;
+  color: #1a2e1b;
+  font-size: 0.85rem;
 }
 
 .booking-message {
-  color: #5a7a57;
-  margin: 16px 0;
+  color: #6b8f68;
+  font-size: 0.85rem;
+  margin: 18px 0 4px;
   text-align: center;
 }
 
-mat-dialog-actions {
-  padding: 16px;
-}
-
-button[mat-raised-button] {
-  min-width: 200px;
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 16px;
 }

@@ -187,6 +187,40 @@ html, body {
   margin-bottom: 32px;
 }
 
+/* ─── PrimeNG DynamicDialog ──────────────────────────────────────────────── */
+
+.p-dynamicdialog .p-dialog {
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgb(0 0 0 / 22%), 0 4px 20px rgb(0 0 0 / 10%);
+  overflow: hidden;
+}
+
+.p-dynamicdialog .p-dialog-header {
+  background: linear-gradient(130deg, #1a5220 0%, #2d7533 100%);
+  border-bottom: none;
+  padding: 16px 22px;
+}
+
+.p-dynamicdialog .p-dialog-title {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.p-dynamicdialog .p-dialog-header-actions .p-button {
+  color: rgb(255 255 255 / 75%);
+}
+
+.p-dynamicdialog .p-dialog-header-actions .p-button:hover {
+  background: rgb(255 255 255 / 15%) !important;
+  color: white !important;
+}
+
+.p-dynamicdialog .p-dialog-content {
+  padding: 24px 22px 8px;
+}
+
 /* ─── Snackbars ──────────────────────────────────────────────────────────── */
 
 .success-snackbar {

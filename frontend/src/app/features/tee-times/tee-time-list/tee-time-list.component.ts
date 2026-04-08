@@ -33,7 +33,7 @@ export class TeeTimeListComponent implements OnInit {
   courses: Course[] = [];
   teeTimes: TeeTime[] = [];
   readonly skeletonCards = Array(5);
-  readonly skeletonTiles = Array(4);
+  readonly skeletonTiles = Array(8);
   providers = ['teesnap', 'foreup'];
   loading = true;
   error = false;
