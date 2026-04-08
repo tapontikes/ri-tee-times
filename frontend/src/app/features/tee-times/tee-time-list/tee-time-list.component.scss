@@ -198,7 +198,6 @@
 /* ─── Scroll area ────────────────────────────────────────────────────────── */
 
 .tee-times-wrapper {
-  padding: 18px 20px 0;
   position: relative;
 }
 
@@ -217,9 +216,7 @@
   -webkit-overflow-scrolling: touch;
   overflow-x: auto;
   overflow-y: visible;
-  padding-bottom: 20px;
-  padding-right: 80px;
-  padding-top: 14px;
+  padding: 30px 2em 20px 20px;
   scrollbar-color: #a5d6a7 #e8f5e9;
   scrollbar-width: thin;
 }
