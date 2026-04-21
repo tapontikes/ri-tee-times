@@ -74,7 +74,7 @@ app.use((req, res, next) => {
         req.axiosClient = wrapper(axios.create({jar: req.session.cookieJar}));
 
         req.saveCookieJar = (jar) => {
-            req.session.cookieJar = jar;
+            req.session.cookieJar = jar.serializeSync();
         };
         next();
     } catch (error) {

@@ -55,10 +55,15 @@ export class ForeupLoginComponent implements OnInit {
       if (session) this.router.navigate(['/foreup/reserve']);
     });
 
+    // Extract ForeUp course_id from booking_url: .../booking/{courseId}/{scheduleId}
+    const urlParts = this.course.booking_url.split('/');
+    const bookingIndex = urlParts.findIndex(p => p === 'booking');
+    const foreupCourseId = bookingIndex >= 0 ? urlParts[bookingIndex + 1] : this.course.request_data.id;
+
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
-      courseId: [this.course.request_data.id, Validators.required],
+      courseId: [foreupCourseId, Validators.required],
       courseName: [this.course.name, Validators.required],
       id: [this.course.id, Validators.required],
     });

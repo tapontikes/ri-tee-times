@@ -49,11 +49,12 @@ router.post('/login', async (req, res) => {
 router.post('/reserve', async (req, res) => {
     try {
         const {id, reservationData} = req.body;
+        const domain = 'foreupsoftware.com';
 
         if (!id || !reservationData) {
             return res.status(400).json({
                 success: false,
-                error: 'Missing domain or reservation data'
+                error: 'Missing id or reservation data'
             });
         }
 
@@ -71,13 +72,14 @@ router.post('/reserve', async (req, res) => {
         // Create the reservation
         const reservationResponse = await foreupService.createReservation(
             req.axiosClient,
-            id,
+            domain,
             reservationData,
             jwtToken
         );
 
-        // Store the reservation ID in the session
+        // Store the reservation ID and domain in the session
         req.session.foreupSessionData[id].reservationId = reservationResponse.id || reservationResponse.reservation_id;
+        req.session.foreupSessionData[id].domain = domain;
 
         res.json({
             success: true,
@@ -105,21 +107,36 @@ router.post('/reserve', async (req, res) => {
  */
 router.post('/confirm', async (req, res) => {
     try {
-        const {domain, reservationId} = req.body;
+        const {id, reservationId} = req.body;
+        const courseId = Number.parseInt(id);
 
         // Verify we have the necessary session data
-        if (!domain || !req.session[domain] || !req.session[domain].jwtToken) {
+        if (!courseId || !req.session.foreupSessionData || !req.session.foreupSessionData[courseId]) {
             return res.status(400).json({
                 success: false,
                 error: 'No active reservation session found'
             });
         }
 
-        // Get the JWT token from the session
-        const jwtToken = req.session[domain].jwtToken;
+        const sessionData = req.session.foreupSessionData[courseId];
 
-        // Use the ID from the session if not provided in request
-        const finalReservationId = reservationId || req.session[domain].reservationId;
+        if (!sessionData.jwt) {
+            return res.status(401).json({
+                success: false,
+                error: 'Session expired or invalid'
+            });
+        }
+
+        const jwtToken = sessionData.jwt;
+        const domain = sessionData.domain;
+        const finalReservationId = reservationId || sessionData.reservationId;
+
+        if (!domain) {
+            return res.status(400).json({
+                success: false,
+                error: 'No domain found in session'
+            });
+        }
 
         if (!finalReservationId) {
             return res.status(400).json({

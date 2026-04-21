@@ -92,34 +92,21 @@ router.post('/reserve', async (req, res) => {
  */
 router.post('/confirm', async (req, res) => {
     try {
-        const {reservationId} = req.body;
-        const domain = req.session.domain;
-        const token = req.session.lastToken;
+        const {domain, courseId, quoteId} = req.body;
 
-        // Verify we have the necessary session data
-        if (!domain || !token) {
+        if (!domain || !courseId || !quoteId) {
             return res.status(400).json({
                 success: false,
-                error: 'No active reservation session found'
+                error: 'Missing required parameters: domain, courseId, quoteId'
             });
         }
 
-        // Use the ID from the session if not provided in request
-        const finalReservationId = reservationId || req.session.reservationId;
-
-        if (!finalReservationId) {
-            return res.status(400).json({
-                success: false,
-                error: 'No reservation ID found'
-            });
-        }
-
-        // Make the confirmation request
+        // Make the confirmation request (XSRF token is pulled from cookie jar in service)
         const confirmationData = await teesnapService.confirmReservation(
             req.axiosClient,
             domain,
-            finalReservationId,
-            token
+            courseId,
+            quoteId
         );
 
         // Save the updated cookie jar

@@ -1,3 +1,25 @@
+/* ─── Google Fonts ───────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+
+/* ─── Booking design tokens ──────────────────────────────────────────────── */
+:root {
+  --bk-forest: #1a4a1e;
+  --bk-green: #2d7533;
+  --bk-green-hover: #1f5c27;
+  --bk-green-pale: #f0f7f1;
+  --bk-border: #cde4cf;
+  --bk-text: #1a1f1a;
+  --bk-muted: #5c6b5d;
+  --bk-error: #c62828;
+  --bk-error-bg: #fff5f5;
+  --bk-success-bg: #e8f5e9;
+}
+
+/* ─── PrimeNG spinner – always green ─────────────────────────────────────── */
+.p-progress-spinner-circle {
+  stroke: var(--bk-green) !important;
+}
+
 /* ─── Angular Material Theme ─────────────────────────────────────────────── */
 @import url('@angular/material/prebuilt-themes/indigo-pink.css');
 

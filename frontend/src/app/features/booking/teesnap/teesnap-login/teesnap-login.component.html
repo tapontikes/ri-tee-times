@@ -2,8 +2,10 @@
   <div class="login-container">
 
     <div *ngIf="submitting" class="loading-overlay">
-      <p-progressspinner strokeWidth="4"></p-progressspinner>
-      <p>Logging in...</p>
+      <div class="loading-content">
+        <p-progressspinner strokeWidth="4"></p-progressspinner>
+        <p>Logging in...</p>
+      </div>
     </div>
 
     <div class="reservation-info">

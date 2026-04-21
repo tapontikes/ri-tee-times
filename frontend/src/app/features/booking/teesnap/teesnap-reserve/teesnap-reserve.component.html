@@ -2,8 +2,10 @@
   <div class="reservation-container">
 
     <div *ngIf="submitting || completingReservation" class="loading-overlay">
-      <p-progressspinner strokeWidth="4"></p-progressspinner>
-      <p>{{ completingReservation ? 'Completing your reservation...' : 'Processing your reservation...' }}</p>
+      <div class="loading-content">
+        <p-progressspinner strokeWidth="4"></p-progressspinner>
+        <p>{{ completingReservation ? 'Completing your reservation...' : 'Processing your reservation...' }}</p>
+      </div>
     </div>
 
     <div *ngIf="!reservationSuccess">
@@ -78,8 +80,8 @@
       </div>
 
       <div class="buttons-container">
-        <p-button (onClick)="completeReservation()" [disabled]="true" icon="pi pi-check"
-                  label="Not Yet Implemented"></p-button>
+        <p-button (onClick)="completeReservation()" [disabled]="completingReservation" icon="pi pi-check"
+                  label="Complete Reservation"></p-button>
         <p-button (onClick)="cancel()" [text]="true" icon="pi pi-times" label="Cancel" severity="secondary"></p-button>
       </div>
     </div>

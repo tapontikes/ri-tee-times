@@ -85,11 +85,11 @@ export class TeesnapReserveComponent implements OnInit, OnDestroy {
     this.reservationForm = this.fb.group({
       reservationData: this.fb.group({
         courseId: [this.course.request_data.course, Validators.required],
-        teeTime: [this.formatDateForApi(this.teeTime.time), Validators.required],
+        teeTime: [this.teeTime.time, Validators.required],
         players: [Math.min(1, this.maxPlayers), [Validators.required, Validators.min(1), Validators.max(this.maxPlayers)]],
         holes: [this.teeTime.holes[0], Validators.required],
         teeOffSection: [this.teeTime.start || 'FRONT_NINE', Validators.required],
-        addons: ['off', Validators.required],
+        addons: ['on', Validators.required],
         domain: [this.course.booking_url, Validators.required]
       })
     });
@@ -137,7 +137,9 @@ export class TeesnapReserveComponent implements OnInit, OnDestroy {
   completeReservation(): void {
     this.completingReservation = true;
     this.http.post('/api/teesnap/confirm', {
-      reservationId: this.reservationData.reservationQuote.id
+      domain: this.course.booking_url,
+      courseId: this.course.request_data.course,
+      quoteId: this.reservationData.reservationQuote.id
     }).subscribe({
       next: (response: any) => {
         this.completingReservation = false;

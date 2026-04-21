@@ -2,8 +2,10 @@
   <div class="reservation-container">
 
     <div *ngIf="submitting || completingReservation" class="loading-overlay">
-      <p-progressspinner strokeWidth="4"></p-progressspinner>
-      <p>{{ completingReservation ? 'Completing your reservation...' : 'Processing your reservation...' }}</p>
+      <div class="loading-content">
+        <p-progressspinner strokeWidth="4"></p-progressspinner>
+        <p>{{ completingReservation ? 'Completing your reservation...' : 'Processing your reservation...' }}</p>
+      </div>
     </div>
 
     <div *ngIf="!reservationSuccess">
@@ -32,17 +34,20 @@
               <p-select [options]="holeOptions" formControlName="holes" optionLabel="label" optionValue="value"
                         styleClass="w-full"></p-select>
             </div>
-            <input formControlName="teeOffSection" type="hidden">
-            <input formControlName="addons" type="hidden">
-            <input formControlName="courseId" type="hidden">
-            <input formControlName="teeTime" type="hidden">
+            <input formControlName="time" type="hidden">
+            <input formControlName="schedule_id" type="hidden">
+            <input formControlName="course_id" type="hidden">
+            <input formControlName="booking_class_id" type="hidden">
+            <input formControlName="carts" type="hidden">
+            <input formControlName="duration" type="hidden">
           </div>
         </form>
 
         <div class="form-actions">
           <p-button (onClick)="cancel()" [text]="true" icon="pi pi-arrow-left" label="Back"
                     severity="secondary"></p-button>
-          <p-button (onClick)="onSubmit()" [disabled]="true" icon="pi pi-flag" label="Not Yet Implemented"></p-button>
+          <p-button (onClick)="onSubmit()" [disabled]="reservationForm.invalid || submitting" icon="pi pi-flag"
+                    label="Reserve Now"></p-button>
         </div>
       </div>
     </div>
@@ -76,8 +81,8 @@
       </div>
 
       <div class="buttons-container">
-        <p-button (onClick)="completeReservation()" [disabled]="true" icon="pi pi-check"
-                  label="Not Yet Implemented"></p-button>
+        <p-button (onClick)="completeReservation()" [disabled]="completingReservation" icon="pi pi-check"
+                  label="Complete Reservation"></p-button>
         <p-button (onClick)="cancel()" [text]="true" icon="pi pi-times" label="Cancel" severity="secondary"></p-button>
       </div>
     </div>

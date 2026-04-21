@@ -76,46 +76,65 @@ async function login(client, domain, email, password, xsrfToken) {
 async function getReservationQuote(client, domain, reservationData) {
     logger.info(`Requesting reservation quote on ${domain} for ${reservationData.teeTime}`);
 
-    const xsrfToken = getXsrfTokenFromJar(client, domain);
+    try {
+        const xsrfToken = getXsrfTokenFromJar(client, domain);
 
-    const teeTimeParams = `addons=${reservationData.addons}&course=${reservationData.courseId}&holes=${reservationData.holes}&players=${reservationData.players}&teeOffSection=${reservationData.teeOffSection}&teeTime=${reservationData.teeTime}`;
+        const teeTimeParams = `addons=${reservationData.addons}&course=${reservationData.courseId}&holes=${reservationData.holes}&players=${reservationData.players}&teeOffSection=${reservationData.teeOffSection}&teeTime=${reservationData.teeTime}`;
 
-    const response = await client.post(
-        `${domain}/customer-api/reservation-quote`,
-        reservationData,
-        {
-            withCredentials: true,
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
-                'Accept': 'application/json, text/plain, */*',
-                'Accept-Language': 'en-US,en;q=0.8',
-                'Content-Type': 'application/json;charset=UTF-8',
-                'Origin': `${domain}`,
-                'Referer': `${domain}/reservation?${teeTimeParams}`,
-                'X-XSRF-TOKEN': xsrfToken
+        // Strip internal fields not meant for the TeeSnap API
+        const {domain: _domain, ...apiData} = reservationData;
+
+        // TeeSnap API requires courseId and holes as strings
+        apiData.courseId = String(apiData.courseId);
+        apiData.holes = String(apiData.holes);
+
+        const response = await client.post(
+            `${domain}/customer-api/reservation-quote`,
+            apiData,
+            {
+                withCredentials: true,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+                    'Accept': 'application/json, text/plain, */*',
+                    'Accept-Language': 'en-US,en;q=0.8',
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Origin': `${domain}`,
+                    'Referer': `${domain}/reservation?${teeTimeParams}`,
+                    'X-XSRF-TOKEN': xsrfToken
+                }
             }
-        }
-    );
+        );
 
-    logger.info(`Reservation quote successful for ${reservationData.teeTime}`);
-    return response.data;
+        logger.info(`Reservation quote successful for ${reservationData.teeTime}`);
+        return response.data;
+
+    } catch (error) {
+        if (error.response) {
+            logger.error(`Reservation quote failed [${error.response.status}]: ${JSON.stringify(error.response.data)}`);
+        } else {
+            logger.error(`Reservation quote failed: ${error.message}`);
+        }
+        throw error;
+    }
 }
 
 /**
- * Confirm a reservation
+ * Finalize a reservation quote
  * @param {Object} client - Axios client with cookie jar support
  * @param {string} domain - The domain to request from
- * @param {string} reservationId - The ID of the reservation to confirm
- * @param {string} xsrfToken - The XSRF token
+ * @param {string} courseId - The course ID
+ * @param {string} quoteId - The quote ID returned from reservation-quote
  * @returns {Promise<Object>} Confirmation response data
  */
-async function confirmReservation(client, domain, reservationId, xsrfToken) {
-    logger.info(`Confirming reservation ${reservationId} on ${domain}`);
+async function confirmReservation(client, domain, courseId, quoteId) {
+    logger.info(`Finalizing reservation quote ${quoteId} on ${domain}`);
+
+    const xsrfToken = getXsrfTokenFromJar(client, domain);
 
     try {
         const response = await client.post(
-            `${domain}/customer-api/reservations`,
-            {id: reservationId},
+            `${domain}/customer-api/reservation-quote/finalize`,
+            {courseId, quoteId},
             {
                 withCredentials: true,
                 headers: {
@@ -128,11 +147,11 @@ async function confirmReservation(client, domain, reservationId, xsrfToken) {
             }
         );
 
-        logger.info(`Reservation ${reservationId} confirmed successfully`);
+        logger.info(`Reservation quote ${quoteId} finalized successfully`);
         return response.data;
 
     } catch (error) {
-        logger.error(`Confirmation failed: ${error.message}`);
+        logger.error(`Finalization failed: ${error.message}`);
         if (error.response) {
             logger.error(`Response status: ${error.response.status}`);
         }

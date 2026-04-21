@@ -76,16 +76,22 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
     this.maxPlayers = this.teeTime.spots;
     const formattedTeeTime = this.formatDateForApi(this.teeTime.time);
 
+    // Extract ForeUp course_id from booking_url: .../booking/{courseId}/{scheduleId}
+    const urlParts = this.course.booking_url.split('/');
+    const bookingIndex = urlParts.findIndex(p => p === 'booking');
+    const foreupCourseId = bookingIndex >= 0 ? urlParts[bookingIndex + 1] : '';
+
     this.reservationForm = this.fb.group({
-      course_id: [this.course.id.toString(), Validators.required],
-      domain: [this.course.booking_url, Validators.required],
+      id: [this.course.id, Validators.required],
       reservationData: this.fb.group({
-        courseId: [this.course.request_data.course, Validators.required],
-        teeTime: [formattedTeeTime, Validators.required],
+        time: [formattedTeeTime, Validators.required],
         players: [Math.min(1, this.maxPlayers), [Validators.required, Validators.min(1), Validators.max(this.maxPlayers)]],
         holes: [this.teeTime.holes[0], Validators.required],
-        teeOffSection: [this.teeTime.start || 'FRONT_NINE', Validators.required],
-        addons: ['off', Validators.required]
+        schedule_id: [this.course.request_data.id, Validators.required],
+        course_id: [foreupCourseId, Validators.required],
+        booking_class_id: [this.course.request_data.booking_class, Validators.required],
+        carts: [false],
+        duration: [1]
       })
     });
   }
@@ -111,7 +117,7 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
   completeReservation(): void {
     this.completingReservation = true;
     this.http.post('/api/foreup/confirm', {
-      course_id: this.course.id.toString(),
+      id: this.course.id.toString(),
       reservationId: this.reservationData.reservationQuote.id
     }).subscribe({
       next: (response: any) => {
@@ -154,9 +160,12 @@ export class ForeupReserveComponent implements OnInit, OnDestroy {
 
   formatDateForApi(date: string | Date): string {
     const d = new Date(date);
+    const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
-    return `${month}-${day}-${d.getFullYear()}`;
+    const hours = String(d.getHours()).padStart(2, '0');
+    const mins = String(d.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${mins}`;
   }
 
   private handleError(error: any): void {
