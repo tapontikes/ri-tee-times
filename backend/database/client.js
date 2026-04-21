@@ -61,7 +61,7 @@ class DbClient {
 
             for (const teeTime of futureTeeTimes) {
                 const teeTimeDate = moment(teeTime.time).toISOString();
-                const result = await client.query('INSERT INTO tee_times (course_id, tee_time, holes, spots, start_position) VALUES ($1, $2, $3, $4, $5) RETURNING *', [courseId, teeTimeDate, JSON.stringify(teeTime.holes.sort((a, b) => a - b)), teeTime.spots, teeTime.start || null]);
+                const result = await client.query('INSERT INTO tee_times (course_id, tee_time, holes, spots, start_position) VALUES ($1, $2, $3, $4, $5) RETURNING *', [courseId, teeTimeDate, `{${teeTime.holes.sort((a, b) => a - b).join(',')}}`, teeTime.spots, teeTime.start || null]);
                 savedTeeTimes.push(result.rows[0]);
             }
             await client.query('COMMIT');
@@ -116,7 +116,7 @@ class DbClient {
                 courseId: row.course_id,
                 time: row.tee_time,
                 holes: row.holes,
-                start: row.start,
+                start: row.start_position,
                 spots: row.spots
             }));
 
@@ -145,7 +145,7 @@ class DbClient {
                 courseId: row.course_id,
                 time: row.tee_time,
                 holes: row.holes,
-                start: row.start,
+                start: row.start_position,
                 spots: row.spots
             }));
 

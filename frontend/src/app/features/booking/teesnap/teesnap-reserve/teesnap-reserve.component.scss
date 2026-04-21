@@ -10,11 +10,48 @@
 
 .reservation-container {
   background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 12px rgb(0 0 0 / 10%);
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgb(0 0 0 / 10%);
   margin: 0 auto;
-  max-width: 40vw;
+  max-width: min(560px, 90vw);
   overflow: hidden;
+}
+
+.card-header {
+  background: linear-gradient(130deg, #1a5220 0%, #2d7533 100%);
+  padding: 20px 28px 18px;
+}
+
+.card-header-course {
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+}
+
+.card-header-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.card-header-tile {
+  align-items: center;
+  background: rgb(255 255 255 / 14%);
+  border-radius: 8px;
+  color: rgb(255 255 255 / 90%);
+  display: flex;
+  font-size: 0.82rem;
+  font-weight: 600;
+  gap: 6px;
+  padding: 5px 10px;
+}
+
+.card-header-tile i {
+  font-size: 0.8rem;
+  opacity: 0.8;
 }
 
 .session-info {
@@ -35,22 +72,17 @@
 }
 
 .reservation-info {
-  padding: 24px 32px 2px;
-
-  h2 {
-    color: #1b5e20;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 16px;
-    margin-top: 0;
-  }
+  padding: 24px 32px 4px;
 }
 
 .reservation-info-card {
-  background: linear-gradient(to bottom, #f0f7f0, white);
-  border: 1px solid #c8e6c9;
-  border-radius: 10px;
-  padding: 16px;
+  background: #f7fdf7;
+  border: 1px solid #e0f0e0;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
 }
 
 .course-name {
@@ -78,38 +110,47 @@
 .detail-row {
   align-items: center;
   display: flex;
+  gap: 10px;
 
-  mat-icon {
+  i {
     color: #2e7d32;
-    margin-right: 8px;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    width: 16px;
   }
 
   span {
     color: #444;
+    font-size: 0.9rem;
   }
 }
 
 .reservation-form-container {
-  padding: 24px 32px 32px;
+  padding: 20px 32px 32px;
+}
 
-  h2 {
-    color: #1b5e20;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    margin-top: 0;
-  }
-
-  .form-description {
-    color: #5a7a57;
-    margin-bottom: 20px;
-  }
+.form-section-label {
+  color: #5a7a57;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  margin-bottom: 12px;
+  text-transform: uppercase;
 }
 
 .form-grid {
   display: grid;
-  gap: 20px;
+  gap: 16px;
   grid-template-columns: 1fr 1fr;
+}
+
+.field label {
+  color: #4a6741;
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 6px;
 }
 
 .full-width {

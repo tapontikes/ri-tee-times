@@ -1,47 +1,5 @@
 <header class="navbar">
   <span class="logo" routerLink="/teetimes">
-    <span class="logo-flag">&#9971;</span> Golf Rhode Island
+    <span class="logo-flag">⛳</span> Golf Rhode Island
   </span>
-
-  <button (click)="toggleMobileMenu()" *ngIf="isMobile && !isCoursePage" aria-label="Menu" class="mobile-toggle">
-    <span [class.open]="showMobileMenu" class="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
-    </span>
-  </button>
-
-  <form (ngSubmit)="search()"
-        [formGroup]="searchForm"
-        *ngIf="!isCoursePage && (!isMobile || showMobileMenu)"
-        [class.mobile-expanded]="showMobileMenu"
-        class="search-form">
-
-    <div class="form-row">
-      <p-datepicker [maxDate]="maxDate"
-                    [minDate]="minDate"
-                    [showButtonBar]="false"
-                    [showIcon]="true"
-                    appendTo="body"
-                    formControlName="date"
-                    placeholder="Date"
-                    styleClass="navbar-field">
-      </p-datepicker>
-
-      <input aria-label="Start time" class="navbar-field time-input" formControlName="startTime"
-             pInputText type="time"/>
-
-      <input aria-label="End time" class="navbar-field time-input" formControlName="endTime"
-             pInputText type="time"/>
-
-      <p-selectbutton [options]="holesOptions"
-                      formControlName="holes"
-                      optionLabel="label"
-                      optionValue="value">
-      </p-selectbutton>
-
-      <p-button icon="pi pi-search" label="Search" styleClass="search-btn" type="submit"></p-button>
-    </div>
-
-  </form>
 </header>

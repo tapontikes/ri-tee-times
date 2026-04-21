@@ -46,65 +46,45 @@ async function getTeeSnapTeeTimes(date, booking_url, params) {
             return formattedTimes;
         }
 
-        const bookingsArr = teeTimes.bookings;
+        // Build a bookingId → golfer count map for fast lookup
+        const bookingGolferCount = {};
+        teeTimes.bookings.forEach(b => {
+            bookingGolferCount[b.bookingId] = b.golfers.length;
+        });
 
         teeTimes.teeTimes.forEach(time => {
-            const bookingCheck = time.teeOffSections[0];
+            if (new Date(time.teeTime) < new Date()) return;
 
-            // Skip times that are in the past
-            if (new Date(time.teeTime) < new Date()) {
-                return;
-            }
+            // Evaluate each section independently
+            const availableSections = [];
 
-            let teeTimeObj = {};
+            for (const section of time.teeOffSections) {
+                if (section.isHeld) continue;
 
-            if (typeof bookingCheck.bookings === 'undefined' && bookingCheck.isHeld === false) {
-                // Available tee time with no bookings
-                teeTimeObj.time = time.teeTime;
-                teeTimeObj.spots = 4;
-            } else if (bookingCheck.bookings && bookingCheck.bookings.length > 0) {
-                // Tee time with some bookings
-                let bookingCounter = 0;
-                let totalBookings = [];
+                const golfersBooked = (section.bookings ?? [])
+                    .reduce((sum, id) => sum + (bookingGolferCount[id] ?? 0), 0);
 
-                bookingCheck.bookings.forEach((booking) => {
-                    bookingsArr.forEach(allBookings => {
-                        if (allBookings.bookingId === booking) {
-                            totalBookings.push(allBookings);
-                        }
-                    });
-                });
-
-                totalBookings.forEach(booking => {
-                    bookingCounter += booking.golfers.length;
-                });
-
-                // Skip fully booked tee times
-                if (bookingCounter === 4) {
-                    return;
+                const spots = 4 - golfersBooked;
+                if (spots > 0) {
+                    availableSections.push({teeOff: section.teeOff, spots});
                 }
-
-                teeTimeObj.time = time.teeTime;
-                teeTimeObj.spots = 4 - bookingCounter;
-            } else {
-                // Skip held tee times or other unavailable times
-                return;
             }
 
-            teeTimeObj.start = time.teeOffSections[0].teeOff;
+            if (availableSections.length === 0) return;
 
-            // Determine available hole options
-            const roundTypes = time.prices.map(item => item.roundType);
-            teeTimeObj.holes = [];
+            const maxSpots = Math.max(...availableSections.map(s => s.spots));
 
-            if (roundTypes.includes('NINE_HOLE')) {
-                teeTimeObj.holes.push(9);
-            }
-            if (roundTypes.includes('EIGHTEEN_HOLE')) {
-                teeTimeObj.holes.push(18);
-            }
+            const roundTypes = time.prices.map(p => p.roundType);
+            const holes = [];
+            if (roundTypes.includes('NINE_HOLE')) holes.push(9);
+            if (roundTypes.includes('EIGHTEEN_HOLE')) holes.push(18);
 
-            formattedTimes.push(teeTimeObj);
+            formattedTimes.push({
+                time: time.teeTime,
+                spots: maxSpots,
+                start: availableSections.map(s => s.teeOff).join(','),
+                holes,
+            });
         });
 
         return formattedTimes;

@@ -22,6 +22,14 @@
         <button (click)="filterByHoles(18)" [class.active]="searchParams.holes === 18" class="toggle-btn">18H</button>
         <button (click)="filterByHoles(10)" [class.active]="searchParams.holes === 10" class="toggle-btn">All</button>
       </div>
+      <div *ngIf="hasStartOptions" class="hole-toggle">
+        <button (click)="filterByStart('FRONT_NINE')" [class.active]="activeStart === 'FRONT_NINE'" class="toggle-btn">
+          F9
+        </button>
+        <button (click)="filterByStart('BACK_NINE')" [class.active]="activeStart === 'BACK_NINE'" class="toggle-btn">
+          B9
+        </button>
+      </div>
       <p-datepicker (onSelect)="onDateChange($event)"
                     [(ngModel)]="selectedDate"
                     [maxDate]="maxDate"
@@ -85,6 +93,7 @@
                    styleClass="hole-tag">
             </p-tag>
           </div>
+          <div *ngIf="teeTime.start" class="tee-row-start">{{ formatTeeOff(teeTime.start) }}</div>
           <i class="pi pi-chevron-right tee-row-chevron"></i>
         </div>
       </div>

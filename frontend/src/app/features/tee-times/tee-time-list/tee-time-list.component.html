@@ -1,21 +1,62 @@
 <div class="container">
 
-  <!-- Page header -->
-  <div class="page-header">
-    <div class="page-header-left">
-      <div class="date-info">
-        <h1 class="date-display">{{ searchParams.date | date:'EEE, MMM d' }}</h1>
-      <div class="date-meta">
-        <span *ngIf="searchParams.holes">{{ searchParams.holes }} Holes</span>
-        <span *ngIf="searchParams.startTime && searchParams.endTime">
-          &nbsp;&middot; {{ searchParams.startTime }}–{{ searchParams.endTime }}
-        </span>
+  <!-- ── Filter bar ─────────────────────────────────────────────────────── -->
+  <div class="filter-bar">
+
+    <!-- Date row -->
+    <div class="date-row">
+      <button (click)="changeDate(-1)"
+              [disabled]="!canGoPrev()"
+              aria-label="Previous day"
+              class="date-nav-btn">
+        <i class="pi pi-chevron-left"></i>
+      </button>
+
+      <div class="date-picker-group">
+        <span class="day-label">{{ selectedDate | date:'EEEE' }}</span>
+        <p-datepicker (onSelect)="onDateSelect($event)"
+                      [(ngModel)]="selectedDate"
+                      [maxDate]="maxDate"
+                      [minDate]="minDate"
+                      [showButtonBar]="false"
+                      [showIcon]="true"
+                      appendTo="body"
+                      styleClass="date-picker-hero">
+        </p-datepicker>
       </div>
+
+      <button (click)="changeDate(1)"
+              [disabled]="!canGoNext()"
+              aria-label="Next day"
+              class="date-nav-btn">
+        <i class="pi pi-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <!-- Holes + time preset chips -->
+    <div class="chips-row">
+      <div class="chip-group">
+        <button (click)="setHoles(9)" [class.active]="searchParams.holes === 9" class="chip">9H</button>
+        <button (click)="setHoles(18)" [class.active]="searchParams.holes === 18" class="chip">18H</button>
+        <button (click)="setHoles(10)" [class.active]="searchParams.holes === 10" class="chip">All</button>
+      </div>
+
+      <span class="chips-sep">·</span>
+
+      <div class="chip-group">
+        <button (click)="setPreset(p)"
+                *ngFor="let p of timePresets"
+                [class.active]="activePreset === p.value"
+                class="chip">{{ p.label }}
+        </button>
       </div>
     </div>
+
   </div>
 
-  <!-- Distance locator -->
+  <!-- ── Distance locator ───────────────────────────────────────────────── -->
   <div *ngIf="environment.mapsDistanceEnabled" class="location-bar">
     <ng-container *ngIf="!selectedAddress">
       <span class="location-label">Add your location to see driving distances:</span>
@@ -29,7 +70,7 @@
     </ng-container>
   </div>
 
-  <!-- Skeleton loading -->
+  <!-- ── Skeleton loading ────────────────────────────────────────────────── -->
   <ng-container *ngIf="loading">
     <div *ngFor="let _ of skeletonCards" class="course-card skeleton-card">
       <div class="skeleton-header">
@@ -46,23 +87,23 @@
     </div>
   </ng-container>
 
-  <!-- Error -->
+  <!-- ── Error ──────────────────────────────────────────────────────────── -->
   <div *ngIf="error" class="error-container">
     <i class="pi pi-exclamation-triangle" style="font-size:2rem;color:#d32f2f"></i>
     <p>Could not load tee times. Please try again.</p>
     <p-button (onClick)="loadTeeTimes()" icon="pi pi-refresh" label="Retry"></p-button>
   </div>
 
-  <!-- Empty state -->
+  <!-- ── Empty state ────────────────────────────────────────────────────── -->
   <div *ngIf="!loading && !error && teeTimes.length === 0" class="no-results">
     <i class="pi pi-flag" style="font-size:2rem"></i>
-    <p>No tee times available for the selected criteria.</p>
+    <p>No tee times available for the selected date.</p>
   </div>
 
-  <!-- Course list -->
+  <!-- ── Course list ────────────────────────────────────────────────────── -->
   <div *ngIf="!loading && !error" class="course-list">
     <ng-container *ngFor="let course of courses | courseFilter:teeTimes:searchParams">
-      <ng-container *ngIf="(teeTimes | teeTimeFilter:searchParams:course) as times">
+      <ng-container *ngIf="(teeTimes | teeTimeFilter:searchParams:course:getStartFilter(course.id)) as times">
 
         <div class="course-card">
 
@@ -92,6 +133,22 @@
             </div>
           </div>
 
+          <!-- Front/Back 9 filter (TeeSnap courses only) -->
+          <div *ngIf="courseHasBackNine(course.id)" class="start-filter-bar">
+            <button (click)="toggleStartFilter(course.id, 'FRONT_NINE')"
+                    [class.active]="getStartFilter(course.id) === 'FRONT_NINE'"
+                    class="start-btn">Front 9
+            </button>
+            <button (click)="toggleStartFilter(course.id, 'BACK_NINE')"
+                    [class.active]="getStartFilter(course.id) === 'BACK_NINE'"
+                    class="start-btn">Back 9
+            </button>
+            <button (click)="courseStartFilters.set(course.id, null)"
+                    [class.active]="getStartFilter(course.id) === null"
+                    class="start-btn">All
+            </button>
+          </div>
+
           <!-- Tee time scroll row -->
           <div class="tee-times-wrapper">
             <div class="tee-times-scroll">
@@ -108,13 +165,18 @@
                            severity="secondary"
                            styleClass="hole-tag">
                     </p-tag>
+                    <p-tag *ngIf="teeTime.start"
+                           [value]="formatTeeOff(teeTime.start)"
+                           severity="info"
+                           styleClass="hole-tag start-tag">
+                    </p-tag>
                   </div>
                 </div>
 
                 <!-- View all tile -->
                 <div (click)="goToCourseDetail(course.id)" class="view-all-tile">
                   <i class="pi pi-arrow-right view-all-icon"></i>
-                  <span class="view-all-label">All {{ times.length }} Times</span>
+                  <span class="view-all-label">All Times</span>
                 </div>
 
               </div>

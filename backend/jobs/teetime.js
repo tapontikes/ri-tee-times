@@ -18,45 +18,37 @@ const scheduler = new Scheduler();
  * @param {Moment} date - Date string in YYYY-MM-DD format
  */
 async function refreshTeeTimesForCourse(courseId, date) {
-    try {
-        // Get course details
-        const course = await client.getCourse(courseId);
+    const course = await client.getCourse(courseId);
 
-        if (!course) {
-            logger.error(`Course with ID ${courseId} not found`);
-            return;
-        }
-
-        let teeTimes = [];
-
-        // Call the appropriate teetimes based on the provider
-        switch (course.provider) {
-            case 'foreup':
-                teeTimes = await foreUpService.getForeUpTeeTimes(moment(date).format('MM-DD-YYYY'), course.request_data);
-                break;
-            case 'teeitup':
-                teeTimes = await teeItUpService.getTeeItUpTeeTimes(moment(date).format("YYYY-MM-DD"), course.request_data);
-                break;
-            case 'teesnap':
-                teeTimes = await teeSnapService.getTeeSnapTeeTimes(moment(date).format("YYYY-MM-DD"), course.booking_url, course.request_data);
-                break;
-            case 'teewire':
-                teeTimes = await teeWireService.getTeeWireTeeTime(moment(date).format('MM/DD/YYYY'), course.request_data);
-                break;
-            default:
-                logger.error(`Unknown provider: ${course.provider}`);
-                return;
-        }
-
-        if (!teeTimes || teeTimes.length === 0) {
-            logger.warn(`No tee times found for course ${course.name} on ${date}`);
-            return;
-        }
-
-        await client.saveTeeTimes(course.id, teeTimes, date);
-    } catch (error) {
-        logger.error(`Error refreshing tee times for course ${courseId}:`, error);
+    if (!course) {
+        throw new Error(`Course with ID ${courseId} not found`);
     }
+
+    let teeTimes = [];
+
+    switch (course.provider) {
+        case 'foreup':
+            teeTimes = await foreUpService.getForeUpTeeTimes(moment(date).format('MM-DD-YYYY'), course.request_data);
+            break;
+        case 'teeitup':
+            teeTimes = await teeItUpService.getTeeItUpTeeTimes(moment(date).format("YYYY-MM-DD"), course.request_data);
+            break;
+        case 'teesnap':
+            teeTimes = await teeSnapService.getTeeSnapTeeTimes(moment(date).format("YYYY-MM-DD"), course.booking_url, course.request_data);
+            break;
+        case 'teewire':
+            teeTimes = await teeWireService.getTeeWireTeeTime(moment(date).format('MM/DD/YYYY'), course.request_data);
+            break;
+        default:
+            throw new Error(`Unknown provider: ${course.provider}`);
+    }
+
+    if (!teeTimes || teeTimes.length === 0) {
+        logger.warn(`No tee times found for course ${course.name} on ${date}`);
+        return;
+    }
+
+    await client.saveTeeTimes(course.id, teeTimes, date);
 }
 
 /**
@@ -64,17 +56,16 @@ async function refreshTeeTimesForCourse(courseId, date) {
  * @param {Moment} date - Date string in YYYY-MM-DD format
  */
 async function refreshAllCoursesByDate(date) {
-    try {
-        const courses = await client.getAllCourses();
-        logger.info(`Refreshing tee times for all courses on: ${date}`);
+    const courses = await client.getAllCourses();
+    logger.info(`Refreshing tee times for all courses on: ${date}`);
 
-        for (const course of courses) {
+    for (const course of courses) {
+        try {
             await refreshTeeTimesForCourse(course.id, date);
+        } catch (error) {
+            logger.error(`Error refreshing tee times for course ${course.id}:`, error);
         }
-    } catch (error) {
-        logger.error('Error refreshing tee times for all courses:', error);
     }
-
 }
 
 /**

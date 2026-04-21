@@ -12,7 +12,7 @@ import {Course, TeeTime, TeeTimeSearchParams} from '../../../shared/models/model
 import {DataSharingService} from '../../../core/services/data-sharing.service';
 import {TeeTimeService} from '../../../core/services/teetime.service';
 import {ReservationDialogService} from '../../booking/reservation-dialog.service';
-import {randomDelay} from "../../../shared/utils";
+import {formatTeeOff, randomDelay} from "../../../shared/utils";
 
 @Component({
   selector: 'app-course-detail',
@@ -35,6 +35,8 @@ export class CourseDetailComponent implements OnInit {
   readonly skeletonRows = Array(4);
   selectedDate: Date;
   searchParams: TeeTimeSearchParams;
+  activeStart: string | null = null;
+  hasStartOptions = false;
   minDate = (() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -140,6 +142,12 @@ export class CourseDetailComponent implements OnInit {
     this.searchParams.holes = this.searchParams.holes === holes ? 10 : holes;
     this.refreshGroups();
   }
+  formatTeeOff = formatTeeOff;
+
+  filterByStart(section: string): void {
+    this.activeStart = this.activeStart === section ? null : section;
+    this.refreshGroups();
+  }
 
   getHourRangeLabel(hour: number): string {
     const fmt = (h: number) => h === 0 ? '12am' : h < 12 ? `${h}am` : h === 12 ? '12pm' : `${h - 12}pm`;
@@ -154,6 +162,7 @@ export class CourseDetailComponent implements OnInit {
   private loadTeeTimes(): void {
     this.loading = true;
     this.error = false;
+    this.activeStart = null;
     this.teeTimeService.getCourseTeeTimes(this.courseId, this.searchParams.date).pipe(
       takeUntilDestroyed(this.destroyRef),
     ).subscribe({
@@ -182,9 +191,11 @@ export class CourseDetailComponent implements OnInit {
   }
 
   private refreshGroups(): void {
-    this.filteredTeeTimes = this.searchParams.holes === 10
-      ? this.teeTimes
-      : this.teeTimes.filter(t => t.holes.includes(this.searchParams.holes));
+    this.hasStartOptions = this.teeTimes.some(t => t.start?.includes('BACK_NINE'));
+
+    this.filteredTeeTimes = this.teeTimes
+      .filter(t => this.searchParams.holes === 10 || t.holes.includes(this.searchParams.holes))
+      .filter(t => !this.activeStart || !t.start || t.start.includes(this.activeStart));
 
     const groups: { [key: string]: TeeTime[] } = {};
     [...this.filteredTeeTimes]

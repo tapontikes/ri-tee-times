@@ -49,9 +49,10 @@ export class ReservationDialogService {
 
   private openBookWithCourseDialog(course: Course, teeTime: TeeTime): void {
     this.dialog.open(BookWithCourseComponent, {
-      header: 'Book Tee Time',
-      width: '30em',
+      header: course.name,
+      width: '34em',
       closable: true,
+      draggable: false,
       data: {course, teeTime}
     });
   }

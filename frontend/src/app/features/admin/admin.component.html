@@ -21,6 +21,7 @@
                   label="Refresh Tee Times"
                   type="submit">
         </p-button>
+        <span *ngIf="refreshProgress" class="refresh-progress">{{ refreshProgress }}</span>
       </div>
     </form>
   </div>

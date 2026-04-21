@@ -9,6 +9,7 @@ import {DatePickerModule} from 'primeng/datepicker';
 import {Course, RefreshRequest} from '../../shared/models/models';
 import {TeeTimeService} from '../../core/services/teetime.service';
 import {formatDate} from '../../shared/utils';
+import {lastValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-admin',
@@ -28,6 +29,7 @@ export class AdminComponent implements OnInit {
   refreshForm: FormGroup;
   courses: Course[] = [];
   refreshing = false;
+  refreshProgress = '';
   minDate = new Date();
 
   get courseOptions() {
@@ -55,36 +57,57 @@ export class AdminComponent implements OnInit {
   refreshTeeTimes(): void {
     if (!this.refreshForm.valid) return;
 
-    this.refreshing = true;
     const {courseId, date} = this.refreshForm.value;
     const request: RefreshRequest = {date: formatDate(date)};
 
     if (courseId === 'all') {
-      this.teeTimeService.refreshAllTeeTimes(request).subscribe({
-        next: () => this.handleRefreshSuccess('All courses'),
-        error: (err) => this.handleRefreshError(err)
-      });
+      this.refreshAllCourses(request);
     } else {
       const id = parseInt(courseId, 10);
       const courseName = this.courses.find(c => c.id === id)?.name ?? 'Selected course';
+      this.refreshing = true;
       this.teeTimeService.refreshCourseTeeTimes(id, request).subscribe({
-        next: () => this.handleRefreshSuccess(courseName),
-        error: (err) => this.handleRefreshError(err)
+        next: () => {
+          this.refreshing = false;
+          this.messageService.add({severity: 'success', summary: `${courseName} refreshed successfully.`, life: 4000});
+        },
+        error: () => {
+          this.refreshing = false;
+          this.messageService.add({severity: 'error', summary: `Failed to refresh ${courseName}.`, life: 5000});
+        }
       });
     }
   }
 
-  private handleRefreshSuccess(courseName: string): void {
-    this.refreshing = false;
-    this.messageService.add({
-      severity: 'success',
-      summary: `${courseName} tee times refreshed successfully!`,
-      life: 5000
-    });
-  }
+  private async refreshAllCourses(request: RefreshRequest): Promise<void> {
+    this.refreshing = true;
+    let succeeded = 0;
+    let failed = 0;
 
-  private handleRefreshError(_error: any): void {
+    for (const course of this.courses) {
+      this.refreshProgress = `Refreshing ${course.name}...`;
+      try {
+        await lastValueFrom(this.teeTimeService.refreshCourseTeeTimes(course.id, request));
+        succeeded++;
+        this.messageService.add({
+          severity: 'success',
+          summary: course.name,
+          detail: 'Refreshed successfully.',
+          life: 4000
+        });
+      } catch {
+        failed++;
+        this.messageService.add({severity: 'error', summary: course.name, detail: 'Failed to refresh.', life: 6000});
+      }
+    }
+
     this.refreshing = false;
-    this.messageService.add({severity: 'error', summary: 'Error refreshing tee times. Please try again.', life: 5000});
+    this.refreshProgress = '';
+    this.messageService.add({
+      severity: failed === 0 ? 'success' : 'warn',
+      summary: 'Done',
+      detail: `${succeeded} succeeded, ${failed} failed.`,
+      life: 6000
+    });
   }
 }

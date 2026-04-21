@@ -7,19 +7,18 @@
     </div>
 
     <div *ngIf="!reservationSuccess">
-      <div class="reservation-info">
-        <h2>Reserve Tee Time</h2>
-        <div class="reservation-info-card">
-          <div class="detail-row"><i class="pi pi-flag"></i><span>{{ course.name }}</span></div>
-          <div class="detail-row"><i class="pi pi-calendar"></i><span>{{ teeTime.time | date:'fullDate' }}</span></div>
-          <div class="detail-row"><i class="pi pi-clock"></i><span>{{ teeTime.time | date:'shortTime' }}</span></div>
-          <div class="detail-row"><i class="pi pi-users"></i><span>{{ teeTime.spots }} spots available</span></div>
-          <div class="detail-row"><i class="pi pi-star"></i><span>{{ teeTime.holes.join(' or ') }} Holes</span></div>
+      <div class="card-header">
+        <div class="card-header-course">{{ course.name }}</div>
+        <div class="card-header-tiles">
+          <div class="card-header-tile"><i class="pi pi-calendar"></i>{{ teeTime.time | date:'EEE, MMM d' }}</div>
+          <div class="card-header-tile"><i class="pi pi-clock"></i>{{ teeTime.time | date:'shortTime' }}</div>
+          <div class="card-header-tile"><i class="pi pi-users"></i>{{ teeTime.spots }} spots</div>
+          <div class="card-header-tile"><i class="pi pi-flag"></i>{{ teeTime.holes.join(' / ') }}H</div>
         </div>
       </div>
 
       <div class="reservation-form-container">
-        <h2>Customize Your Reservation</h2>
+        <div class="form-section-label">Customize Your Reservation</div>
         <form (ngSubmit)="onSubmit()" [formGroup]="reservationForm">
           <div class="form-grid" formGroupName="reservationData">
             <div class="field">

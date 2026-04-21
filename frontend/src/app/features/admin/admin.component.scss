@@ -12,9 +12,16 @@
 }
 
 .form-actions {
+  align-items: center;
   display: flex;
+  gap: 16px;
   justify-content: flex-end;
   margin-top: 24px;
+}
+
+.refresh-progress {
+  color: var(--p-text-muted-color);
+  font-size: 0.875rem;
 }
 
 .form-row {

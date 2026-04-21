@@ -14,17 +14,17 @@ import {appRoutes} from './app/app.routes';
 const GolfPreset = definePreset(Aura, {
   semantic: {
     primary: {
-      50: '{green.50}',
-      100: '{green.100}',
-      200: '{green.200}',
-      300: '{green.300}',
-      400: '{green.400}',
-      500: '{green.500}',
-      600: '{green.600}',
-      700: '{green.700}',
-      800: '{green.800}',
-      900: '{green.900}',
-      950: '{green.950}',
+      50: '#e8f5e9',
+      100: '#c8e6c9',
+      200: '#a5d6a7',
+      300: '#81c784',
+      400: '#66bb6a',
+      500: '#2e7d32',
+      600: '#276b2b',
+      700: '#1b5e20',
+      800: '#155219',
+      900: '#0f3d12',
+      950: '#082109',
     },
   },
 });

@@ -6,18 +6,18 @@
       <p>Logging in...</p>
     </div>
 
-    <div class="reservation-info">
-      <h2>{{ course.name }}</h2>
-      <div *ngIf="teeTime" class="reservation-info-card">
-        <div class="detail-row"><i class="pi pi-calendar"></i><span>{{ teeTime.time | date:'shortDate' }}</span></div>
-        <div class="detail-row"><i class="pi pi-clock"></i><span>{{ teeTime.time | date:'shortTime' }}</span></div>
-        <div class="detail-row"><i class="pi pi-users"></i><span>{{ teeTime.spots }}</span></div>
-        <div class="detail-row"><i class="pi pi-flag"></i><span>{{ teeTime.holes.join(' or ') }} Holes</span></div>
+    <div class="card-header">
+      <div class="card-header-course">{{ course.name }}</div>
+      <div *ngIf="teeTime" class="card-header-tiles">
+        <div class="card-header-tile"><i class="pi pi-calendar"></i>{{ teeTime.time | date:'EEE, MMM d' }}</div>
+        <div class="card-header-tile"><i class="pi pi-clock"></i>{{ teeTime.time | date:'shortTime' }}</div>
+        <div class="card-header-tile"><i class="pi pi-users"></i>{{ teeTime.spots }} spots</div>
+        <div class="card-header-tile"><i class="pi pi-flag"></i>{{ teeTime.holes.join(' / ') }}H</div>
       </div>
     </div>
 
     <div class="login-form-container">
-      <h3>ForeUp Credentials</h3>
+      <div class="form-section-label">ForeUp Login</div>
       <form (ngSubmit)="onSubmit()" [formGroup]="loginForm" class="login-form">
 
         <div class="field">

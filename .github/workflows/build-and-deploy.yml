@@ -30,9 +30,26 @@ jobs:
           docker build . --file Dockerfile --tag $IMAGE_TAG
           docker push $IMAGE_TAG
 
-  deploy:
+  migrate:
     runs-on: ubuntu-latest
     needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.target_branch || 'master' }}
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+
+      - name: Run migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: supabase db push --project-ref edxdyclutuevzbkaisjd
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: migrate
     steps:
       - name: Deploy the Docker Compose stack
         uses: appleboy/ssh-action@v1.0.3
@@ -43,13 +60,11 @@ jobs:
           script: |
             set -e
             cd /home/tom/ri-tee-times/
-            
-            # Pull the specific branch entered in the manual trigger
+
             git fetch origin
             git checkout ${{ github.event.inputs.target_branch || 'master' }}
             git pull origin ${{ github.event.inputs.target_branch || 'master' }}
 
             docker pull tapontikes/golf-ri.com:latest
-            docker compose run --rm migrate
             docker compose up -d --no-deps --force-recreate app
             docker image prune -f

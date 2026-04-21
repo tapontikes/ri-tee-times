@@ -2,103 +2,85 @@
   padding: 40px 0;
 }
 
-.page-content {
-  margin: 0 auto;
-  max-width: 1200px;
-  padding: 0 20px;
-}
-
 .login-container {
   background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 12px rgb(0 0 0 / 10%);
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgb(0 0 0 / 10%);
   margin: 0 auto;
-  max-width: 40vw;
+  max-width: min(480px, 90vw);
   overflow: hidden;
 }
 
-.login-header {
-  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+/* ─── Green header ───────────────────────────────────────────────────────── */
+
+.card-header {
+  background: linear-gradient(130deg, #1a5220 0%, #2d7533 100%);
+  padding: 20px 28px 18px;
+}
+
+.card-header-course {
   color: white;
-  padding: 20px 32px;
-  text-align: center;
-
-  h1 {
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0;
-  }
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
 }
 
-.reservation-info {
-  padding: 24px 32px 2px;
-
-  h2 {
-    color: #1b5e20;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 16px;
-    margin-top: 0;
-  }
-}
-
-.reservation-info-card {
-  background: linear-gradient(to bottom, #f0f7f0, white);
-  border: 1px solid #c8e6c9;
-  border-radius: 10px;
-  padding: 16px;
-}
-
-.course-name {
-  align-items: center;
+.card-header-tiles {
   display: flex;
-  margin-bottom: 12px;
-
-  mat-icon {
-    color: #2e7d32;
-    margin-right: 10px;
-  }
-
-  span {
-    font-size: 16px;
-    font-weight: 600;
-  }
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.tee-time-details {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: 1fr 1fr;
-}
-
-.detail-row {
+.card-header-tile {
   align-items: center;
+  background: rgb(255 255 255 / 14%);
+  border-radius: 8px;
+  color: rgb(255 255 255 / 90%);
   display: flex;
-
-  mat-icon {
-    color: #2e7d32;
-    margin-right: 8px;
-  }
-
-  span {
-    color: #444;
-  }
+  font-size: 0.82rem;
+  font-weight: 600;
+  gap: 6px;
+  padding: 5px 10px;
 }
+
+.card-header-tile i {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* ─── Login form ─────────────────────────────────────────────────────────── */
 
 .login-form-container {
-  padding: 24px 32px 32px;
-
-  h3 {
-    color: #1b5e20;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    margin-top: 0;
-  }
+  padding: 24px 28px 32px;
 }
 
-.full-width {
-  width: 100%;
+.form-section-label {
+  color: #5a7a57;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  color: #4a6741;
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.field-error {
+  color: #c62828;
+  font-size: 0.76rem;
+  margin-top: 4px;
 }
 
 .form-actions {
@@ -108,22 +90,16 @@
   margin-top: 24px;
 }
 
-.login-button {
-  font-weight: 600;
-  min-width: 160px;
-  padding: 8px 16px;
-}
-
-.cancel-button {
-  color: #5a7a57;
-}
+/* ─── Loading overlay ────────────────────────────────────────────────────── */
 
 .loading-overlay {
+  align-items: center;
   background-color: rgb(255 255 255 / 85%);
   bottom: 0;
   display: flex;
+  flex-direction: column;
+  gap: 16px;
   justify-content: center;
-  align-items: center;
   left: 0;
   position: fixed;
   right: 0;
@@ -131,37 +107,13 @@
   z-index: 1000;
 }
 
-.loading-content {
-  align-items: center;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
-  display: flex;
-  flex-direction: column;
-  padding: 32px;
-
-  p {
-    color: #333;
-    font-size: 15px;
-    margin-top: 16px;
-  }
-}
-
-@media (max-width: 1055px) {
-  .tee-time-details {
-    grid-template-columns: 1fr;
-  }
-
+@media (max-width: 640px) {
   .form-actions {
     flex-direction: column-reverse;
-    gap: 16px;
-
-    button {
-      width: 50%;
-    }
+    gap: 12px;
   }
 
   .login-container {
-    max-width: 85vw;
+    max-width: 95vw;
   }
 }

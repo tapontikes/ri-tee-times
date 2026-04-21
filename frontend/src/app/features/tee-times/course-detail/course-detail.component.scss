@@ -273,6 +273,7 @@
 /* Holes chips */
 .tee-row-holes {
   display: flex;
+  gap: 4px;
 }
 
 .tee-row-holes mat-chip {
@@ -282,6 +283,17 @@
 .tee-row-holes mat-chip.mdc-evolution-chip--disabled {
   font-weight: 700 !important;
   opacity: 1 !important;
+}
+
+/* Start position label */
+.tee-row-start {
+  background: #e8f5e9;
+  border-radius: 6px;
+  color: #2e7d32;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  white-space: nowrap;
 }
 
 /* Chevron indicator */
