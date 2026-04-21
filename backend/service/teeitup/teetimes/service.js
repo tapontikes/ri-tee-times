@@ -48,7 +48,11 @@ async function getTeeItUpTeeTimes(date, params) {
 
         return formattedTimes;
     } catch (error) {
-        logger.error("Error fetching TeeItUp tee times:", error.message);
+        if (error.response) {
+            logger.error(`TeeItUp API error: HTTP ${error.response.status}`, error.response.data ?? '');
+        } else {
+            logger.error('TeeItUp fetch error:', error.message);
+        }
         return [];
     }
 }

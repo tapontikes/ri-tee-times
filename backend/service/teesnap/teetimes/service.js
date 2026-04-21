@@ -42,13 +42,13 @@ async function getTeeSnapTeeTimes(date, booking_url, params) {
         const formattedTimes = [];
         const teeTimes = response.data.teeTimes;
 
-        if (!teeTimes || teeTimes.length === 0) {
+        if (!teeTimes || !teeTimes.teeTimes || teeTimes.teeTimes.length === 0) {
             return formattedTimes;
         }
 
         // Build a bookingId → golfer count map for fast lookup
         const bookingGolferCount = {};
-        teeTimes.bookings.forEach(b => {
+        (teeTimes.bookings ?? []).forEach(b => {
             bookingGolferCount[b.bookingId] = b.golfers.length;
         });
 
@@ -89,7 +89,11 @@ async function getTeeSnapTeeTimes(date, booking_url, params) {
 
         return formattedTimes;
     } catch (error) {
-        logger.error("Error fetching TeeSnap tee times:", error.message);
+        if (error.response) {
+            logger.error(`TeeSnap API error for ${booking_url}: HTTP ${error.response.status}`, error.response.data ?? '');
+        } else {
+            logger.error(`TeeSnap fetch error for ${booking_url}:`, error.message);
+        }
         return [];
     }
 }

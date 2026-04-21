@@ -49,7 +49,11 @@ async function getForeUpTeeTimes(date, params) {
 
         return formattedTimes;
     } catch (error) {
-        logger.error("Error fetching ForeUp tee times:", error.message);
+        if (error.response) {
+            logger.error(`ForeUp API error: HTTP ${error.response.status}`, error.response.data ?? '');
+        } else {
+            logger.error('ForeUp fetch error:', error.message);
+        }
         return [];
     }
 }

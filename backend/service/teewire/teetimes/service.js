@@ -84,7 +84,11 @@ async function getTeeWireTeeTime(date, params) {
 
         return formattedTimes;
     } catch (error) {
-        logger.error("Error fetching TeeWire tee times:", error.message);
+        if (error.response) {
+            logger.error(`TeeWire API error: HTTP ${error.response.status}`, error.response.data ?? '');
+        } else {
+            logger.error('TeeWire fetch error:', error.message);
+        }
         return [];
     }
 }
