@@ -8,12 +8,12 @@
   </div>
 
   <!-- Error -->
-  <div *ngIf="error" class="error-container">
+  <div *ngIf="error" class="state-container">
     <i class="pi pi-exclamation-triangle" style="font-size:2rem;color:#d32f2f"></i>
     <p>Failed to load tee times. Please try again.</p>
   </div>
 
-  <!-- Course banner — always rendered so date picker is mounted immediately -->
+  <!-- Course banner -->
   <div class="course-banner">
     <h1 class="banner-title">{{ course?.name ?? '&nbsp;' }}</h1>
     <div class="banner-controls">
@@ -53,20 +53,22 @@
 
   <!-- Skeleton loading -->
   <ng-container *ngIf="loading">
-    <div *ngFor="let _ of skeletonGroups" class="skeleton-group">
-      <div class="skeleton-hour-header"></div>
-      <div class="tee-list">
-        <div *ngFor="let __ of skeletonRows" class="tee-row skeleton-row">
-          <div class="skeleton-line sk-time"></div>
-          <div class="skeleton-line sk-spots"></div>
-          <div class="skeleton-line sk-holes"></div>
+    <div *ngFor="let _ of skeletonGroups" class="hour-group mb-4">
+      <div class="bg-golf-gradient p-3">
+        <p-skeleton height="1.25rem" styleClass="mb-0" width="40%"></p-skeleton>
+      </div>
+      <div>
+        <div *ngFor="let __ of skeletonRows" class="tee-row" style="cursor:default">
+          <p-skeleton height="1rem" width="90px"></p-skeleton>
+          <p-skeleton height="1rem" width="60px"></p-skeleton>
+          <p-skeleton height="1rem" width="40px"></p-skeleton>
         </div>
       </div>
     </div>
   </ng-container>
 
   <!-- No results -->
-  <div *ngIf="!loading && !error && filteredTeeTimes.length === 0" class="no-results">
+  <div *ngIf="!loading && !error && filteredTeeTimes.length === 0" class="state-container">
     <i class="pi pi-flag" style="font-size:2rem"></i>
     <p>No tee times available for the selected date.</p>
   </div>
@@ -76,11 +78,11 @@
     <div *ngFor="let hourGroup of hourGroups" class="hour-group">
 
       <div class="hour-label">
-        <i class="pi pi-clock hour-icon"></i>
+        <i class="pi pi-clock" style="font-size:1rem;opacity:0.75"></i>
         {{ hourGroup.label }}
       </div>
 
-      <div class="tee-list">
+      <div>
         <div (click)="bookTeeTime(teeTime)"
              *ngFor="let teeTime of hourGroup.teeTimes"
              class="tee-row">

@@ -1,45 +1,43 @@
-<div class="admin-container">
+<div class="grid p-4" style="max-width: 1200px; margin: 0 auto;">
 
-  <div class="admin-card">
-    <h2>Admin Dashboard</h2>
-    <h4>Refresh Tee Times</h4>
+  <div class="col-12 md:col-8 p-3">
+    <h2 class="mb-3">Admin Dashboard</h2>
+    <h4 class="mb-3">Refresh Tee Times</h4>
 
-    <form (ngSubmit)="refreshTeeTimes()" [formGroup]="refreshForm" class="admin-form">
-      <div class="field">
+    <form (ngSubmit)="refreshTeeTimes()" [formGroup]="refreshForm">
+
+      <div class="form-field">
         <label>Course</label>
-        <p-select [options]="courseOptions" formControlName="courseId" optionLabel="label" optionValue="value"
-                  styleClass="w-full"></p-select>
+        <p-select [options]="courseOptions" formControlName="courseId" optionLabel="label"
+                  optionValue="value" styleClass="w-full"></p-select>
       </div>
 
-      <div class="field">
+      <div class="form-field">
         <label>Date</label>
-        <p-datepicker [minDate]="minDate" [showIcon]="true" formControlName="date" styleClass="w-full"></p-datepicker>
+        <p-datepicker [minDate]="minDate" [showIcon]="true" formControlName="date"
+                      styleClass="w-full"></p-datepicker>
       </div>
 
-      <div class="form-actions">
-        <p-button [disabled]="refreshForm.invalid || refreshing" [loading]="refreshing" icon="pi pi-refresh"
-                  label="Refresh Tee Times"
-                  type="submit">
-        </p-button>
+      <div class="flex align-items-center justify-content-end gap-3 mt-4">
+        <p-button [disabled]="refreshForm.invalid || refreshing" [loading]="refreshing"
+                  icon="pi pi-refresh" label="Refresh Tee Times" type="submit"></p-button>
         <span *ngIf="refreshProgress" class="refresh-progress">{{ refreshProgress }}</span>
       </div>
+
     </form>
   </div>
 
-  <div class="admin-card help-card">
-    <h2>Help</h2>
+  <div class="col-12 md:col-4 p-3 help-card">
+    <h2 class="mb-3">Help</h2>
     <h3>Refresh Tee Times</h3>
-    <p>Use this admin panel to refresh tee times for all courses or a specific course. This is useful if you want to get
-      the latest availability data.</p>
-
+    <p>Use this panel to refresh tee times for all courses or a specific course.</p>
     <h3>Instructions</h3>
     <ol>
       <li>Select "All Courses" or a specific course from the dropdown menu.</li>
       <li>Select the date for which you want to refresh tee times.</li>
       <li>Click "Refresh Tee Times" to update the data.</li>
     </ol>
-
-    <p><strong>Note:</strong> Refreshing tee times may take a few moments to complete.</p>
+    <p class="mt-3"><strong>Note:</strong> Refreshing tee times may take a few moments to complete.</p>
   </div>
 
 </div>

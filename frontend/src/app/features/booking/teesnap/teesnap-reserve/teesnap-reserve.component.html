@@ -1,35 +1,36 @@
-<div class="reservation-page">
-  <div class="reservation-container">
+<div style="padding: 40px 0">
+  <div class="booking-container wide">
 
     <div *ngIf="submitting || completingReservation" class="loading-overlay">
       <p-progressspinner strokeWidth="4"></p-progressspinner>
       <p>{{ completingReservation ? 'Completing your reservation...' : 'Processing your reservation...' }}</p>
     </div>
 
+    <!-- Booking form -->
     <div *ngIf="!reservationSuccess">
-      <div class="card-header">
+      <div class="card-header-gradient">
         <div class="card-header-course">{{ course.name }}</div>
-        <div class="card-header-tiles">
-          <div class="card-header-tile"><i class="pi pi-calendar"></i>{{ teeTime.time | date:'EEE, MMM d' }}</div>
-          <div class="card-header-tile"><i class="pi pi-clock"></i>{{ teeTime.time | date:'shortTime' }}</div>
-          <div class="card-header-tile"><i class="pi pi-users"></i>{{ teeTime.spots }} spots</div>
-          <div class="card-header-tile"><i class="pi pi-flag"></i>{{ teeTime.holes.join(' / ') }}H</div>
+        <div class="flex flex-wrap gap-2">
+          <span class="card-header-tile"><i class="pi pi-calendar"></i>{{ teeTime.time | date:'EEE, MMM d' }}</span>
+          <span class="card-header-tile"><i class="pi pi-clock"></i>{{ teeTime.time | date:'shortTime' }}</span>
+          <span class="card-header-tile"><i class="pi pi-users"></i>{{ teeTime.spots }} spots</span>
+          <span class="card-header-tile"><i class="pi pi-flag"></i>{{ teeTime.holes.join(' / ') }}H</span>
         </div>
       </div>
 
-      <div class="reservation-form-container">
+      <div class="p-5">
         <div class="form-section-label">Customize Your Reservation</div>
         <form (ngSubmit)="onSubmit()" [formGroup]="reservationForm">
-          <div class="form-grid" formGroupName="reservationData">
-            <div class="field">
+          <div class="grid" formGroupName="reservationData">
+            <div class="col-12 md:col-6 form-field">
               <label>Number of Players</label>
-              <p-select [options]="playerOptions" formControlName="players" optionLabel="label" optionValue="value"
-                        styleClass="w-full"></p-select>
+              <p-select [options]="playerOptions" formControlName="players" optionLabel="label"
+                        optionValue="value" styleClass="w-full"></p-select>
             </div>
-            <div class="field">
+            <div class="col-12 md:col-6 form-field">
               <label>Number of Holes</label>
-              <p-select [options]="holeOptions" formControlName="holes" optionLabel="label" optionValue="value"
-                        styleClass="w-full"></p-select>
+              <p-select [options]="holeOptions" formControlName="holes" optionLabel="label"
+                        optionValue="value" styleClass="w-full"></p-select>
             </div>
             <input formControlName="teeOffSection" type="hidden">
             <input formControlName="addons" type="hidden">
@@ -39,23 +40,23 @@
           </div>
         </form>
 
-        <div class="form-actions">
+        <div class="flex align-items-center justify-content-between mt-4">
           <p-button (onClick)="cancel()" [text]="true" icon="pi pi-arrow-left" label="Back"
                     severity="secondary"></p-button>
-          <p-button (onClick)="onSubmit()" [disabled]="reservationForm.invalid || submitting" icon="pi pi-flag"
-                    label="Reserve Now"></p-button>
+          <p-button (onClick)="onSubmit()" [disabled]="reservationForm.invalid || submitting"
+                    icon="pi pi-flag" label="Reserve Now"></p-button>
         </div>
       </div>
     </div>
 
     <!-- Success state -->
-    <div *ngIf="reservationSuccess" class="success-view">
+    <div *ngIf="reservationSuccess" class="p-5 text-center">
       <i class="pi pi-check-circle success-icon"></i>
       <h2 class="success-title">Tee Time Reserved!</h2>
       <p class="success-message">Your tee time has been successfully reserved at {{ course.name }}.</p>
 
       <div class="timer-container">
-        <div class="timer">
+        <div class="flex flex-column align-items-center gap-1 mb-3">
           <span class="timer-value">{{ timeInMinutes }}:{{ timeInSeconds | number:'2.0-0' }}</span>
           <span class="timer-label">Time Remaining</span>
         </div>
@@ -76,10 +77,11 @@
           class="detail-value">{{ reservationForm.get('reservationData.holes')?.value }}</span></div>
       </div>
 
-      <div class="buttons-container">
+      <div class="flex align-items-center justify-content-center gap-3">
         <p-button (onClick)="completeReservation()" [disabled]="true" icon="pi pi-check"
                   label="Not Yet Implemented"></p-button>
-        <p-button (onClick)="cancel()" [text]="true" icon="pi pi-times" label="Cancel" severity="secondary"></p-button>
+        <p-button (onClick)="cancel()" [text]="true" icon="pi pi-times" label="Cancel"
+                  severity="secondary"></p-button>
       </div>
     </div>
 

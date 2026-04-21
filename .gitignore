@@ -45,3 +45,5 @@ Thumbs.db
 /frontend/.angular/
 *.log
 *.env
+*.agents
+*/frontend/.agents

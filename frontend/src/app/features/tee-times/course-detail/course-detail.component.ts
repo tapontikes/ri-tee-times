@@ -7,6 +7,7 @@ import {TagModule} from 'primeng/tag';
 import {SelectModule} from 'primeng/select';
 import {DatePickerModule} from 'primeng/datepicker';
 import {FormsModule} from '@angular/forms';
+import {SkeletonModule} from 'primeng/skeleton';
 import {skip} from 'rxjs/operators';
 import {Course, TeeTime, TeeTimeSearchParams} from '../../../shared/models/models';
 import {DataSharingService} from '../../../core/services/data-sharing.service';
@@ -19,7 +20,7 @@ import {formatTeeOff, randomDelay} from "../../../shared/utils";
   templateUrl: './course-detail.component.html',
   styleUrls: ['./course-detail.component.scss'],
   standalone: true,
-  imports: [CommonModule, ButtonModule, TagModule, SelectModule, DatePickerModule, FormsModule],
+  imports: [CommonModule, ButtonModule, TagModule, SelectModule, DatePickerModule, FormsModule, SkeletonModule],
 })
 export class CourseDetailComponent implements OnInit {
   course: Course | undefined;

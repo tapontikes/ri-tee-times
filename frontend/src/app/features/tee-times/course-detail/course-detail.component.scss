@@ -16,46 +16,6 @@
   margin-bottom: 20px;
 }
 
-:host ::ng-deep .nav-strip .p-button-text {
-  color: #2e7d32;
-}
-
-:host ::ng-deep .nav-strip .p-button-text:hover {
-  background: rgb(46 125 50 / 8%) !important;
-  color: #1b5e20 !important;
-}
-
-.nav-btn {
-  align-items: center;
-  background: white;
-  border: 1px solid #d4e9d4;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 5%);
-  color: #1b5e20;
-  cursor: pointer;
-  display: flex;
-  font-size: 0.88rem;
-  font-weight: 600;
-  gap: 4px;
-  padding: 8px 16px;
-  transition: background 0.2s ease,
-  box-shadow 0.25s ease,
-  transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.nav-btn:hover {
-  background: #f0f7f0;
-  box-shadow: 0 4px 12px rgb(46 125 50 / 12%);
-  transform: translateY(-1px);
-}
-
-.icon-sm {
-  font-size: 0.88rem;
-  height: auto;
-  overflow: visible;
-  width: auto;
-}
-
 /* ─── Course banner ──────────────────────────────────────────────────────── */
 
 .course-banner {
@@ -63,8 +23,7 @@
   animation: slideUpFade 0.45s 0.05s cubic-bezier(0.23, 1, 0.32, 1) both;
   background: linear-gradient(130deg, #1a5220 0%, #2d7533 100%);
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgb(27 94 32 / 20%),
-  0 1px 4px rgb(0 0 0 / 8%);
+  box-shadow: 0 4px 16px rgb(27 94 32 / 20%), 0 1px 4px rgb(0 0 0 / 8%);
   color: white;
   display: flex;
   flex-wrap: wrap;
@@ -76,7 +35,6 @@
 
 .banner-title {
   flex-shrink: 1;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -95,11 +53,10 @@
   gap: 10px;
 }
 
-/* ─── Hole toggle ────────────────────────────────────────────────────────── */
+/* ─── Hole / start toggle ────────────────────────────────────────────────── */
 
 .hole-toggle {
   display: flex;
-  gap: 0;
 }
 
 .toggle-btn {
@@ -111,37 +68,35 @@
   font-weight: 600;
   padding: 7px 16px;
   transition: all 0.18s ease;
+
+  &:first-child {
+    border-radius: 8px 0 0 8px;
+  }
+
+  &:last-child {
+    border-radius: 0 8px 8px 0;
+  }
+
+  &:not(:first-child) {
+    border-left: none;
+  }
+
+  &:hover {
+    background: rgb(255 255 255 / 22%);
+    color: white;
+  }
+
+  &.active {
+    background: white;
+    color: #1b5e20;
+    font-weight: 700;
+  }
 }
 
-.toggle-btn:first-child {
-  border-radius: 8px 0 0 8px;
-}
-
-.toggle-btn:last-child {
-  border-radius: 0 8px 8px 0;
-}
-
-.toggle-btn:not(:first-child) {
-  border-left: none;
-}
-
-.toggle-btn:hover {
-  background: rgb(255 255 255 / 22%);
-  color: white;
-}
-
-.toggle-btn.active {
-  background: white;
-  color: #1b5e20;
-  font-weight: 700;
-}
-
-/* Course selector inside banner */
 .course-select {
   min-width: 180px;
 }
 
-/* Date picker inside banner */
 :host ::ng-deep .banner-datepicker .p-datepicker-input {
   background: rgb(255 255 255 / 12%);
   border-color: rgb(255 255 255 / 25%);
@@ -157,23 +112,7 @@
   color: rgb(255 255 255 / 70%);
 }
 
-.course-banner ::ng-deep .mat-mdc-form-field-subscript-wrapper {
-  display: none;
-}
-
-.course-banner ::ng-deep .mdc-notched-outline__leading,
-.course-banner ::ng-deep .mdc-notched-outline__notch,
-.course-banner ::ng-deep .mdc-notched-outline__trailing {
-  border-color: rgb(255 255 255 / 35%) !important;
-}
-
-.course-banner ::ng-deep .mat-mdc-select-value,
-.course-banner ::ng-deep .mat-mdc-floating-label,
-.course-banner ::ng-deep .mat-mdc-select-arrow {
-  color: white !important;
-}
-
-/* ─── Hour group ─────────────────────────────────────────────────────────── */
+/* ─── Tee times section ──────────────────────────────────────────────────── */
 
 .tee-times-section {
   animation: fadeIn 0.8s ease both;
@@ -182,20 +121,12 @@
   gap: 16px;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+/* ─── Hour group ─────────────────────────────────────────────────────────── */
 
 .hour-group {
   background: white;
   border-radius: 16px;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 5%),
-  0 4px 14px rgb(0 0 0 / 4%);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 5%), 0 4px 14px rgb(0 0 0 / 4%);
   overflow: hidden;
 }
 
@@ -212,19 +143,7 @@
   text-transform: uppercase;
 }
 
-.hour-icon {
-  font-size: 1rem;
-  height: auto;
-  opacity: 0.75;
-  width: auto;
-}
-
-/* ─── Tee time list rows ─────────────────────────────────────────────────── */
-
-.tee-list {
-  display: flex;
-  flex-direction: column;
-}
+/* ─── Tee time rows ──────────────────────────────────────────────────────── */
 
 .tee-row {
   align-items: center;
@@ -234,26 +153,24 @@
   gap: 16px;
   padding: 14px 20px;
   transition: background 0.18s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: #f4fbf4;
+
+    .tee-row-chevron {
+      color: #2e7d32;
+      opacity: 1;
+      transform: translateX(4px);
+    }
+  }
 }
 
-.tee-row:last-child {
-  border-bottom: none;
-}
-
-.tee-row:hover {
-  background: #f4fbf4;
-}
-
-.tee-row:hover .tee-row-chevron {
-  color: #2e7d32;
-  opacity: 1;
-  transform: translateX(4px);
-}
-
-/* Time — big and prominent */
 .tee-row-time {
   color: #1d2e1e;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   font-feature-settings: 'tnum';
   font-size: 1.5rem;
   font-variant-numeric: tabular-nums;
@@ -262,7 +179,6 @@
   min-width: 110px;
 }
 
-/* Spots — secondary */
 .tee-row-spots {
   color: #2e7d32;
   flex: 1;
@@ -270,22 +186,11 @@
   font-weight: 500;
 }
 
-/* Holes chips */
 .tee-row-holes {
   display: flex;
   gap: 4px;
 }
 
-.tee-row-holes mat-chip {
-  font-weight: 700 !important;
-}
-
-.tee-row-holes mat-chip.mdc-evolution-chip--disabled {
-  font-weight: 700 !important;
-  opacity: 1 !important;
-}
-
-/* Start position label */
 .tee-row-start {
   background: #e8f5e9;
   border-radius: 6px;
@@ -296,88 +201,22 @@
   white-space: nowrap;
 }
 
-/* Chevron indicator */
 .tee-row-chevron {
   color: #c8d8c8;
   flex-shrink: 0;
   font-size: 1.2rem;
   height: auto;
   opacity: 0.6;
-  transition: color 0.2s ease,
-  opacity 0.2s ease,
+  transition: color 0.2s ease, opacity 0.2s ease,
   transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   width: auto;
-}
-
-/* ─── Skeleton loading ───────────────────────────────────────────────────── */
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-.skeleton-group {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 5%),
-  0 4px 14px rgb(0 0 0 / 4%);
-  margin-bottom: 16px;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.skeleton-hour-header {
-  animation: shimmer 1.5s infinite linear;
-  background: linear-gradient(
-    90deg,
-    #1a5220 25%,
-    #2d7533 50%,
-    #1a5220 75%
-  );
-  background-size: 200% 100%;
-  height: 36px;
-}
-
-.skeleton-row {
-  cursor: default;
-}
-
-.skeleton-line {
-  animation: shimmer 1.5s infinite linear;
-  background: linear-gradient(90deg, #f0f7f0 25%, #dceede 50%, #f0f7f0 75%);
-  background-size: 200% 100%;
-  border-radius: 6px;
-  height: 14px;
-}
-
-.sk-time {
-  width: 90px;
-}
-
-.sk-spots {
-  flex: 1;
-  max-width: 60px;
-}
-
-.sk-holes {
-  width: 40px;
-}
-
-@for $i from 1 through 4 {
-  .skeleton-row:nth-child(#{$i}) .skeleton-line {
-    animation-delay: #{($i - 1) * 0.1}s;
-  }
 }
 
 /* ─── Mobile ─────────────────────────────────────────────────────────────── */
 
 @media (width <= 1050px) {
   .page-wrapper {
-    max-width: 100vh;
+    max-width: 100%;
     padding: 12px 8px;
   }
 

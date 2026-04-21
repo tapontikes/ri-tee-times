@@ -1,5 +1,4 @@
 export const environment = {
   api: "http://localhost:3000",
-  mapsDistanceEnabled: false,
-  enable_booking: false
+  launchdarklyClientSideId: '69e7ceb25e51cf0be3c40114'
 };

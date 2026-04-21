@@ -1,3 +1,4 @@
+import {APP_INITIALIZER} from '@angular/core';
 import {bootstrapApplication} from '@angular/platform-browser';
 import {provideRouter, withInMemoryScrolling} from '@angular/router';
 import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
@@ -10,6 +11,7 @@ import {MessageService} from 'primeng/api';
 import {DialogService} from 'primeng/dynamicdialog';
 import {AppComponent} from './app/app.component';
 import {appRoutes} from './app/app.routes';
+import {LaunchDarklyService} from './app/core/services/launchdarkly.service';
 
 const GolfPreset = definePreset(Aura, {
   semantic: {
@@ -43,5 +45,11 @@ bootstrapApplication(AppComponent, {
     MessageService,
     DialogService,
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (ld: LaunchDarklyService) => () => ld.initialize(),
+      deps: [LaunchDarklyService],
+      multi: true,
+    },
   ],
 }).catch(err => console.error(err));

@@ -5,7 +5,7 @@ import {Course, TeeTime} from '../../shared/models/models';
 import {BookWithCourseComponent} from './book-with-course/book-with-course.component';
 import {DataSharingService} from '../../core/services/data-sharing.service';
 import {SessionService} from '../../core/services/session.service';
-import {environment} from '../../../environments/environment';
+import {LaunchDarklyService} from '../../core/services/launchdarkly.service';
 
 @Injectable({providedIn: 'root'})
 export class ReservationDialogService {
@@ -14,17 +14,19 @@ export class ReservationDialogService {
     private dialog: DialogService,
     private router: Router,
     private dataSharingService: DataSharingService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private ld: LaunchDarklyService,
   ) {
   }
 
   book(course: Course, teeTime: TeeTime): void {
+    const enableBooking = this.ld.variation('enable-booking', false);
     switch (course.provider) {
       case 'teesnap':
-        environment.enable_booking ? this.bookWithTeesnap(course, teeTime) : this.openBookWithCourseDialog(course, teeTime);
+        enableBooking ? this.bookWithTeesnap(course, teeTime) : this.openBookWithCourseDialog(course, teeTime);
         break;
       case 'foreup':
-        environment.enable_booking ? this.bookWithForeup(course, teeTime) : this.openBookWithCourseDialog(course, teeTime);
+        enableBooking ? this.bookWithForeup(course, teeTime) : this.openBookWithCourseDialog(course, teeTime);
         break;
       default:
         this.openBookWithCourseDialog(course, teeTime);

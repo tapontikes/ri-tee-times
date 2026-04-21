@@ -5,6 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {TagModule} from 'primeng/tag';
 import {ButtonModule} from 'primeng/button';
 import {DatePickerModule} from 'primeng/datepicker';
+import {SkeletonModule} from 'primeng/skeleton';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Course, TeeTime, TeeTimeSearchParams} from '../../../shared/models/models';
 import {TeeTimeService} from '../../../core/services/teetime.service';
@@ -13,7 +14,7 @@ import {ReservationDialogService} from '../../booking/reservation-dialog.service
 import {FilterTeeTimePipe} from '../../../shared/pipes/filter-tee-time.pipe';
 import {FilterCoursePipe} from '../../../shared/pipes/filter-course.pipe';
 import {AddressInputComponent} from '../../../shared/components/address-input/address-input.component';
-import {environment} from '../../../../environments/environment';
+import {LaunchDarklyService} from '../../../core/services/launchdarkly.service';
 import {formatDate, formatTeeOff, randomDelay} from '../../../shared/utils';
 
 interface TimePreset {
@@ -37,6 +38,7 @@ interface TimePreset {
     FilterTeeTimePipe,
     FilterCoursePipe,
     AddressInputComponent,
+    SkeletonModule,
   ],
 })
 export class TeeTimeListComponent implements OnInit {
@@ -47,6 +49,8 @@ export class TeeTimeListComponent implements OnInit {
   providers = ['teesnap', 'foreup'];
   loading = true;
   error = false;
+  enableBooking = false;
+  mapsDistanceEnabled = false;
   selectedAddress?: string;
   searchParams: TeeTimeSearchParams;
   courseStartFilters = new Map<number, string | null>();
@@ -67,7 +71,6 @@ export class TeeTimeListComponent implements OnInit {
     return d;
   })();
 
-  protected readonly environment = environment;
   private readonly destroyRef = inject(DestroyRef);
   formatTeeOff = formatTeeOff;
 
@@ -78,6 +81,7 @@ export class TeeTimeListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private cdk: ChangeDetectorRef,
+    private ld: LaunchDarklyService,
   ) {
     // Resolve initial state from URL snapshot, falling back to smart defaults
     const snap = this.route.snapshot.queryParams;
@@ -108,6 +112,8 @@ export class TeeTimeListComponent implements OnInit {
   ngOnInit(): void {
     this.selectedAddress = localStorage.getItem('selectedAddress') || '';
     this.dataSharingService.setUserLocation(this.selectedAddress);
+    this.enableBooking = this.ld.variation('enable-booking', false);
+    this.mapsDistanceEnabled = this.ld.variation('maps-distance-enabled', false);
     this.loadCourses();
     this.loadTeeTimes();
   }

@@ -1,14 +1,14 @@
-<div class="dialog-body">
+<div class="flex flex-column gap-4">
 
-  <!-- Date + time row -->
+  <!-- Date + time summary -->
   <div class="tee-summary">
     <div class="summary-date">{{ data.teeTime.time | date:'EEEE, MMMM d, y' }}</div>
-    <div class="summary-time-row">
+    <div class="flex align-items-baseline gap-2 mb-3">
       <span class="summary-time">{{ data.teeTime.time | date:'shortTime' }}</span>
       <span class="summary-sep">·</span>
       <span class="summary-spots">{{ data.teeTime.spots }} spots available</span>
     </div>
-    <div class="summary-badges">
+    <div class="flex flex-wrap gap-2">
       <span *ngFor="let hole of data.teeTime.holes" class="badge badge-holes">{{ hole }}H</span>
       <span *ngIf="data.teeTime.start" class="badge badge-start">
         <i class="pi pi-flag"></i>{{ formatTeeOff(data.teeTime.start) }}
@@ -23,7 +23,7 @@
   </p>
 
   <!-- Actions -->
-  <div class="dialog-actions">
+  <div class="flex justify-content-end gap-2">
     <p-button (onClick)="cancel()" label="Cancel" severity="secondary" variant="outlined"></p-button>
     <p-button (onClick)="bookWithCourse()" icon="pi pi-arrow-right" iconPos="right"
               label="Book on Website"></p-button>

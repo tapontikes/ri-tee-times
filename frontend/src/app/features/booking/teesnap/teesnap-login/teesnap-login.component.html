@@ -1,51 +1,52 @@
-<div class="login-page">
-  <div class="login-container">
+<div style="padding: 40px 0">
+  <div class="booking-container">
 
     <div *ngIf="submitting" class="loading-overlay">
       <p-progressspinner strokeWidth="4"></p-progressspinner>
       <p>Logging in...</p>
     </div>
 
-    <div class="card-header">
+    <div class="card-header-gradient">
       <div class="card-header-course">{{ course.name }}</div>
-      <div *ngIf="teeTime" class="card-header-tiles">
-        <div class="card-header-tile"><i class="pi pi-calendar"></i>{{ teeTime.time | date:'EEE, MMM d' }}</div>
-        <div class="card-header-tile"><i class="pi pi-clock"></i>{{ teeTime.time | date:'shortTime' }}</div>
-        <div class="card-header-tile"><i class="pi pi-users"></i>{{ teeTime.spots }} spots</div>
-        <div class="card-header-tile"><i class="pi pi-flag"></i>{{ teeTime.holes.join(' / ') }}H</div>
+      <div *ngIf="teeTime" class="flex flex-wrap gap-2">
+        <span class="card-header-tile"><i class="pi pi-calendar"></i>{{ teeTime.time | date:'EEE, MMM d' }}</span>
+        <span class="card-header-tile"><i class="pi pi-clock"></i>{{ teeTime.time | date:'shortTime' }}</span>
+        <span class="card-header-tile"><i class="pi pi-users"></i>{{ teeTime.spots }} spots</span>
+        <span class="card-header-tile"><i class="pi pi-flag"></i>{{ teeTime.holes.join(' / ') }}H</span>
       </div>
     </div>
 
-    <div class="login-form-container">
+    <div class="p-5">
       <div class="form-section-label">TeeSnap Login</div>
-      <form (ngSubmit)="onSubmit()" [formGroup]="loginForm" class="login-form">
+      <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
         <input formControlName="domain" type="hidden">
 
-        <div class="field">
+        <div class="form-field">
           <label for="email">Email</label>
-          <input class="w-full" formControlName="email" id="email" pInputText placeholder="Enter your Teesnap email"
-                 type="email"/>
+          <input class="w-full" formControlName="email" id="email" pInputText
+                 placeholder="Enter your TeeSnap email" type="email"/>
           <small *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')"
-                 class="field-error">Email is required</small>
+                 class="form-field-error">Email is required</small>
           <small *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('email')"
-                 class="field-error">Please enter a valid email</small>
+                 class="form-field-error">Please enter a valid email</small>
         </div>
 
-        <div class="field">
+        <div class="form-field">
           <label for="password">Password</label>
           <p-password [feedback]="false" [toggleMask]="true" formControlName="password" id="password"
-                      inputStyleClass="w-full" placeholder="Enter your Teesnap password"
+                      inputStyleClass="w-full" placeholder="Enter your TeeSnap password"
                       styleClass="w-full"></p-password>
           <small *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')"
-                 class="field-error">Password is required</small>
+                 class="form-field-error">Password is required</small>
         </div>
 
-        <div class="form-actions">
-          <p-button (onClick)="cancel()" [text]="true" icon="pi pi-arrow-left" label="Back" severity="secondary"
-                    type="button"></p-button>
-          <p-button (onClick)="onSubmit()" [disabled]="loginForm.invalid || submitting" icon="pi pi-sign-in"
-                    label="Login" type="submit"></p-button>
+        <div class="flex align-items-center justify-content-between mt-4">
+          <p-button (onClick)="cancel()" [text]="true" icon="pi pi-arrow-left" label="Back"
+                    severity="secondary" type="button"></p-button>
+          <p-button (onClick)="onSubmit()" [disabled]="loginForm.invalid || submitting"
+                    icon="pi pi-sign-in" label="Login" type="submit"></p-button>
         </div>
+
       </form>
     </div>
 

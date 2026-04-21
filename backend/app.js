@@ -25,6 +25,7 @@ const foreupRouter = require('./routes/foreup/controller');
 
 // Import database and scheduler
 const {initializeJobs, refreshAllTeeTimesJob} = require('./jobs/teetime');
+const {client: ldClient} = require('./utils/launchdarkly');
 
 const app = express();
 
@@ -91,17 +92,28 @@ app.use('/api/foreup', foreupRouter);
 // Initialize jobs on app startup
 (async () => {
     try {
-        if (process.env.SCHEDULER_ENABLED === 'true') {
+        await ldClient.waitForInitialization({timeout: 5});
+        logger.info('LaunchDarkly initialized.');
+    } catch (err) {
+        logger.warn('LaunchDarkly initialization failed or timed out — continuing without it.', err.message);
+    }
+
+    try {
+        const serverCtx = {kind: 'user', key: 'server'};
+
+        const schedulerEnabled = await ldClient.boolVariation('scheduler-enabled', serverCtx, false);
+        if (schedulerEnabled) {
             await initializeJobs();
             logger.info('Tee time jobs initialized successfully');
         } else {
-            logger.info('Skipping tee time jobs initialization.');
+            logger.info('Skipping tee time jobs initialization (scheduler-enabled flag is off).');
         }
-        if (process.env.REFRESH_ON_STARTUP === 'true') {
+
+        const refreshOnStartup = await ldClient.boolVariation('refresh-on-startup', serverCtx, false);
+        if (refreshOnStartup) {
             logger.info('Running refresh on startup.');
             await (refreshAllTeeTimesJob(0, 6))();
         }
-
     } catch (error) {
         logger.error('Error during initialization:', error);
     }

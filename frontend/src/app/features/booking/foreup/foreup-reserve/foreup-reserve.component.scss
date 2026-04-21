@@ -1,114 +1,4 @@
-.reservation-page {
-  padding: 40px 0;
-}
-
-.reservation-container {
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 2px 16px rgb(0 0 0 / 10%);
-  margin: 0 auto;
-  max-width: min(560px, 90vw);
-  overflow: hidden;
-}
-
-/* ─── Green header ───────────────────────────────────────────────────────── */
-
-.card-header {
-  background: linear-gradient(130deg, #1a5220 0%, #2d7533 100%);
-  padding: 20px 28px 18px;
-}
-
-.card-header-course {
-  color: white;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin: 0 0 12px;
-}
-
-.card-header-tiles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.card-header-tile {
-  align-items: center;
-  background: rgb(255 255 255 / 14%);
-  border-radius: 8px;
-  color: rgb(255 255 255 / 90%);
-  display: flex;
-  font-size: 0.82rem;
-  font-weight: 600;
-  gap: 6px;
-  padding: 5px 10px;
-}
-
-.card-header-tile i {
-  font-size: 0.8rem;
-  opacity: 0.8;
-}
-
-/* ─── Form container ─────────────────────────────────────────────────────── */
-
-.reservation-form-container {
-  padding: 20px 32px 32px;
-}
-
-.form-section-label {
-  color: #5a7a57;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  margin-bottom: 12px;
-  text-transform: uppercase;
-}
-
-.form-grid {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: 1fr 1fr;
-}
-
-.field label {
-  color: #4a6741;
-  display: block;
-  font-size: 0.82rem;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.form-actions {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  margin-top: 24px;
-}
-
-/* ─── Loading overlay ────────────────────────────────────────────────────── */
-
-.loading-overlay {
-  align-items: center;
-  background-color: rgb(255 255 255 / 85%);
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  justify-content: center;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  z-index: 1000;
-}
-
 /* ─── Success state ──────────────────────────────────────────────────────── */
-
-.success-view {
-  padding: 32px;
-  text-align: center;
-}
 
 .success-icon {
   color: #2e7d32;
@@ -135,14 +25,7 @@
   margin: 0 auto 24px;
   max-width: 300px;
   padding: 18px;
-}
-
-.timer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 10px;
+  text-align: center;
 }
 
 .timer-value {
@@ -155,8 +38,9 @@
 .timer-info {
   color: #888;
   font-size: 0.8rem;
-  text-align: center;
 }
+
+/* ─── Reservation summary table ──────────────────────────────────────────── */
 
 .reservation-summary {
   border: 1px solid #e8f5e9;
@@ -171,10 +55,10 @@
     color: #1b5e20;
     font-size: 0.85rem;
     font-weight: 700;
+    letter-spacing: 0.05em;
     margin: 0;
     padding: 10px 16px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
 }
 
@@ -183,10 +67,10 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 16px;
-}
 
-.summary-detail:last-child {
-  border-bottom: none;
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .detail-label {
@@ -199,26 +83,4 @@
   color: #1a2e1b;
   font-size: 0.85rem;
   font-weight: 600;
-}
-
-.buttons-container {
-  align-items: center;
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-@media (max-width: 640px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .form-actions {
-    flex-direction: column-reverse;
-    gap: 12px;
-  }
-
-  .reservation-container {
-    max-width: 95vw;
-  }
 }

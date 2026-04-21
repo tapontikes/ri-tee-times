@@ -3,53 +3,40 @@
   <!-- ── Filter bar ─────────────────────────────────────────────────────── -->
   <div class="filter-bar">
 
-    <!-- Date row -->
-    <div class="date-row">
-      <button (click)="changeDate(-1)"
-              [disabled]="!canGoPrev()"
-              aria-label="Previous day"
-              class="date-nav-btn">
+    <div class="flex align-items-center justify-content-center gap-2 mb-1">
+      <button (click)="changeDate(-1)" [disabled]="!canGoPrev()"
+              aria-label="Previous day" class="date-nav-btn">
         <i class="pi pi-chevron-left"></i>
       </button>
 
-      <div class="date-picker-group">
+      <div class="flex align-items-center gap-1">
         <span class="day-label">{{ selectedDate | date:'EEEE' }}</span>
         <p-datepicker (onSelect)="onDateSelect($event)"
                       [(ngModel)]="selectedDate"
-                      [maxDate]="maxDate"
-                      [minDate]="minDate"
-                      [showButtonBar]="false"
-                      [showIcon]="true"
-                      appendTo="body"
-                      styleClass="date-picker-hero">
+                      [maxDate]="maxDate" [minDate]="minDate"
+                      [showButtonBar]="false" [showIcon]="true"
+                      appendTo="body" styleClass="date-picker-hero">
         </p-datepicker>
       </div>
 
-      <button (click)="changeDate(1)"
-              [disabled]="!canGoNext()"
-              aria-label="Next day"
-              class="date-nav-btn">
+      <button (click)="changeDate(1)" [disabled]="!canGoNext()"
+              aria-label="Next day" class="date-nav-btn">
         <i class="pi pi-chevron-right"></i>
       </button>
     </div>
 
     <div class="filter-divider"></div>
 
-    <!-- Holes + time preset chips -->
-    <div class="chips-row">
+    <div class="flex flex-wrap align-items-center justify-content-center gap-2">
       <div class="chip-group">
         <button (click)="setHoles(9)" [class.active]="searchParams.holes === 9" class="chip">9H</button>
         <button (click)="setHoles(18)" [class.active]="searchParams.holes === 18" class="chip">18H</button>
         <button (click)="setHoles(10)" [class.active]="searchParams.holes === 10" class="chip">All</button>
       </div>
-
-      <span class="chips-sep">·</span>
-
+      <span style="color:#d4e9d4;font-size:1.2rem;padding:0 4px;user-select:none">·</span>
       <div class="chip-group">
-        <button (click)="setPreset(p)"
-                *ngFor="let p of timePresets"
-                [class.active]="activePreset === p.value"
-                class="chip">{{ p.label }}
+        <button (click)="setPreset(p)" *ngFor="let p of timePresets"
+                [class.active]="activePreset === p.value" class="chip">{{ p.label }}
         </button>
       </div>
     </div>
@@ -57,45 +44,51 @@
   </div>
 
   <!-- ── Distance locator ───────────────────────────────────────────────── -->
-  <div *ngIf="environment.mapsDistanceEnabled" class="location-bar">
+  <div *ngIf="mapsDistanceEnabled"
+       class="flex flex-wrap align-items-center gap-3 mb-5"
+       style="animation: slideUpFade 0.65s 0.08s cubic-bezier(0.23,1,0.32,1) both">
     <ng-container *ngIf="!selectedAddress">
-      <span class="location-label">Add your location to see driving distances:</span>
+      <span style="color:#5a7a57;font-size:0.92rem">Add your location to see driving distances:</span>
       <app-address-input (placeSelected)="onLocationSelected($event)"></app-address-input>
     </ng-container>
     <ng-container *ngIf="selectedAddress">
-      <span class="location-label">
-        Distances from: <strong>{{ selectedAddress }}</strong>
-        &nbsp;<span (click)="clearAddress()" class="location-clear">Change</span>
+      <span style="color:#5a7a57;font-size:0.92rem">
+        Distances from: <strong>{{ selectedAddress }}</strong>&nbsp;
+        <span (click)="clearAddress()" style="color:#2e7d32;cursor:pointer;font-weight:600;text-decoration:underline">Change</span>
       </span>
     </ng-container>
   </div>
 
   <!-- ── Skeleton loading ────────────────────────────────────────────────── -->
   <ng-container *ngIf="loading">
-    <div *ngFor="let _ of skeletonCards" class="course-card skeleton-card">
-      <div class="skeleton-header">
-        <div class="skeleton-line sk-title"></div>
-        <div class="skeleton-line sk-meta"></div>
+    <div *ngFor="let _ of skeletonCards" class="course-card">
+      <div class="course-header flex flex-column gap-2">
+        <p-skeleton [style]="{'background':'rgba(255,255,255,0.15)'}" height="1.25rem"
+                    width="52%"></p-skeleton>
+        <p-skeleton [style]="{'background':'rgba(255,255,255,0.1)'}" height="0.85rem"
+                    width="32%"></p-skeleton>
       </div>
-      <div class="skeleton-tiles-row">
-        <div *ngFor="let __ of skeletonTiles" class="skeleton-tile"></div>
-        <div class="scroll-fade"></div>
+      <div class="flex gap-3 overflow-hidden" style="padding:18px 20px 20px">
+        <div *ngFor="let __ of skeletonTiles" class="skeleton-tile-wrapper">
+          <p-skeleton [style]="{'background':'rgba(0,0,0,0.07)'}" borderRadius="14px" height="110px"
+                      width="100%"></p-skeleton>
+        </div>
       </div>
-      <div class="skeleton-footer">
-        <div class="skeleton-line sk-footer-line"></div>
+      <div class="flex gap-1" style="padding:6px 12px;border-top:1px solid #f0f7f0">
+        <p-skeleton height="11px" width="22%"></p-skeleton>
       </div>
     </div>
   </ng-container>
 
   <!-- ── Error ──────────────────────────────────────────────────────────── -->
-  <div *ngIf="error" class="error-container">
+  <div *ngIf="error" class="state-container">
     <i class="pi pi-exclamation-triangle" style="font-size:2rem;color:#d32f2f"></i>
     <p>Could not load tee times. Please try again.</p>
     <p-button (onClick)="loadTeeTimes()" icon="pi pi-refresh" label="Retry"></p-button>
   </div>
 
   <!-- ── Empty state ────────────────────────────────────────────────────── -->
-  <div *ngIf="!loading && !error && teeTimes.length === 0" class="no-results">
+  <div *ngIf="!loading && !error && teeTimes.length === 0" class="state-container">
     <i class="pi pi-flag" style="font-size:2rem"></i>
     <p>No tee times available for the selected date.</p>
   </div>
@@ -107,33 +100,36 @@
 
         <div class="course-card">
 
-          <!-- Course header bar -->
-          <div class="course-header">
-            <div class="course-header-left">
+          <!-- Course header -->
+          <div class="course-header flex align-items-center justify-content-between flex-nowrap">
+            <div class="flex flex-column" style="min-width:0;flex:1">
               <h2 class="course-name">{{ course.name }}</h2>
-              <div class="course-meta">
-                <span class="meta-city">{{ getCity(course.address) }}</span>
+              <div class="flex flex-wrap align-items-center gap-1" style="margin-top:5px">
+                <span style="color:rgba(255,255,255,0.72);font-size:0.83rem">{{ getCity(course.address) }}</span>
                 <ng-container *ngIf="course.driveTime">
-                  <span class="meta-sep">&middot;</span>
-                  <span class="meta-distance">{{ course.driveTime }}</span>
+                  <span style="color:rgba(255,255,255,0.35);font-size:0.83rem">&middot;</span>
+                  <span style="color:#b9dfbb;font-size:0.83rem;font-weight:600">{{ course.driveTime }}</span>
                 </ng-container>
-                <span *ngIf="providers.includes(course.provider) && environment.enable_booking"
+                <span *ngIf="providers.includes(course.provider) && enableBooking"
                       class="meta-badge badge-inapp">In-App Booking</span>
-                <span *ngIf="!providers.includes(course.provider) && environment.enable_booking"
+                <span *ngIf="!providers.includes(course.provider) && enableBooking"
                       class="meta-badge badge-course">Book with Course</span>
               </div>
             </div>
-            <div class="course-header-right">
-              <span class="times-count">{{ times.length }} times</span>
-              <div *ngIf="times.length > 0" class="times-range">
+            <div style="flex-shrink:0;margin-left:20px;text-align:right">
+              <span
+                style="color:white;display:block;font-size:0.9rem;font-weight:700;letter-spacing:0.01em">{{ times.length }}
+                times</span>
+              <div *ngIf="times.length > 0"
+                   style="color:rgba(255,255,255,0.55);font-feature-settings:'tnum';font-size:0.78rem;font-variant-numeric:tabular-nums;margin-top:2px;white-space:nowrap">
                 {{ times[0].time | date:'shortTime' }}
-                <span class="range-dash">&ndash;</span>
+                <span style="margin:0 3px">&ndash;</span>
                 {{ times[times.length - 1].time | date:'shortTime' }}
               </div>
             </div>
           </div>
 
-          <!-- Front/Back 9 filter (TeeSnap courses only) -->
+          <!-- Front/Back 9 filter (TeeSnap only) -->
           <div *ngIf="courseHasBackNine(course.id)" class="start-filter-bar">
             <button (click)="toggleStartFilter(course.id, 'FRONT_NINE')"
                     [class.active]="getStartFilter(course.id) === 'FRONT_NINE'"
@@ -150,30 +146,24 @@
           </div>
 
           <!-- Tee time scroll row -->
-          <div class="tee-times-wrapper">
+          <div class="relative">
             <div class="tee-times-scroll">
-              <div class="tee-times-row">
+              <div style="display:flex;gap:10px;min-width:min-content">
 
                 <div (click)="reservationDialogService.book(course, teeTime)"
                      *ngFor="let teeTime of times"
                      class="tee-time-tile">
                   <div class="tile-time">{{ teeTime.time | date:'shortTime' }}</div>
                   <div class="tile-spots">{{ teeTime.spots }} spots</div>
-                  <div class="tile-holes">
+                  <div class="flex flex-wrap justify-content-center gap-1">
                     <p-tag *ngFor="let hole of teeTime.holes"
-                           [value]="hole + 'H'"
-                           severity="secondary"
-                           styleClass="hole-tag">
-                    </p-tag>
+                           [value]="hole + 'H'" severity="secondary" styleClass="hole-tag"></p-tag>
                     <p-tag *ngIf="teeTime.start"
-                           [value]="formatTeeOff(teeTime.start)"
-                           severity="info"
-                           styleClass="hole-tag start-tag">
-                    </p-tag>
+                           [value]="formatTeeOff(teeTime.start)" severity="info"
+                           styleClass="hole-tag start-tag"></p-tag>
                   </div>
                 </div>
 
-                <!-- View all tile -->
                 <div (click)="goToCourseDetail(course.id)" class="view-all-tile">
                   <i class="pi pi-arrow-right view-all-icon"></i>
                   <span class="view-all-label">All Times</span>
@@ -185,17 +175,13 @@
           </div>
 
           <!-- Course footer -->
-          <div class="course-footer">
+          <div class="flex gap-1" style="padding:6px 12px;border-top:1px solid #f0f7f0">
             <p-button (onClick)="goToCourseDetail(course.id)"
                       icon="pi pi-arrow-right" iconPos="right" label="View all times"
-                      severity="secondary" size="small"
-                      variant="text">
-            </p-button>
+                      severity="secondary" size="small" variant="text"></p-button>
             <p-button (onClick)="goToCoursePage(course.booking_url)"
                       icon="pi pi-external-link" iconPos="right" label="Visit course website"
-                      severity="secondary" size="small"
-                      variant="text">
-            </p-button>
+                      severity="secondary" size="small" variant="text"></p-button>
           </div>
 
         </div>
