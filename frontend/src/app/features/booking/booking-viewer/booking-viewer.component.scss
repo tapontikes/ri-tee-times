@@ -1,0 +1,164 @@
+/* ─── Full-viewport overlay ───────────────────────────────────────────────── */
+
+:host {
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+}
+
+.viewer-shell {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ─── Top chrome bar ──────────────────────────────────────────────────────── */
+
+.viewer-bar {
+  align-items: center;
+  background: #1a2e1a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-shrink: 0;
+  gap: 12px;
+  min-height: 80px;
+  padding: 0 16px;
+}
+
+/* Back button */
+.back-btn {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  gap: 5px;
+  letter-spacing: 0.01em;
+  padding: 7px 14px 7px 10px;
+  transition: background 0.15s ease;
+
+  i {
+    font-size: 0.78rem;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.22);
+  }
+}
+
+.back-label {
+  @media (max-width: 500px) {
+    display: none;
+  }
+}
+
+/* Meta block — grows to fill space */
+.bar-meta {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0 4px;
+}
+
+.bar-time {
+  color: #fff;
+  font-feature-settings: 'tnum';
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.bar-detail {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.bar-course {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.78rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bar-sep {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.75rem;
+}
+
+.bar-spots {
+  color: #7ec87f;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.bar-badge {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 2px 7px;
+
+  &--start {
+    background: rgba(99, 179, 237, 0.18);
+    color: #90cdf4;
+  }
+}
+
+/* External link button */
+.external-btn {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  height: 36px;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+  width: 36px;
+
+  i {
+    font-size: 0.82rem;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+  }
+}
+
+/* ─── Iframe ──────────────────────────────────────────────────────────────── */
+
+.booking-iframe {
+  border: none;
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}

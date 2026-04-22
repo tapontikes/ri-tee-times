@@ -1,0 +1,47 @@
+<div class="viewer-shell">
+
+  <!-- ── Top chrome bar ───────────────────────────────────────────────────── -->
+  <div class="viewer-bar">
+
+    <button (click)="goBack()" aria-label="Go back" class="back-btn">
+      <i class="pi pi-chevron-left"></i>
+      <span class="back-label">Back</span>
+    </button>
+
+    <button (click)="goHome()" aria-label="Go home" class="back-btn">
+      <i class="pi pi-home"></i>
+      <span class="back-label">Home</span>
+    </button>
+
+    <div class="bar-meta">
+      <div class="bar-time">{{ teeTime?.time | date:'h:mm a' }}</div>
+      <div class="bar-detail">
+        <span class="bar-course">{{ course?.name }}</span>
+        <span class="bar-sep">·</span>
+        <span class="bar-spots">{{ teeTime?.spots }} spots</span>
+        <ng-container *ngFor="let hole of displayHoles">
+          <span class="bar-badge">{{ hole }}H</span>
+        </ng-container>
+        <span *ngIf="teeTime?.start && formatTeeOff(teeTime.start)" class="bar-badge bar-badge--start">
+          {{ formatTeeOff(teeTime.start) }}
+        </span>
+      </div>
+    </div>
+
+    <button (click)="openExternal()" aria-label="Open in browser" class="external-btn" title="Open in browser">
+      <i class="pi pi-external-link"></i>
+    </button>
+
+  </div>
+
+  <!-- ── Iframe ────────────────────────────────────────────────────────────── -->
+  <iframe
+    *ngIf="bookingUrl"
+    [src]="bookingUrl"
+    allow="payment"
+    class="booking-iframe"
+    referrerpolicy="origin"
+    title="Course booking"
+  ></iframe>
+
+</div>
