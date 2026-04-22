@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CommonModule, Location} from '@angular/common';
 import {Router} from '@angular/router';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
@@ -13,11 +13,14 @@ import {formatTeeOff} from '../../../shared/utils';
   standalone: true,
   imports: [CommonModule],
 })
-export class BookingViewerComponent implements OnInit {
+export class BookingViewerComponent implements OnInit, OnDestroy {
   course!: Course;
   teeTime!: TeeTime;
   bookingUrl!: SafeResourceUrl;
+  iframeLoading = true;
   formatTeeOff = formatTeeOff;
+
+  private loadingTimeout?: ReturnType<typeof setTimeout>;
 
   constructor(
     private router: Router,
@@ -47,6 +50,21 @@ export class BookingViewerComponent implements OnInit {
       return;
     }
     this.bookingUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.toProxyUrl(this.course.booking_url));
+    this.loadingTimeout = setTimeout(() => {
+      this.iframeLoading = false;
+    }, 10000);
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.loadingTimeout);
+  }
+
+  onIframeLoad(): void {
+    clearTimeout(this.loadingTimeout);
+    // Keep spinner visible for at least 1.5 s so it doesn't flash away instantly
+    this.loadingTimeout = setTimeout(() => {
+      this.iframeLoading = false;
+    }, 1500);
   }
 
   private toProxyUrl(bookingUrl: string): string {
