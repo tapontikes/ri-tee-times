@@ -101,13 +101,8 @@ app.use('/api/foreup', foreupRouter);
     try {
         const serverCtx = {kind: 'user', key: 'server'};
 
-        const schedulerEnabled = await ldClient.boolVariation('scheduler-enabled', serverCtx, false);
-        if (schedulerEnabled) {
-            await initializeJobs();
-            logger.info('Tee time jobs initialized successfully');
-        } else {
-            logger.info('Skipping tee time jobs initialization (scheduler-enabled flag is off).');
-        }
+        await initializeJobs();
+        logger.info('Tee time jobs initialized successfully');
 
         const refreshOnStartup = await ldClient.boolVariation('refresh-on-startup', serverCtx, false);
         if (refreshOnStartup) {

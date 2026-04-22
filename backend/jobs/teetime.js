@@ -2,6 +2,7 @@ const moment = require('moment');
 const client = require('../database/client');
 const logger = require('../utils/logger');
 const Scheduler = require('./scheduler');
+const {client: ldClient} = require('../utils/launchdarkly');
 
 const foreUpService = require('../service/foreup/teetimes/service');
 const teeItUpService = require('../service/teeitup/teetimes/service');
@@ -105,6 +106,12 @@ async function refreshAllCoursesByDate(date) {
  */
 function refreshAllTeeTimesJob(startDay, endDay) {
     return async () => {
+        const enabled = await ldClient.boolVariation('scheduler-enabled', {kind: 'user', key: 'server'}, true);
+        if (!enabled) {
+            logger.info('scheduler-enabled flag is off — skipping tee time refresh');
+            return;
+        }
+
         const jobLabel = `days +${startDay}–+${endDay - 1}`;
         const rangeStart = moment().add(startDay, 'days').format('YYYY-MM-DD');
         const rangeEnd = moment().add(endDay - 1, 'days').format('YYYY-MM-DD');
