@@ -39,14 +39,15 @@ router.get('/:courseId/:date', async (req, res, next) => {
 // Get all tee times for a specific date
 router.get('/all', async (req, res, next) => {
     try {
-        const {date} = req.query;
+        const {date, holes} = req.query;
 
         // Validate date format
         if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
             return res.status(400).json({error: 'Invalid date format. Use YYYY-MM-DD'});
         }
 
-        const teeTimes = await dbClient.getTeeTimesByDate(date);
+        const holesFilter = holes ? parseInt(holes, 10) : null;
+        const teeTimes = await dbClient.getTeeTimesByDate(date, holesFilter);
 
         res.json(teeTimes);
 

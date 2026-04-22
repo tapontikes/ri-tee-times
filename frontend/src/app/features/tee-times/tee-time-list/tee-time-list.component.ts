@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, DestroyRef, inject, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {TagModule} from 'primeng/tag';
@@ -44,6 +44,7 @@ interface TimePreset {
 export class TeeTimeListComponent implements OnInit {
   courses: Course[] = [];
   teeTimes: TeeTime[] = [];
+  courseStartMap = new Map<number, boolean>();
   readonly skeletonCards = Array(5);
   readonly skeletonTiles = Array(8);
   providers = ['teesnap', 'foreup'];
@@ -53,8 +54,6 @@ export class TeeTimeListComponent implements OnInit {
   mapsDistanceEnabled = false;
   selectedAddress?: string;
   searchParams: TeeTimeSearchParams;
-  courseStartFilters = new Map<number, string | null>();
-
   selectedDate: Date;
   activePreset = 'all';
 
@@ -64,7 +63,11 @@ export class TeeTimeListComponent implements OnInit {
     {label: 'All Day', value: 'all', start: '05:00', end: '23:59'},
   ];
 
-  readonly minDate = new Date();
+  readonly minDate = (() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  })();
   readonly maxDate = (() => {
     const d = new Date();
     d.setDate(d.getDate() + 7);
@@ -78,32 +81,22 @@ export class TeeTimeListComponent implements OnInit {
     private teeTimeService: TeeTimeService,
     private dataSharingService: DataSharingService,
     public reservationDialogService: ReservationDialogService,
-    private route: ActivatedRoute,
     private router: Router,
     private cdk: ChangeDetectorRef,
     private ld: LaunchDarklyService,
   ) {
-    // Resolve initial state from URL snapshot, falling back to smart defaults
-    const snap = this.route.snapshot.queryParams;
+    const saved = this.dataSharingService.getSearchState();
+    const [y, m, d] = saved.date.split('-').map(Number);
+    this.selectedDate = new Date(y, m - 1, d);
 
-    if (snap['date']) {
-      const [y, m, d] = snap['date'].split('-').map(Number);
-      this.selectedDate = new Date(y, m - 1, d);
-    } else {
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      if (new Date().getHours() >= 17) now.setDate(now.getDate() + 1);
-      this.selectedDate = now;
-    }
-
-    const preset = this.timePresets.find(p => p.value === snap['preset']) ?? this.timePresets[2];
+    const preset = this.timePresets.find(p => p.value === saved.preset) ?? this.timePresets[2];
     this.activePreset = preset.value;
 
     this.searchParams = {
-      date: formatDate(this.selectedDate),
+      date: saved.date,
       startTime: preset.start,
       endTime: preset.end,
-      holes: snap['holes'] ? +snap['holes'] : 10,
+      holes: saved.holes,
     };
   }
 
@@ -121,10 +114,9 @@ export class TeeTimeListComponent implements OnInit {
   onDateSelect(date: Date): void {
     if (!date) return;
     this.selectedDate = date;
-    this.searchParams.date = formatDate(date);
-    this.courseStartFilters.clear();
+    this.searchParams = {...this.searchParams, date: formatDate(date)};
     this.loadTeeTimes();
-    this.syncUrl();
+    this.saveState();
   }
 
   changeDate(delta: number): void {
@@ -152,33 +144,18 @@ export class TeeTimeListComponent implements OnInit {
   }
 
   setHoles(holes: number): void {
-    this.searchParams.holes = holes;
-    this.syncUrl();
+    this.searchParams = {...this.searchParams, holes};
+    this.saveState();
+    this.loadTeeTimes();
   }
-
-  // ── Course start filters ──────────────────────────────────────────────────
 
   setPreset(preset: TimePreset): void {
     this.activePreset = preset.value;
-    this.searchParams.startTime = preset.start;
-    this.searchParams.endTime = preset.end;
-    this.syncUrl();
-  }
-
-  courseHasBackNine(courseId: number): boolean {
-    return this.teeTimes.some(t => t.courseId === courseId && t.start?.includes('BACK_NINE'));
-  }
-
-  getStartFilter(courseId: number): string | null {
-    return this.courseStartFilters.get(courseId) ?? null;
+    this.searchParams = {...this.searchParams, startTime: preset.start, endTime: preset.end};
+    this.saveState();
   }
 
   // ── Data loading ──────────────────────────────────────────────────────────
-
-  toggleStartFilter(courseId: number, section: string | null): void {
-    const current = this.courseStartFilters.get(courseId) ?? null;
-    this.courseStartFilters.set(courseId, current === section ? null : section);
-  }
 
   loadCourses(): void {
     const cached = this.dataSharingService.getCourses();
@@ -208,6 +185,7 @@ export class TeeTimeListComponent implements OnInit {
     ).subscribe({
       next: (teeTimesData) => {
         this.teeTimes = teeTimesData;
+        this.buildCourseStartMap();
         this.dataSharingService.setTeeTimes(this.teeTimes);
         setTimeout(() => {
           this.loading = false;
@@ -229,9 +207,7 @@ export class TeeTimeListComponent implements OnInit {
   goToCourseDetail(courseId: number): void {
     this.dataSharingService.setTeeTimes(this.teeTimes);
     this.dataSharingService.setCourses(this.courses);
-    this.router.navigate(['/course', courseId], {
-      queryParams: {date: this.searchParams.date},
-    });
+    this.router.navigate(['/course', courseId]);
   }
 
   async onLocationSelected(place: google.maps.places.PlaceResult): Promise<void> {
@@ -259,15 +235,26 @@ export class TeeTimeListComponent implements OnInit {
     }
   }
 
-  private syncUrl(): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        date: this.searchParams.date,
-        holes: this.searchParams.holes,
-        preset: this.activePreset,
-      },
-      replaceUrl: true,
+  private buildCourseStartMap(): void {
+    const startsPerCourse = new Map<number, Set<string>>();
+    for (const t of this.teeTimes) {
+      const s = t.start?.trim();
+      if (!s) continue;
+      if (!startsPerCourse.has(t.courseId)) startsPerCourse.set(t.courseId, new Set());
+      startsPerCourse.get(t.courseId)!.add(s);
+    }
+    const map = new Map<number, boolean>();
+    startsPerCourse.forEach((starts, courseId) => map.set(courseId, starts.size > 1));
+    this.courseStartMap = map;
+  }
+
+  private saveState(): void {
+    this.dataSharingService.setSearchState({
+      date: this.searchParams.date,
+      holes: this.searchParams.holes,
+      preset: this.activePreset,
+      startTime: this.searchParams.startTime,
+      endTime: this.searchParams.endTime,
     });
   }
 }

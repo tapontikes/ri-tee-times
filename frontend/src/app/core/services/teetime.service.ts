@@ -38,7 +38,11 @@ export class TeeTimeService {
   }
 
   getAllTeeTimes(params: TeeTimeSearchParams): Observable<TeeTime[]> {
-    return this.http.get<TeeTime[]>(`${this.apiUrl}/all`, {params: {date: params.date}}).pipe(
+    const httpParams: Record<string, string> = {date: params.date};
+    if (params.holes === 9 || params.holes === 18) {
+      httpParams['holes'] = String(params.holes);
+    }
+    return this.http.get<TeeTime[]>(`${this.apiUrl}/all`, {params: httpParams}).pipe(
       map(teeTimes => teeTimes.filter(t => new Date(t.time) > new Date()))
     );
   }

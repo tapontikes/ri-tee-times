@@ -1,7 +1,7 @@
 import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ActivatedRoute, Router} from '@angular/router';
-import {CommonModule, formatDate} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {ButtonModule} from 'primeng/button';
 import {TagModule} from 'primeng/tag';
 import {SelectModule} from 'primeng/select';
@@ -13,7 +13,7 @@ import {Course, TeeTime, TeeTimeSearchParams} from '../../../shared/models/model
 import {DataSharingService} from '../../../core/services/data-sharing.service';
 import {TeeTimeService} from '../../../core/services/teetime.service';
 import {ReservationDialogService} from '../../booking/reservation-dialog.service';
-import {formatTeeOff, randomDelay} from "../../../shared/utils";
+import {formatDate, formatTeeOff, randomDelay} from "../../../shared/utils";
 
 @Component({
   selector: 'app-course-detail',
@@ -58,24 +58,15 @@ export class CourseDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
   ) {
-    // Read initial values synchronously from snapshot — runs before any render
     const snap = this.route.snapshot;
     this.courseId = +snap.params['id'];
 
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    const isAfter5PM = new Date().getHours() >= 17;
-    const defaultDate = isAfter5PM ? new Date(now.setDate(now.getDate() + 1)) : now;
-
-    if (snap.queryParams['date']) {
-      const [y, m, d] = snap.queryParams['date'].split('-').map(Number);
-      this.selectedDate = new Date(y, m - 1, d);
-    } else {
-      this.selectedDate = defaultDate;
-    }
+    const saved = this.dataSharingService.getSearchState();
+    const [y, m, d] = saved.date.split('-').map(Number);
+    this.selectedDate = new Date(y, m - 1, d);
 
     this.searchParams = {
-      date: formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US'),
+      date: saved.date,
       startTime: '06:00',
       endTime: '18:00',
       holes: 10,
@@ -114,21 +105,18 @@ export class CourseDetailComponent implements OnInit {
 
   changeCourse(newCourseId: number): void {
     if (newCourseId === this.courseId) return;
-    this.router.navigate(['/course', newCourseId], {
-      queryParams: {date: this.searchParams.date},
-    });
+    this.router.navigate(['/course', newCourseId]);
   }
 
   onDateChange(date: Date): void {
     if (!date) return;
-    this.searchParams.date = formatDate(date, 'yyyy-MM-dd', 'en-US');
+    this.searchParams.date = formatDate(date);
+    this.dataSharingService.setSearchState({date: this.searchParams.date});
     this.loadTeeTimes();
   }
 
   goBack(): void {
-    this.router.navigate(['/teetimes'], {
-      queryParams: {date: this.searchParams.date},
-    });
+    this.router.navigate(['/teetimes']);
   }
 
   bookTeeTime(teeTime: TeeTime): void {

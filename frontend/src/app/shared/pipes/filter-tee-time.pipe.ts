@@ -2,7 +2,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 import {Course, TeeTime, TeeTimeSearchParams} from '../models/models';
 import {isTimeInRange, matchesHoles, matchesStart} from '../utils';
 
-@Pipe({name: 'teeTimeFilter', standalone: true, pure: false})
+@Pipe({name: 'teeTimeFilter', standalone: true, pure: true})
 export class FilterTeeTimePipe implements PipeTransform {
   transform(teeTimes: TeeTime[], searchParams: TeeTimeSearchParams, course: Course, startFilter: string | null = null): TeeTime[] {
     if (!teeTimes || !searchParams) return teeTimes;

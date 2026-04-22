@@ -2,6 +2,23 @@ import {Injectable} from '@angular/core';
 import {Course, TeeTime} from '../../shared/models/models';
 import {findCourseById} from '../../shared/utils';
 
+export interface SearchState {
+  date: string;
+  preset: string;
+  holes: number;
+  startTime: string;
+  endTime: string;
+}
+
+function defaultSearchState(): SearchState {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  if (new Date().getHours() >= 18) now.setDate(now.getDate() + 1);
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  return {date: `${now.getFullYear()}-${m}-${d}`, preset: 'all', holes: 10, startTime: '05:00', endTime: '23:59'};
+}
+
 @Injectable({providedIn: 'root'})
 export class DataSharingService {
   private _teeTimes: TeeTime[] = [];
@@ -9,6 +26,7 @@ export class DataSharingService {
   private _selectedTeeTime!: TeeTime;
   private _selectedCourse!: Course;
   private _userLocation = '';
+  private _searchState: SearchState = defaultSearchState();
 
   setSelectedTeeTime(teeTime: TeeTime): void {
     this._selectedTeeTime = teeTime;
@@ -56,6 +74,14 @@ export class DataSharingService {
 
   setUserLocation(location: string): void {
     this._userLocation = location;
+  }
+
+  getSearchState(): SearchState {
+    return {...this._searchState};
+  }
+
+  setSearchState(state: Partial<SearchState>): void {
+    this._searchState = {...this._searchState, ...state};
   }
 
   clearSelectedData(): void {

@@ -95,21 +95,27 @@ class DbClient {
     /**
      * Get tee times on a specific date
      * @param {String} date - Date string in YYYY-MM-DD format
+     * @param {Number|null} holes - Optional holes filter (9 or 18); null returns all
      * @returns {Promise<Array>} - Array of tee time objects
      */
-    async getTeeTimesByDate(date) {
+    async getTeeTimesByDate(date, holes = null) {
         try {
-            // Validate that the date is valid
             if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
                 throw new Error('Invalid date format. Expected YYYY-MM-DD.');
             }
 
-            // Get the start and end of the day in ISO format
             const startOfDay = moment(date).startOf('day').toISOString();
             const endOfDay = moment(date).endOf('day').toISOString();
+            const holesFilter = (holes === 9 || holes === 18) ? holes : null;
 
-            // Query the database for tee times within the date range
-            const result = await client.query('SELECT * FROM tee_times WHERE tee_time BETWEEN $1 AND $2 ORDER BY tee_time', [startOfDay, endOfDay]);
+            const result = await client.query(
+                `SELECT *
+                 FROM tee_times
+                 WHERE tee_time BETWEEN $1 AND $2
+                   AND ($3::int IS NULL OR holes @> ARRAY[$3::int])
+                 ORDER BY tee_time`,
+                [startOfDay, endOfDay, holesFilter]
+            );
 
             return result.rows.map(row => ({
                 id: row.id,
@@ -121,9 +127,8 @@ class DbClient {
             }));
 
         } catch (error) {
-            // Log the error with more context
             logger.error(`Error getting tee times on ${date}: `, error);
-            throw error; // Re-throw the error for further handling
+            throw error;
         }
     }
 
