@@ -10,7 +10,7 @@
 }
 
 .viewer-shell {
-  background: #fff;
+  background: #18481a;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -21,7 +21,7 @@
 
 .viewer-bar {
   align-items: center;
-  background: #1a2e1a;
+  background: #18481a;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-shrink: 0;
@@ -76,13 +76,23 @@
 }
 
 .bar-time {
+  align-items: baseline;
   color: #fff;
+  display: flex;
   font-feature-settings: 'tnum';
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
+  gap: 8px;
   letter-spacing: -0.02em;
   line-height: 1.2;
+}
+
+.bar-date {
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .bar-detail {
@@ -155,10 +165,52 @@
 
 /* ─── Iframe ──────────────────────────────────────────────────────────────── */
 
+.iframe-wrap {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
 .booking-iframe {
   border: none;
   display: block;
-  flex: 1;
-  min-height: 0;
+  height: 100%;
   width: 100%;
+}
+
+.loading-overlay {
+  align-items: center;
+  background: #18481a;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.loading-label {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.spinner {
+  animation: spin 0.75s linear infinite;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  border-top-color: #7ec87f;
+  height: 40px;
+  width: 40px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -14,7 +14,10 @@
     </button>
 
     <div class="bar-meta">
-      <div class="bar-time">{{ teeTime?.time | date:'h:mm a' }}</div>
+      <div class="bar-time">
+        {{ teeTime?.time | date:'h:mm a' }}
+        <span class="bar-date">{{ teeTime?.time | date:'EEE, MMM d' }}</span>
+      </div>
       <div class="bar-detail">
         <span class="bar-course">{{ course?.name }}</span>
         <span class="bar-sep">·</span>
@@ -35,13 +38,20 @@
   </div>
 
   <!-- ── Iframe ────────────────────────────────────────────────────────────── -->
-  <iframe
-    *ngIf="bookingUrl"
-    [src]="bookingUrl"
-    allow="payment"
-    class="booking-iframe"
-    referrerpolicy="origin"
-    title="Course booking"
-  ></iframe>
+  <div class="iframe-wrap">
+    <div *ngIf="iframeLoading" class="loading-overlay">
+      <div class="spinner"></div>
+      <span class="loading-label">Loading booking page…</span>
+    </div>
+    <iframe
+      (load)="onIframeLoad()"
+      *ngIf="bookingUrl"
+      [src]="bookingUrl"
+      allow="payment"
+      class="booking-iframe"
+      referrerpolicy="origin"
+      title="Course booking"
+    ></iframe>
+  </div>
 
 </div>
