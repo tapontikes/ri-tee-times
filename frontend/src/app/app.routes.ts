@@ -2,11 +2,13 @@ import {Routes} from '@angular/router';
 import {TeeTimeListComponent} from './features/tee-times/tee-time-list/tee-time-list.component';
 import {CourseDetailComponent} from './features/tee-times/course-detail/course-detail.component';
 import {AdminComponent} from './features/admin/admin.component';
+import {BookingViewerComponent} from './features/booking/booking-viewer/booking-viewer.component';
 
 export const appRoutes: Routes = [
   {path: '', redirectTo: 'teetimes', pathMatch: 'full'},
   {path: 'teetimes', component: TeeTimeListComponent},
   {path: 'course/:id', component: CourseDetailComponent, runGuardsAndResolvers: 'always'},
+  {path: 'book', component: BookingViewerComponent},
   {path: 'admin', component: AdminComponent},
   {
     path: 'foreup',
