@@ -26,7 +26,7 @@
   display: flex;
   flex-shrink: 0;
   gap: 12px;
-  min-height: 60px;
+  min-height: 80px;
   padding: 0 16px;
 }
 
@@ -61,7 +61,7 @@
 }
 
 .back-label {
-  @media (max-width: 380px) {
+  @media (max-width: 500px) {
     display: none;
   }
 }

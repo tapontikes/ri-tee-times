@@ -19,9 +19,10 @@ if (process.env.NODE_ENV !== 'production') {
     require("dotenv").config({path: fs.existsSync(localEnv) ? localEnv : rootEnv});
 }
 
-const teeTimeRouter = require('./routes/teetimes/controller'); // New tee time routes
+const teeTimeRouter = require('./routes/teetimes/controller');
 const teesnapRouter = require('./routes/teesnap/controller');
 const foreupRouter = require('./routes/foreup/controller');
+const proxyRouter = require('./routes/proxy/controller');
 
 // Import database and scheduler
 const {initializeJobs, refreshAllTeeTimesJob} = require('./jobs/teetime');
@@ -88,6 +89,7 @@ app.use((req, res, next) => {
 app.use('/api/tee-times', teeTimeRouter);
 app.use('/api/teesnap', teesnapRouter);
 app.use('/api/foreup', foreupRouter);
+app.use('/api/proxy', proxyRouter);
 
 // Initialize jobs on app startup
 (async () => {

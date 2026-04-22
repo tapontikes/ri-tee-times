@@ -144,9 +144,6 @@
                       <p-tag *ngIf="hole === 9 || hole === 18"
                              [value]="hole + 'H'" severity="secondary" styleClass="hole-tag"></p-tag>
                     </ng-container>
-                    <p-tag *ngIf="courseStartMap.get(course.id) && formatTeeOff(teeTime.start)"
-                           [value]="formatTeeOff(teeTime.start)" severity="info"
-                           styleClass="hole-tag start-tag"></p-tag>
                   </div>
                 </div>
 

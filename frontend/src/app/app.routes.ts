@@ -3,12 +3,13 @@ import {TeeTimeListComponent} from './features/tee-times/tee-time-list/tee-time-
 import {CourseDetailComponent} from './features/tee-times/course-detail/course-detail.component';
 import {AdminComponent} from './features/admin/admin.component';
 import {BookingViewerComponent} from './features/booking/booking-viewer/booking-viewer.component';
+import {SourceGuard} from "./core/guards/source.guard";
 
 export const appRoutes: Routes = [
   {path: '', redirectTo: 'teetimes', pathMatch: 'full'},
   {path: 'teetimes', component: TeeTimeListComponent},
   {path: 'course/:id', component: CourseDetailComponent, runGuardsAndResolvers: 'always'},
-  {path: 'book', component: BookingViewerComponent},
+  {path: 'book', component: BookingViewerComponent, canActivate: [SourceGuard]},
   {path: 'admin', component: AdminComponent},
   {
     path: 'foreup',
