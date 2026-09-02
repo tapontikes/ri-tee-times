@@ -149,8 +149,9 @@ function refreshAllTeeTimesJob(startDay, endDay) {
                     const count = await refreshTeeTimesForCourse(course.id, targetDate);
                     datesQueried++;
 
-                    if (count === 0) {
+                    if (count === 0 && i > 0) {
                         // Course isn't booking this far out — no point querying further dates
+                        // (skip this check for day 0 since today may simply be over)
                         logger.info(`│   ${tag} — no times on day +${i}, stopping (booking horizon reached)`);
                         exitedEarly = true;
                         break;
