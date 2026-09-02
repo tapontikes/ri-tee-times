@@ -67,7 +67,7 @@ async function refreshTeeTimesForCourse(courseId, date) {
             teeTimes = await teeSnapService.getTeeSnapTeeTimes(moment(date).format('YYYY-MM-DD'), course.booking_url, course.request_data);
             break;
         case 'teewire':
-            teeTimes = await teeWireService.getTeeWireTeeTime(moment(date).format('MM/DD/YYYY'), course.request_data);
+            teeTimes = await teeWireService.getTeeWireTeeTime(moment(date).format('YYYY-MM-DD'), course.request_data);
             break;
         default:
             throw new Error(`Unknown provider: ${course.provider}`);
@@ -210,8 +210,8 @@ function removeOldTeeTimesJob() {
 async function initializeJobs() {
     scheduler.scheduleJob('remove-old-tee-times', '59 23 * * *', removeOldTeeTimesJob());
 
-    // Near-term: days 0–5, runs at :00 and :40 every hour
-    scheduler.scheduleJob('refresh-near-term', '0,40 * * * *', refreshAllTeeTimesJob(0, 6));
+    // Near-term: days 0–6, runs at :00 and :40 every hour
+    scheduler.scheduleJob('refresh-near-term', '0,40 * * * *', refreshAllTeeTimesJob(0, 7));
 
     // Future-term: days 7–13, runs at :20 every hour
     scheduler.scheduleJob('refresh-future-term', '20 * * * *', refreshAllTeeTimesJob(7, 14));

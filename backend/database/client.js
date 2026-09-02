@@ -138,6 +138,23 @@ class DbClient {
      * @param {String} date - Date string in YYYY-MM-DD format
      * @returns {Promise<Array>} - Array of tee time objects
      */
+    async getLastRefreshedAt(date) {
+        try {
+            const startOfDay = moment(date).startOf('day').toISOString();
+            const endOfDay = moment(date).endOf('day').toISOString();
+            const result = await client.query(
+                `SELECT MAX(created_at) AS last_refreshed
+                 FROM tee_times
+                 WHERE tee_time BETWEEN $1 AND $2`,
+                [startOfDay, endOfDay]
+            );
+            return result.rows[0]?.last_refreshed ?? null;
+        } catch (error) {
+            logger.error(`Error getting last refreshed at for ${date}:`, error);
+            return null;
+        }
+    }
+
     async getTeeTimesByCourseAndDate(courseId, date) {
         try {
             const startOfDay = moment(date).startOf('day').toISOString();

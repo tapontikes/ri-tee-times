@@ -15,13 +15,13 @@
 
     <div class="bar-meta">
       <div class="bar-time">
-        {{ teeTime?.time | date:'h:mm a' }}
-        <span class="bar-date">{{ teeTime?.time | date:'EEE, MMM d' }}</span>
+        {{ teeTime.time | date:'h:mm a' }}
+        <span class="bar-date">{{ teeTime.time | date:'EEE, MMM d' }}</span>
       </div>
       <div class="bar-detail">
-        <span class="bar-course">{{ course?.name }}</span>
+        <span class="bar-course">{{ course.name }}</span>
         <span class="bar-sep">·</span>
-        <span class="bar-spots">{{ teeTime?.spots }} spots</span>
+        <span class="bar-spots">{{ teeTime.spots }} spots</span>
         <ng-container *ngFor="let hole of displayHoles">
           <span class="bar-badge">{{ hole }}H</span>
         </ng-container>

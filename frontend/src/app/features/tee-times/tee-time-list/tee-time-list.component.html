@@ -3,26 +3,30 @@
   <!-- ── Filter bar ─────────────────────────────────────────────────────── -->
   <div class="filter-bar">
 
-    <div class="flex align-items-center justify-content-center gap-2 mb-1">
-      <button (click)="changeDate(-1)" [disabled]="!canGoPrev()"
-              aria-label="Previous day" class="date-nav-btn">
-        <i class="pi pi-chevron-left"></i>
-      </button>
+    <div class="date-nav-row">
+      <div class="flex align-items-center gap-2">
+        <button (click)="changeDate(-1)" [disabled]="!canGoPrev()"
+                aria-label="Previous day" class="date-nav-btn">
+          <i class="pi pi-chevron-left"></i>
+        </button>
 
-      <div class="flex align-items-center gap-1">
-        <span class="day-label">{{ selectedDate | date:'EEEE' }}</span>
-        <p-datepicker (onSelect)="onDateSelect($event)"
-                      [(ngModel)]="selectedDate"
-                      [maxDate]="maxDate" [minDate]="minDate"
-                      [showButtonBar]="false" [showIcon]="true"
-                      appendTo="body" styleClass="date-picker-hero">
-        </p-datepicker>
+        <div class="flex align-items-center gap-1">
+          <span class="day-label">{{ selectedDate | date:'EEEE' }}</span>
+          <p-datepicker (onSelect)="onDateSelect($event)"
+                        [(ngModel)]="selectedDate"
+                        [maxDate]="maxDate" [minDate]="minDate"
+                        [showButtonBar]="false" [showIcon]="true"
+                        appendTo="body" styleClass="date-picker-hero">
+          </p-datepicker>
+        </div>
+
+        <button (click)="changeDate(1)" [disabled]="!canGoNext()"
+                aria-label="Next day" class="date-nav-btn">
+          <i class="pi pi-chevron-right"></i>
+        </button>
       </div>
 
-      <button (click)="changeDate(1)" [disabled]="!canGoNext()"
-              aria-label="Next day" class="date-nav-btn">
-        <i class="pi pi-chevron-right"></i>
-      </button>
+      <span *ngIf="lastRefreshed" class="as-of-label">as of {{ lastRefreshed | date:'h:mm a' }}</span>
     </div>
 
     <div class="filter-divider"></div>

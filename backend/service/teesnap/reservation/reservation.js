@@ -1,5 +1,6 @@
 const logger = require('../../../utils/logger');
 const {Unauthorized} = require("http-errors");
+const {getRandomUserAgent} = require('../../../utils/user-agents');
 
 /**
  * Gets XSRF token from the Teesnap website
@@ -13,7 +14,7 @@ async function getXSRFToken(client, domain) {
     await client.get(domain, {
         withCredentials: true,
         headers: {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+            'User-Agent': getRandomUserAgent(),
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
             'Accept-Language': 'en-US,en;q=0.8',
             'Sec-Fetch-Dest': 'document',
@@ -52,7 +53,7 @@ async function login(client, domain, email, password, xsrfToken) {
         {
             withCredentials: true,
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+                'User-Agent': getRandomUserAgent(),
                 'Accept': 'application/json, text/plain, */*',
                 'Accept-Language': 'en-US,en;q=0.8',
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -86,7 +87,7 @@ async function getReservationQuote(client, domain, reservationData) {
         {
             withCredentials: true,
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+                'User-Agent': getRandomUserAgent(),
                 'Accept': 'application/json, text/plain, */*',
                 'Accept-Language': 'en-US,en;q=0.8',
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -119,7 +120,7 @@ async function confirmReservation(client, domain, reservationId, xsrfToken) {
             {
                 withCredentials: true,
                 headers: {
-                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+                    'User-Agent': getRandomUserAgent(),
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/json;charset=UTF-8',
                     'Origin': `${domain}`,

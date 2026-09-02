@@ -1,5 +1,6 @@
 const axios = require('axios');
 const logger = require('../../../utils/logger');
+const {getRandomUserAgent} = require('../../../utils/user-agents');
 
 // Constants
 const TEEITUP_BASE_URL = "https://phx-api-be-east-1b.kenna.io/v2/tee-times";
@@ -20,7 +21,7 @@ async function getTeeItUpTeeTimes(date, params) {
 
         const response = await axios.get(TEEITUP_BASE_URL, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+                'User-Agent': getRandomUserAgent(),
                 'x-be-alias': params.alias
             },
             params: request_data
@@ -51,7 +52,7 @@ async function getTeeItUpTeeTimes(date, params) {
         if (error.response) {
             logger.error(`TeeItUp API error: HTTP ${error.response.status}`, error.response.data ?? '');
         } else {
-            logger.error('TeeItUp fetch error:', error.message);
+            logger.error('TeeItUp fetch error:', error);
         }
         return [];
     }

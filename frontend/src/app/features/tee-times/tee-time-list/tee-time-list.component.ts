@@ -50,6 +50,7 @@ export class TeeTimeListComponent implements OnInit {
   providers = ['teesnap', 'foreup'];
   loading = true;
   error = false;
+  lastRefreshed: Date | null = null;
   enableBooking = false;
   mapsDistanceEnabled = false;
   selectedAddress?: string;
@@ -194,6 +195,13 @@ export class TeeTimeListComponent implements OnInit {
       error: () => {
         this.error = true;
         this.loading = false;
+      },
+    });
+    this.teeTimeService.getLastRefreshed(this.searchParams.date).pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe({
+      next: (ts) => this.lastRefreshed = ts,
+      error: () => {
       },
     });
   }

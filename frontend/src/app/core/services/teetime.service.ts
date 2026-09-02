@@ -60,6 +60,12 @@ export class TeeTimeService {
     );
   }
 
+  getLastRefreshed(date: string): Observable<Date | null> {
+    return this.http.get<{ lastRefreshedAt: string | null }>(`${this.apiUrl}/last-refreshed`, {params: {date}}).pipe(
+      map(r => r.lastRefreshedAt ? new Date(r.lastRefreshedAt) : null)
+    );
+  }
+
   refreshAllTeeTimes(request: RefreshRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/refresh/all`, request);
   }

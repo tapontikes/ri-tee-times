@@ -5,6 +5,24 @@
   max-width: 80vw;
 }
 
+/* ─── Date nav row ───────────────────────────────────────────────────────── */
+
+.date-nav-row {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.as-of-label {
+  color: #a0b4a0;
+  font-size: 0.7rem;
+  position: absolute;
+  right: 0;
+  white-space: nowrap;
+}
+
 /* ─── Filter bar ─────────────────────────────────────────────────────────── */
 
 .filter-bar {

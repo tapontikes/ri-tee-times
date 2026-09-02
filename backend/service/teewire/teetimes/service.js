@@ -1,93 +1,35 @@
 const axios = require('axios');
-const moment = require('moment');
-const cheerio = require('cheerio');
 const logger = require('../../../utils/logger');
+const {getRandomUserAgent} = require('../../../utils/user-agents');
 
-// Constants
-const TEEWIRE_BASE_URL = "https://teewire.net";
+const TEEWIRE_BASE_URL = 'https://www.teewire.app';
 
-/**
- * Fetches tee times from TeeWire API
- * @param date
- * @param {Object} params - Query parameters for the API request
- * @returns {Promise<Array>} - Formatted tee times
- */
 async function getTeeWireTeeTime(date, params) {
     try {
-        const request_params = {
-            "controller": params.controller,
-            "action": params.action,
-            "cid": params.cid,
-        }
-
-        const data = {
-            "formatted": date,
-            "cal_id": params.cal_id,
-        }
-
-        const config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: TEEWIRE_BASE_URL + params.path,
-            params: request_params,
-            timeout: 2500,
-            headers: {
-                'Accept': '*/*',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                'Sec-Fetch-Dest': 'empty',
-                'Sec-Fetch-Mode': 'cors',
-                'Sec-Fetch-Site': 'same-origin',
-                'Sec-GPC': '1',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
-                'X-Requested-With': 'XMLHttpRequest',
-                'sec-ch-ua': '"Brave";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"Windows"',
-            },
-            data: data
-        };
-
-        const response = await axios.request(config);
-        const formattedTimes = [];
-        const html = response.data;
-        const $ = cheerio.load(html);
-
-        $('body > div').each((i, el) => {
-            try {
-                const time = $(el).find('.panel-title').first().text().trim();
-                const spotsMatch = $(el).find('.panel-body').text().trim().match(/Up to (\d+) golfers/);
-
-                if (!spotsMatch) {
-                    return;
-                }
-
-                const spots = spotsMatch[1];
-                let holes = $(el).find('.panel-footer').text().trim();
-                const holesMatch = holes.match(/(9|18)/);
-
-                if (!holesMatch) {
-                    return;
-                }
-
-                holes = holesMatch[0];
-
-                formattedTimes.push({
-                    "time": moment(time, 'h:mm A').toISOString(),
-                    "holes": [parseInt(holes, 10)],
-                    "spots": parseInt(spots, 10)
-                });
-            } catch (ex) {
-                // Skip elements that don't match the expected structure
-
-            }
+        const url = `${TEEWIRE_BASE_URL}/${params.slug}/online/application/web/api/golf-api.php`;
+        const response = await axios.get(url, {
+            params: {action: 'tee-times', date},
+            headers: {'User-Agent': getRandomUserAgent()},
+            timeout: 5000,
         });
 
-        return formattedTimes;
+        const teeTimes = response.data?.data?.tee_times;
+        if (!teeTimes?.length) return [];
+
+        return teeTimes
+            .filter(slot => slot.availability.available_spots > 0)
+            .map(slot => ({
+                time: new Date(slot.timestamp * 1000).toISOString(),
+                spots: slot.availability.available_spots,
+                holes: [...new Set(slot.pricing.rates
+                    .filter(r => slot.turn_time_available || r.holes !== 18)
+                    .map(r => r.holes))].sort((a, b) => a - b),
+            }));
     } catch (error) {
         if (error.response) {
-            logger.error(`TeeWire API error: HTTP ${error.response.status}`, error.response.data ?? '');
+            logger.error(`TeeWire API error for ${params.slug}: HTTP ${error.response.status}`, error.response.data ?? '');
         } else {
-            logger.error('TeeWire fetch error:', error.message);
+            logger.error(`TeeWire fetch error for ${params.slug}:`, error);
         }
         return [];
     }

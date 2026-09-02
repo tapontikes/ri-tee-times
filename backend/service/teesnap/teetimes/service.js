@@ -1,5 +1,6 @@
 const axios = require('axios');
 const logger = require('../../../utils/logger');
+const {getRandomUserAgent} = require('../../../utils/user-agents');
 
 // Constants
 const TEESNAP_ENDPOINT = "/customer-api/teetimes-day";
@@ -22,19 +23,7 @@ async function getTeeSnapTeeTimes(date, booking_url, params) {
 
         const response = await axios.get(booking_url + TEESNAP_ENDPOINT, {
             headers: {
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.6',
-                'Priority': 'u=0, i',
-                'Sec-CH-UA': '"Chromium";v="134", "Not:A-Brand";v="24", "Brave";v="134"',
-                'Sec-CH-UA-Mobile': '?0',
-                'Sec-CH-UA-Platform': '"Windows"',
-                'Sec-Fetch-Dest': 'document',
-                'Sec-Fetch-Mode': 'navigate',
-                'Sec-Fetch-Site': 'none',
-                'Sec-Fetch-User': '?1',
-                'Sec-GPC': '1',
-                'Upgrade-Insecure-Requests': '1',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
+                'User-Agent': getRandomUserAgent()
             },
             params: request_data
         });
@@ -92,7 +81,7 @@ async function getTeeSnapTeeTimes(date, booking_url, params) {
         if (error.response) {
             logger.error(`TeeSnap API error for ${booking_url}: HTTP ${error.response.status}`, error.response.data ?? '');
         } else {
-            logger.error(`TeeSnap fetch error for ${booking_url}:`, error.message);
+            logger.error(`TeeSnap fetch error for ${booking_url}:`, error);
         }
         return [];
     }

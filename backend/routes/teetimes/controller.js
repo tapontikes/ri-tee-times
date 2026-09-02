@@ -57,6 +57,19 @@ router.get('/all', async (req, res, next) => {
     }
 });
 
+router.get('/last-refreshed', async (req, res, next) => {
+    try {
+        const {date} = req.query;
+        if (!date || !moment(date, 'YYYY-MM-DD', true).isValid()) {
+            return res.status(400).json({error: 'Invalid or missing date. Use YYYY-MM-DD'});
+        }
+        const ts = await dbClient.getLastRefreshedAt(date);
+        res.json({lastRefreshedAt: ts ? new Date(ts).toISOString() : null});
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.post('/refresh/all', async (req, res, next) => {
     try {
         const {date} = req.body;

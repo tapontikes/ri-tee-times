@@ -1,5 +1,6 @@
 const axios = require('axios');
 const logger = require('../../../utils/logger');
+const {getRandomUserAgent} = require('../../../utils/user-agents');
 
 // Constants
 const FOREUP_BASE_URL = "https://app.foreupsoftware.com/index.php/api/booking/times";
@@ -24,7 +25,7 @@ async function getForeUpTeeTimes(date, params) {
 
         const response = await axios.get(FOREUP_BASE_URL, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+                'User-Agent': getRandomUserAgent()
             },
             params: request_data
         });
@@ -52,7 +53,7 @@ async function getForeUpTeeTimes(date, params) {
         if (error.response) {
             logger.error(`ForeUp API error: HTTP ${error.response.status}`, error.response.data ?? '');
         } else {
-            logger.error('ForeUp fetch error:', error.message);
+            logger.error('ForeUp fetch error:', error);
         }
         return [];
     }
