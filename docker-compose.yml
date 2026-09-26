@@ -1,6 +1,9 @@
 services:
   app:
     image: tapontikes/golf-ri.com:latest
+    # Non-root: matches the "node" user (uid/gid 1000) inside the image.
+    # The container refuses to run as root even if the image regresses.
+    user: "1000:1000"
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -12,3 +15,8 @@ services:
       LAUNCHDARKLY_SDK_KEY: ${LAUNCHDARKLY_SDK_KEY}
     ports:
       - "3000:3000"
+    # Defense in depth: drop every Linux capability; no setuid escalation
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true

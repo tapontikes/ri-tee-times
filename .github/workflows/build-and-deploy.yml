@@ -65,9 +65,13 @@ jobs:
             set -e
             cd /home/tom/ri-tee-times/
 
+            # Sync the working tree exactly with the remote. A hard reset
+            # (instead of a plain pull) repairs any local drift such as
+            # accidentally deleted files, so the deploy always matches
+            # what is in the repo. The deploy user must own this directory.
             git fetch origin
             git checkout ${{ github.event.inputs.target_branch || 'master' }}
-            git pull origin ${{ github.event.inputs.target_branch || 'master' }}
+            git reset --hard origin/${{ github.event.inputs.target_branch || 'master' }}
 
             docker pull tapontikes/golf-ri.com:latest
             docker compose up -d --no-deps --force-recreate app
