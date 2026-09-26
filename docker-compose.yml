@@ -1,6 +1,7 @@
 services:
   app:
     image: tapontikes/golf-ri.com:latest
+    restart: unless-stopped
     # Non-root: matches the "node" user (uid/gid 1000) inside the image.
     # The container refuses to run as root even if the image regresses.
     user: "1000:1000"
