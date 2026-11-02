@@ -5,6 +5,9 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const logger = require('./utils/logger');
 const cors = require('cors');
+const helmet = require('helmet');
+const {rateLimit} = require('express-rate-limit');
+const MemoryStore = require('memorystore')(session);
 const axios = require('axios');
 const {CookieJar} = require("tough-cookie");
 const {wrapper} = require('axios-cookiejar-support');
@@ -30,7 +33,27 @@ const {client: ldClient} = require('./utils/launchdarkly');
 
 const app = express();
 
-app.use(cors());
+app.disable('x-powered-by');
+// Exactly one reverse proxy (nginx) sits in front: trust the client address it appends to
+// X-Forwarded-For so rate limiting and secure cookies see the real client, not the proxy.
+app.set('trust proxy', 1);
+
+app.use(helmet({
+    contentSecurityPolicy: false,      // needs a policy tailored to Angular + 3rd-party SDKs; enable separately
+    frameguard: false,                 // the booking UI is intentionally embeddable (iframe booking)
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: false,
+    crossOriginResourcePolicy: false,
+    hsts: false                        // HSTS is set by nginx
+}));
+
+// CORS: only our own origins (plus CORS_ORIGINS, comma separated). Same-origin and non-browser
+// requests carry no Origin header and are always allowed.
+const corsOrigins = process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',').map(o => o.trim()).filter(Boolean)
+    : ['https://golf-ri.com', 'https://www.golf-ri.com', 'http://localhost:4200', 'http://localhost:3000'];
+app.use(cors({origin: (origin, cb) => cb(null, !origin || corsOrigins.includes(origin))}));
+
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
@@ -43,22 +66,39 @@ app.use(morgan(':method :url :status - :response-time ms', {
     }
 }));
 
-const SESSION_SECRET = process.env.SESSION_SECRET;
-if (!SESSION_SECRET) {
-    logger.error('SESSION_SECRET environment variable is not set. Using a temporary insecure default — set this in .env for production.');
-}
-
-app.use(session({
-    secret: SESSION_SECRET || 'fallback-insecure-secret-set-SESSION_SECRET-in-env',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        httpOnly: true,
-        maxAge: 30 * 24 * 60 * 60 * 1000
-    }
+// Per-client rate limit for the whole API (clients are identified via trust proxy above).
+app.use('/api', rateLimit({
+    windowMs: 60 * 1000,
+    limit: 300,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    message: {error: {message: 'Too many requests, slow down.', status: 429}}
 }));
 
-app.use((req, res, next) => {
+const SESSION_SECRET = process.env.SESSION_SECRET;
+if (!SESSION_SECRET) {
+    logger.error('SESSION_SECRET is not set. Refusing to start without a session secret (set it in .env / the environment).');
+    process.exit(1);
+}
+
+// Sessions only hold the visitor's booking-site login (ForeUp / Teesnap), so they are created
+// lazily and only on those routes. The store is bounded (LRU, max entries + TTL) so unauthenticated
+// clients cannot grow memory without limit.
+const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const sessionMiddleware = session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: new MemoryStore({checkPeriod: 60 * 60 * 1000, max: 2000, ttl: SESSION_TTL_MS}),
+    cookie: {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: 'auto',     // Secure when the request arrived over https (via trust proxy)
+        maxAge: SESSION_TTL_MS
+    }
+});
+
+const attachSession = (req, res, next) => {
     try {
         if (!req.session.userId) {
             req.session.userId = uuidv4();
@@ -82,13 +122,13 @@ app.use((req, res, next) => {
     } catch (error) {
         next(error);
     }
-});
+};
 
 
-// API routes
+// API routes. Only the booking-site routers need a session / cookie jar.
 app.use('/api/tee-times', teeTimeRouter);
-app.use('/api/teesnap', teesnapRouter);
-app.use('/api/foreup', foreupRouter);
+app.use('/api/teesnap', sessionMiddleware, attachSession, teesnapRouter);
+app.use('/api/foreup', sessionMiddleware, attachSession, foreupRouter);
 app.use('/api/proxy', proxyRouter);
 
 // Initialize jobs on app startup
