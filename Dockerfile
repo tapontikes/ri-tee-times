@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY ./package*.json ./
 
-RUN npm install
+RUN npm ci
 
 COPY ./frontend ./frontend
 
@@ -20,7 +20,7 @@ WORKDIR /app
 
 COPY ./package*.json ./
 
-RUN npm install
+RUN npm ci
 
 COPY --from=ng-builder /app/frontend/dist/client/browser /app/public
 

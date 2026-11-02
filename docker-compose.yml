@@ -14,10 +14,23 @@ services:
       DB_SSL: ${DB_SSL}
       SESSION_SECRET: ${SESSION_SECRET}
       LAUNCHDARKLY_SDK_KEY: ${LAUNCHDARKLY_SDK_KEY}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+    # Only the host's nginx talks to the app: publish on loopback, not on every interface.
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     # Defense in depth: drop every Linux capability; no setuid escalation
     cap_drop:
       - ALL
     security_opt:
       - no-new-privileges:true
+    # The app never writes to its own filesystem (docker diff is empty), so lock it down.
+    read_only: true
+    tmpfs:
+      - /tmp
+    mem_limit: 512m
+    pids_limit: 200
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
