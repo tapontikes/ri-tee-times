@@ -56,7 +56,7 @@ jobs:
       - name: Install Supabase CLI
         uses: supabase/setup-cli@1dedf2c611547ede7232d26866dd3c56ab903bbb # v1
         with:
-          version: latest
+          version: 2.122.0   # pinned: CLI v3.0.0 (released 2026-11-02) dropped [inbucket] from config.toml and broke "db push"
 
       - name: Run migrations
         env:
